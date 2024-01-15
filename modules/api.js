@@ -106,8 +106,8 @@ async function userLogin(loginName, loginPassword) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Log off the current user.  Use the onAuthStateChanged callback set with the 
 // setUserLogoffCallback() function to respond when the login process has finished.
-function userLogoff() {
-    signOut(auth).then(() => {
+async function userLogoff() {
+    return signOut(auth).then(() => {
         currentUser = null;
         console.log("LOG OFF SUCCESSFUL");
     }).catch((error) => {
@@ -221,7 +221,8 @@ async function createNewUser(userEmail, userPassword, userName) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Retrieve up to messageLimit Messages from the database, in falling chronological order.
-// Function returns a Promise with an array of Message objects as callback parameter. 
+// Function returns a Promise with an object as callback parameter containing properties 
+// with Message objects. The property names are the message ID / database document name.
 async function getChatMessages(messageLimit = 30) {
     return dbGetCollectionDocuments(db, 'chatmeddelande', ["date", "desc"]).then((dbData) => {
         const chatMessages = {};
