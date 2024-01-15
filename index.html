@@ -9,7 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testprojekt</title>
+    <title>Gritsquare - konceptdemo</title>
     <script type="module" src="./main.js" type="module"></script>
     <link rel="stylesheet" href="./css/mainstyle.css">
 </head>
@@ -28,14 +28,14 @@
         </div>
     </header>
     <main>
-        <h1>Firebase Test</h1>
+        <h1>Gritsquare Concept Demo</h1>
         <!-- Box displaying messages fetched from the database: Replace this with proper layout -->
         <div id="store-form-wrapper">
             <form id="store-form">
                 <div id="store-value-wrapper"><label for="store-value">Add message</label><input type="text" id="store-value" name="store-value"><button id="store-button">Save!</button></div>
                 <div id="output"></div>
             </form>
-            <div id="button-bar"><div id="fetch-values-wrapper"><button id="fetch-values">Fetch data</button></div></div>
+            <div id="button-bar"><div id="fetch-values-wrapper"><button id="fetch-values">Refresh Messages</button></div></div>
         </div>
         <!-- Basic form for creating a new user: Move or replace this -->
         <form id="new-user-form">
@@ -43,6 +43,7 @@
             <div><label for="new-user-name">Display name:</label><input type="text" id="new-user-name" name="new-user-name" placeholder="Your name" maxlength="20" required></div>
             <div><label for="new-user-email">E-mail address:</label><input type="email" id="new-user-email" name="new-user-email" placeholder="your@email.address" required></div>
             <div><label for="new-user-password">Password:</label><input type="password" id="new-user-password" name="new-user-password" required></div>
+            <div><label for="new-user-password-again">Confirm password:</label><input type="password" id="new-user-password-again" name="new-user-password-again" required></div>
             <button id="new-user-button">Create account</button>
         </form>
         

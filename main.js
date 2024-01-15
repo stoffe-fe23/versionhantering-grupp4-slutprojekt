@@ -32,9 +32,13 @@ setUserLogoffCallback(userLoggedOffCallback);
 document.querySelector("#store-form").addEventListener("submit", (event) => {
     event.preventDefault();
     if (userIsLoggedIn()) {
-        addChatMessage(document.querySelector("#store-value").value.trim()).then((newDoc) => {
+        const messageInput = document.querySelector("#store-value");
+
+        addChatMessage(messageInput.value.trim()).then((newDoc) => {
             console.log("New document", newDoc.path, newDoc.id, newDoc);
             refreshMessages();
+            messageInput.value = '';
+            messageInput.focus();
         });
     }
 });
@@ -135,22 +139,28 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
 
     const newEmail = document.querySelector("#new-user-email").value.trim();
     const newPassword = document.querySelector("#new-user-password").value.trim();
+    const newPasswordConfirm = document.querySelector("#new-user-password-again").value.trim();
     const newName = document.querySelector("#new-user-name").value.trim();
 
-    createNewUser(newEmail, newPassword, newName).catch((error) => {
-        /*
-            If an error occurs during creation, errorCode may be one of:
-             - auth/email-already-in-use: Thrown if there already exists an account with the given email address.
-             - auth/invalid-email: Thrown if the email address is not valid.
-             - auth/operation-not-allowed: Thrown if email/password accounts are not enabled.
-             - auth/weak-password: Specified password is too weak and disallowed
-        */
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log("USER CREATE ERROR", errorMessage, errorCode);
-    });
+    if (newPassword == newPasswordConfirm) {
+        createNewUser(newEmail, newPassword, newName).catch((error) => {
+            /*
+                If an error occurs during creation, errorCode may be one of:
+                - auth/email-already-in-use: Thrown if there already exists an account with the given email address.
+                - auth/invalid-email: Thrown if the email address is not valid.
+                - auth/operation-not-allowed: Thrown if email/password accounts are not enabled.
+                - auth/weak-password: Specified password is too weak and disallowed
+            */
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log("USER CREATE ERROR", errorMessage, errorCode);
+        });
+        event.currentTarget.reset();
+    }
+    else {
+        console.log("Passwords do not match!");
+    }
 
-    event.currentTarget.reset();
 });
 
 
