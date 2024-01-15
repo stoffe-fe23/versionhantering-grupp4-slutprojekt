@@ -1,0 +1,175 @@
+/*
+    Versionshantering slutprojekt (FE23)
+    Grupp 4
+
+    Main stylesheet for the basic page layout.
+*/
+
+* {
+    box-sizing: border-box;
+}
+
+::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+body {
+    margin: 0px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+    background-color: rgb(27, 43, 63);
+    background: linear-gradient(to right top, rgb(27, 43, 63), rgb(60, 73, 92));
+    color: white;
+    min-width: 600px;
+    min-height: 100vh;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: grey;
+    padding: 1rem;
+    min-height: 4rem;
+    margin-bottom: 3rem;
+}
+
+main {
+    max-width: 1024px;
+    margin: 0 auto;
+}
+
+form label {
+    margin-right: 0.5rem;
+}
+
+#login-form {
+    display: none;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 0.25rem;
+}
+
+#login-form.show {
+    display: flex;
+}
+
+
+#logged-in {
+    display: none;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.25rem;
+}
+
+#logged-in span:first-of-type {
+    font-weight: 700;
+}
+
+#logged-in span:first-of-type span {
+    font-weight: 400;
+    font-size: 0.9em;
+}
+
+#logged-in.show {
+    display: flex;
+}
+
+#store-form-wrapper {
+    display: block;
+    border: 1px solid white;
+}
+
+#store-form-wrapper.show {
+    display: block;
+}
+
+#store-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#store-form.show {
+    display: flex;
+}
+
+#store-value-wrapper {
+    display: none;
+    justify-content: flex-end;
+    padding: 0.5rem;
+}
+
+#store-value-wrapper.show {
+    display: flex;
+}
+
+#store-value {
+    width: 600px;
+}
+
+#fetch-values-wrapper {
+    padding: 0.5rem;
+}
+
+#output {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    color: black;
+    min-height: 8rem;
+    padding: 1rem;
+    width: 100%;
+    overflow-y: scroll;
+}
+
+#output>div {
+    display: flex;
+    gap: 1rem;
+    border-bottom: 1px dotted blue;
+}
+
+#output>div div:first-of-type {
+    font-weight: 700;
+}
+
+#logged-in-last {
+    display: block;
+    font-size: 0.7em;
+}
+
+#button-bar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+}
+
+
+#change-name-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+}
+
+.fetched-data-author {
+    font-size: 0.9em;
+    font-style: italic;
+    color: blue;
+}
+
+.fetched-data-author::before {
+    content: "--";
+}
+
+
+#new-user-form {
+    display: none;
+    border: 1px solid black;
+    padding: 1rem;
+    margin: 0.5rem;
+}
+
+#new-user-form.show {
+    display: block;
+}
