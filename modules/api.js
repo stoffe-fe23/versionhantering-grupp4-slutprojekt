@@ -26,6 +26,7 @@ import {
     getDoc,
     setDoc,
     updateDoc,
+    deleteDoc,
     Timestamp,
     query,
     orderBy,
@@ -242,14 +243,64 @@ async function getChatMessages(messageLimit = 30) {
 // Store a new Message in the database. 
 // Function returns a Promise with data about the new message when it has been stored. 
 async function addChatMessage(messageText) {
-    const collectionData = {
-        date: Timestamp.fromDate(new Date()),
-        message: messageText,
-        authorname: (currentUser.displayName.length > 0 ? currentUser.displayName : currentUser.email),
-        authorid: currentUser.uid
-    };
-    return dbStoreDocument(db, "chatmeddelande", collectionData);
+    if (userIsLoggedIn()) {
+        const collectionData = {
+            date: Timestamp.fromDate(new Date()),
+            message: messageText,
+            authorname: (currentUser.displayName.length > 0 ? currentUser.displayName : currentUser.email),
+            authorid: currentUser.uid
+        };
+        return dbStoreDocument(db, "chatmeddelande", collectionData);
+    }
+    else {
+        throw new Error("You must be logged in to create new messages");
+    }
 }
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Remove a message from the database.
+async function deleteChatMessage(messageid) {
+    if (userIsLoggedIn()) {
+        const docMessage = await getDoc(doc(db, "chatmeddelande", messageid));
+        if (docMessage.exists()) {
+            const docMessageData = docMessage.data();
+            if (docMessageData.authorid == currentUser.uid) {
+                return dbDeleteDocument(db, "chatmeddelande", messageid);
+            }
+            else {
+                throw new Error("You may only remove messages you have created.");
+            }
+        }
+        else {
+            throw new Error("The specified message does not exist.");
+        }
+    }
+    else {
+        throw new Error("You must be logged in to remove messages.");
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Edit an existing message in the database. 
+async function editChatMessage(messageid, newMessage) {
+    const docMessage = await getDoc(doc(db, "chatmeddelande", messageid));
+    if (docMessage.exists()) {
+        const docMessageData = docMessage.data();
+
+        if (docMessageData.authorid == currentUser.uid) {
+            return await updateDoc(doc(db, "chatmeddelande", messageid), { message: newMessage });
+        }
+        else {
+            throw new Error("You can only edit messages you have created");
+        }
+    }
+    else {
+        throw new Error("Could not find the message to edit.");
+    }
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -303,6 +354,14 @@ async function dbStoreDocument(db, collectionName, collectionData, documentName 
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+// Remove a document from the database
+async function dbDeleteDocument(db, collectionName, documentName) {
+    // TODO: Delete any sub-collections associated with this as well
+    return await deleteDoc(doc(db, collectionName, documentName));
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
 // Utility to determine if a text variable has been set and assigned a value.
 function getIsValidText(text) {
     return ((text !== undefined) && (text !== null) && (text.length !== undefined) && (text.length > 0));
@@ -312,6 +371,8 @@ function getIsValidText(text) {
 export {
     addChatMessage,
     getChatMessages,
+    deleteChatMessage,
+    editChatMessage,
     dbGetCollectionDocuments,
     dbStoreDocument,
     userLogin,
