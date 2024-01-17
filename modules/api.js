@@ -219,7 +219,6 @@ async function getCurrentUserProfile() {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Retrieve the profile picture of the specified user.
 async function getUserPicture(userId) {
-    console.log("GET PICTURE FOR", userId);
     const docProfile = await getDoc(doc(db, "userprofiles", userId));
     if (docProfile.exists()) {
         const docProfileData = docProfile.data();
@@ -335,13 +334,14 @@ async function getChatMessages(messageLimit = 30) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Store a new Message in the database. 
 // Function returns a Promise with data about the new message when it has been stored. 
-async function addChatMessage(messageText) {
+async function addChatMessage(messageText, noteColor = '') {
     if (userIsLoggedIn()) {
         const collectionData = {
             date: Timestamp.fromDate(new Date()),
             message: messageText,
             authorname: (currentUser.displayName.length > 0 ? currentUser.displayName : currentUser.email),
-            authorid: currentUser.uid
+            authorid: currentUser.uid,
+            color: noteColor,
         };
         return dbStoreDocument(db, "chatmeddelande", collectionData);
     }
@@ -377,13 +377,16 @@ async function deleteChatMessage(messageid) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Edit an existing message in the database. 
-async function editChatMessage(messageId, newMessage) {
+async function editChatMessage(messageId, newMessage, newColor = '') {
     const docMessage = await getDoc(doc(db, "chatmeddelande", messageId));
     if (docMessage.exists()) {
         const docMessageData = docMessage.data();
 
         if (docMessageData.authorid == currentUser.uid) {
-            return await updateDoc(doc(db, "chatmeddelande", messageId), { message: newMessage });
+            return await updateDoc(doc(db, "chatmeddelande", messageId), {
+                message: newMessage,
+                color: newColor
+            });
         }
         else {
             throw new Error("You can only edit messages you have created");

@@ -20,7 +20,51 @@ import {
 
 let profilePictureCache = {};
 
+const messageBackgroundColors = {
+    lightgreen: 'Green',
+    lightyellow: 'Yellow',
+    lightblue: 'Blue',
+    lightpink: 'Pink',
+    lightgray: 'Gray'
+};
 
+/*
+let messageUpdateInterval;
+
+
+// Check for new messages every 30 seconds.
+messageUpdateInterval = setInterval(() => {
+    if (!getIsEditingAnyMessage()) {
+        console.log("Not editing");
+    }
+}, 30000);
+
+*/
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Check if the editor form is currently open for any message.
+function getIsEditingAnyMessage() {
+    if (!userIsLoggedIn()) {
+        return;
+    }
+
+    const messageEditors = document.querySelectorAll(".message-edit-form");
+    if ((messageEditors !== undefined) && (messageEditors.length > 0)) {
+        for (const messageEditor of messageEditors) {
+            if (messageEditor.classList.contains("show")) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Fetch and build message cards to display on the messageboard
 function buildMessageBoard(displayMax) {
     const messageBoard = document.querySelector("#messageboard");
     messageBoard.innerHTML = "";
@@ -31,8 +75,6 @@ function buildMessageBoard(displayMax) {
                 messageBoard.appendChild(createMessageCard(messageList[messageId], messageId));
             }
         }
-
-        console.log("BUILD MESSAGES", messageList);
     });
 }
 
@@ -52,6 +94,8 @@ function createMessageCard(messageData, messageId = null) {
 
     console.log("DATAITEM", messageId, messageData);
 
+    // TODO: Trim messages to 50-100 ish characters to show on card, and make popup to show the full text if longer
+
     messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
     messageText.innerText = ((messageData.message !== undefined) && (messageData.message.length > 0) ? messageData.message : "No message");
     messageEditButton.innerText = "Edit";
@@ -66,7 +110,7 @@ function createMessageCard(messageData, messageId = null) {
 
     // Custom background-color
     if (getIsValidText(messageData.color)) {
-        messageCard.style.backgroundColor = messageData.color;
+        messageCard.classList.add(`background-${messageData.color}`);
     }
 
     // Like button
@@ -106,7 +150,6 @@ function createMessageCard(messageData, messageId = null) {
     // Hide/show the message editor
     messageEditButton.addEventListener("click", (event) => {
         messageEditor.classList.toggle("show");
-        console.log("TODO: Show edit message form");
     });
 
     // Message editor
@@ -142,18 +185,25 @@ function messageEditorSubmitCallback(event) {
     const formElement = event.currentTarget;
     const parentElement = formElement.parentElement;
 
-    console.log("PARENT: ", parentElement.querySelector(".message-text").innerText);
-
-    console.log("EDIT MESSAGE SUBMIT", messageId, authorId, event.submitter.classList);
-
     if (event.submitter.classList.contains("message-edit-save")) {
         const messageText = formElement.querySelector("textarea").value.trim();
+        const messageColor = formElement.querySelector("select").value;
 
-        console.log("Save message", messageId);
-        editChatMessage(messageId, messageText).then(() => {
+        editChatMessage(messageId, messageText, messageColor).then(() => {
             const messageTextBox = parentElement.querySelector(".message-text");
+            const colorsClasses = Object.keys(messageBackgroundColors).map((val) => `background-${val}`);
+
             messageTextBox.innerText = messageText;
+
+            colorsClasses.forEach((elem) => {
+                formElement.classList.remove(elem);
+                parentElement.classList.remove(elem);
+            });
+
+            formElement.classList.add(`background-${messageColor}`);
+            parentElement.classList.add(`background-${messageColor}`);
             formElement.classList.remove("show");
+
             console.log("Message edited", messageId);
         }).catch((error) => {
             console.error("Error editing message:", error);
@@ -170,7 +220,6 @@ function messageEditorSubmitCallback(event) {
             }).catch((error) => {
                 console.error("Error deleting message:", error);
             });
-            console.log("Delete message", messageId);
         }
     }
 }
@@ -216,6 +265,7 @@ function createMessageEditor(messageData, messageId) {
     const messageEditSave = document.createElement("button");
     const messageEditDelete = document.createElement("button");
     const messageEditCancel = document.createElement("button");
+    const messageEditColor = document.createElement("div");
 
     messageEditor.classList.add("message-edit-form");
     messageEditText.classList.add("message-edit-text");
@@ -223,6 +273,7 @@ function createMessageEditor(messageData, messageId) {
     messageEditSave.classList.add("message-edit-save");
     messageEditDelete.classList.add("message-edit-delete");
     messageEditCancel.classList.add("message-edit-cancel");
+    messageEditColor.classList.add("message-edit-color");
 
     messageEditor.setAttribute("messageid", messageId);
     messageEditor.setAttribute("authorid", messageData.authorid);
@@ -233,8 +284,10 @@ function createMessageEditor(messageData, messageId) {
     messageEditCancel.innerText = "Cancel";
 
     if (getIsValidText(messageData.color)) {
-        messageEditor.style.backgroundColor = messageData.color;
+        messageEditor.classList.add(`background-${messageData.color}`);
     }
+
+    messageEditColor.appendChild(createColorPicker(messageData.color));
 
     messageEditButtons.append(
         messageEditSave,
@@ -244,10 +297,30 @@ function createMessageEditor(messageData, messageId) {
 
     messageEditor.append(
         messageEditText,
+        messageEditColor,
         messageEditButtons
     );
 
     return messageEditor;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Create a select menu for choosing background color of messages
+function createColorPicker(defaultValue) {
+    const selectList = document.createElement("select");
+
+    for (const bgColor in messageBackgroundColors) {
+        const selectItem = document.createElement("option");
+        selectItem.value = bgColor;
+        selectItem.innerText = messageBackgroundColors[bgColor];
+        if (defaultValue == bgColor) {
+            selectItem.selected = true;
+        }
+        selectItem.classList.add(`background-${bgColor}`);
+        selectList.appendChild(selectItem);
+    }
+    return selectList;
 }
 
 
@@ -276,4 +349,4 @@ function timestampToDateTime(timestamp, isMilliSeconds = true) {
 }
 
 
-export { createMessageCard, buildMessageBoard };
+export { createMessageCard, buildMessageBoard, createColorPicker };

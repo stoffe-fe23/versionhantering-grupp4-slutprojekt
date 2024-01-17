@@ -86,12 +86,9 @@ form label {
 }
 
 #store-form-wrapper {
-    display: block;
+    display: flex;
     border: 1px solid white;
-}
-
-#store-form-wrapper.show {
-    display: block;
+    justify-content: space-between;
 }
 
 #store-form {

@@ -22,7 +22,7 @@ import {
     userSendEmailVerification
 } from './modules/api.js';
 
-import { buildMessageBoard } from './modules/message.js';
+import { buildMessageBoard, createColorPicker } from './modules/message.js';
 
 
 // Configure function to run when a user has logged in
@@ -34,6 +34,10 @@ setUserLogoffCallback(userLoggedOffCallback);
 // Load messages when page loads
 refreshMessages();
 
+// EXAMPLE: Build color picker menu for "New Message" form
+createNewMessageColorPicker();
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // EXAMPLE: Create a new Message
@@ -41,6 +45,7 @@ document.querySelector("#store-form").addEventListener("submit", (event) => {
     event.preventDefault();
     if (userIsLoggedIn()) {
         const messageInput = document.querySelector("#store-value");
+        const messageColor = document.querySelector("#store-color").value.trim();
 
         addChatMessage(messageInput.value.trim()).then((newDoc) => {
             console.log("New document", newDoc.path, newDoc.id, newDoc);
@@ -223,4 +228,14 @@ function showMessageForm(isVisible) {
         userUserForm.classList.add("show");
     }
 
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// EXAMPLE: Create select menu with color picker for message background colors
+function createNewMessageColorPicker() {
+    const targetContainer = document.querySelector("#store-color-wrapper");
+    const colorPickerElem = createColorPicker();
+    colorPickerElem.id = 'store-color';
+    targetContainer.appendChild(colorPickerElem);
 }
