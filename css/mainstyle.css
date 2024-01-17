@@ -41,6 +41,19 @@ main {
     margin: 0 auto;
 }
 
+#errors {
+    display: none;
+    padding: 0.5rem 1rem;
+    background-color: darkred;
+    color: white;
+    font-weight: 700;
+    text-align: center;
+}
+
+#errors.show {
+    display: block;
+}
+
 section#messages {
     margin: 2rem;
     display: flex;
@@ -118,26 +131,6 @@ form label {
     padding: 0.5rem;
 }
 
-#output {
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    color: black;
-    min-height: 8rem;
-    padding: 1rem;
-    width: 100%;
-    overflow-y: scroll;
-}
-
-#output>div {
-    display: flex;
-    gap: 1rem;
-    border-bottom: 1px dotted blue;
-}
-
-#output>div div:first-of-type {
-    font-weight: 700;
-}
 
 #logged-in-last {
     display: block;

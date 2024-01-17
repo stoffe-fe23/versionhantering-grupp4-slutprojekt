@@ -17,6 +17,7 @@ import {
     getIsValidText,
 } from './api.js';
 
+import { showErrorMessage, clearErrorMessages } from './interface.js';
 
 let profilePictureCache = {};
 
@@ -92,8 +93,6 @@ function createMessageCard(messageData, messageId = null) {
     const messageLikeButton = document.createElement("button");
     const messageEditor = createMessageEditor(messageData, messageId);
 
-    console.log("DATAITEM", messageId, messageData);
-
     // TODO: Trim messages to 50-100 ish characters to show on card, and make popup to show the full text if longer
 
     messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
@@ -119,7 +118,8 @@ function createMessageCard(messageData, messageId = null) {
             messageLikeButton.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes + 1 : 1})`;
             console.log("MESSAGE LIKED", messageId);
         }).catch((error) => {
-            console.error("MESSAGE LIKE", error);
+            console.error("MESSAGE LIKE ERROR", error);
+            showErrorMessage(error, true);
         });
     });
 
@@ -207,6 +207,7 @@ function messageEditorSubmitCallback(event) {
             console.log("Message edited", messageId);
         }).catch((error) => {
             console.error("Error editing message:", error);
+            showErrorMessage(error, true);
         });
     }
     else if (event.submitter.classList.contains("message-edit-cancel")) {
@@ -219,6 +220,7 @@ function messageEditorSubmitCallback(event) {
                 buildMessageBoard();
             }).catch((error) => {
                 console.error("Error deleting message:", error);
+                showErrorMessage(error, true);
             });
         }
     }

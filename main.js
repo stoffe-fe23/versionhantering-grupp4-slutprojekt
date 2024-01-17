@@ -22,6 +22,7 @@ import {
     userSendEmailVerification
 } from './modules/api.js';
 
+import { showErrorMessage, clearErrorMessages } from './modules/interface.js';
 import { buildMessageBoard, createColorPicker } from './modules/message.js';
 
 
@@ -48,10 +49,11 @@ document.querySelector("#store-form").addEventListener("submit", (event) => {
         const messageColor = document.querySelector("#store-color").value.trim();
 
         addChatMessage(messageInput.value.trim()).then((newDoc) => {
-            console.log("New document", newDoc.path, newDoc.id, newDoc);
             refreshMessages();
             messageInput.value = '';
             messageInput.focus();
+        }).catch((error) => {
+            showErrorMessage(error);
         });
     }
 });
@@ -90,6 +92,7 @@ document.querySelector("#login-form").addEventListener("submit", (event) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.error("LOGIN ERROR", errorMessage, errorCode);
+            showErrorMessage(`Login error: ${errorMessage} (${errorCode})`);
         });
 
         event.currentTarget.reset();
@@ -128,6 +131,7 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log("USER CREATE ERROR", errorMessage, errorCode);
+            showErrorMessage(`New user error: ${errorMessage} (${errorCode})`);
         });
         event.currentTarget.reset();
     }
