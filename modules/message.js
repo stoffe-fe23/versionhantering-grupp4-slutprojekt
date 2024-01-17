@@ -11,6 +11,10 @@ import {
     getIsUserId,
     getUserPicture,
     getChatMessages,
+    deleteChatMessage,
+    editChatMessage,
+    likeChatMessage,
+    getIsValidText,
 } from './api.js';
 
 
@@ -43,20 +47,39 @@ function createMessageCard(messageData, messageId = null) {
     const messageText = document.createElement("div");
     const messageFooter = document.createElement("footer");
     const messageEditButton = document.createElement("button");
+    const messageLikeButton = document.createElement("button");
+    const messageEditor = createMessageEditor(messageData, messageId);
 
     console.log("DATAITEM", messageId, messageData);
 
     messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
     messageText.innerText = ((messageData.message !== undefined) && (messageData.message.length > 0) ? messageData.message : "No message");
     messageEditButton.innerText = "Edit";
+    messageLikeButton.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes : 0})`;
 
     messageCard.classList.add("message-card");
     messageDate.classList.add("message-date");
     messageText.classList.add("message-text");
     messageFooter.classList.add("message-footer");
     messageEditButton.classList.add("message-edit-button");
+    messageLikeButton.classList.add("message-like-button");
 
-    // Author
+    // Custom background-color
+    if (getIsValidText(messageData.color)) {
+        messageCard.style.backgroundColor = messageData.color;
+    }
+
+    // Like button
+    messageLikeButton.addEventListener("click", (event) => {
+        likeChatMessage(messageId).then(() => {
+            messageLikeButton.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes + 1 : 1})`;
+            console.log("MESSAGE LIKED", messageId);
+        }).catch((error) => {
+            console.error("MESSAGE LIKE", error);
+        });
+    });
+
+    // Author name and picture
     const messageAuthor = createAuthorSignature(messageData.authorname, './images/profile-test-image.png');
     if ((profilePictureCache[messageData.authorid] !== undefined) && (profilePictureCache[messageData.authorid] !== null)) {
         const userPicture = profilePictureCache[messageData.authorid];
@@ -79,18 +102,27 @@ function createMessageCard(messageData, messageId = null) {
     if ((messageId !== null) && getIsUserId(messageData.authorid)) {
         messageEditButton.classList.add("show");
     }
+
+    // Hide/show the message editor
     messageEditButton.addEventListener("click", (event) => {
-        // TODO: Visa/göm form för redigering
+        messageEditor.classList.toggle("show");
         console.log("TODO: Show edit message form");
     });
 
-    messageFooter.appendChild(messageEditButton);
+    // Message editor
+    messageEditor.addEventListener("submit", messageEditorSubmitCallback);
+
+    messageFooter.append(
+        messageEditButton,
+        messageLikeButton
+    );
+
     messageCard.append(
         messageDate,
         messageText,
         messageAuthor,
         messageFooter,
-        createMessageEditor(messageData, messageId),
+        messageEditor,
     );
 
     messageCard.setAttribute("messageid", messageId);
@@ -101,7 +133,51 @@ function createMessageCard(messageData, messageId = null) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// 
+// Event callback for submitting the Edit Message form of a message
+function messageEditorSubmitCallback(event) {
+    event.preventDefault();
+
+    const messageId = event.currentTarget.getAttribute("messageid");
+    const authorId = event.currentTarget.getAttribute("authorid");
+    const formElement = event.currentTarget;
+    const parentElement = formElement.parentElement;
+
+    console.log("PARENT: ", parentElement.querySelector(".message-text").innerText);
+
+    console.log("EDIT MESSAGE SUBMIT", messageId, authorId, event.submitter.classList);
+
+    if (event.submitter.classList.contains("message-edit-save")) {
+        const messageText = formElement.querySelector("textarea").value.trim();
+
+        console.log("Save message", messageId);
+        editChatMessage(messageId, messageText).then(() => {
+            const messageTextBox = parentElement.querySelector(".message-text");
+            messageTextBox.innerText = messageText;
+            formElement.classList.remove("show");
+            console.log("Message edited", messageId);
+        }).catch((error) => {
+            console.error("Error editing message:", error);
+        });
+    }
+    else if (event.submitter.classList.contains("message-edit-cancel")) {
+        formElement.reset();
+        formElement.classList.remove("show");
+    }
+    else if (event.submitter.classList.contains("message-edit-delete")) {
+        if (confirm("Are you sure you wish to permanently remove this message?")) {
+            deleteChatMessage(messageId).then(() => {
+                buildMessageBoard();
+            }).catch((error) => {
+                console.error("Error deleting message:", error);
+            });
+            console.log("Delete message", messageId);
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Build the Author Info element with name and a profile picture
 function createAuthorSignature(authorName, authorPicture = '') {
     const messageAuthor = document.createElement("div");
     const messageAuthorName = document.createElement("span");
@@ -116,13 +192,11 @@ function createAuthorSignature(authorName, authorPicture = '') {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// 
+// Update the author profile picture of a message
 function setAuthorSignaturePicture(messageAuthorBox, authorPicture) {
     if (authorPicture.length > 0) {
         let messageAuthorPicture = messageAuthorBox.querySelector("img");
-        console.log("IMAGE ELEMENT 1", messageAuthorPicture);
         if ((messageAuthorPicture === undefined) || (messageAuthorPicture === null)) {
-            console.log("IMAGE ELEMENT 2", messageAuthorPicture);
             messageAuthorPicture = document.createElement("img");
         }
 
@@ -133,20 +207,46 @@ function setAuthorSignaturePicture(messageAuthorBox, authorPicture) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// 
+// Create an edit message form for the specified message
 function createMessageEditor(messageData, messageId) {
     const messageEditor = document.createElement("form");
     const messageEditText = document.createElement("textarea");
+
+    const messageEditButtons = document.createElement("div");
     const messageEditSave = document.createElement("button");
     const messageEditDelete = document.createElement("button");
+    const messageEditCancel = document.createElement("button");
 
     messageEditor.classList.add("message-edit-form");
     messageEditText.classList.add("message-edit-text");
+    messageEditButtons.classList.add("message-edit-buttons");
     messageEditSave.classList.add("message-edit-save");
     messageEditDelete.classList.add("message-edit-delete");
+    messageEditCancel.classList.add("message-edit-cancel");
 
     messageEditor.setAttribute("messageid", messageId);
     messageEditor.setAttribute("authorid", messageData.authorid);
+
+    messageEditText.innerText = messageData.message;
+    messageEditSave.innerText = "Save";
+    messageEditDelete.innerText = "Delete";
+    messageEditCancel.innerText = "Cancel";
+
+    if (getIsValidText(messageData.color)) {
+        messageEditor.style.backgroundColor = messageData.color;
+    }
+
+    messageEditButtons.append(
+        messageEditSave,
+        messageEditCancel,
+        messageEditDelete
+    );
+
+    messageEditor.append(
+        messageEditText,
+        messageEditButtons
+    );
+
     return messageEditor;
 }
 

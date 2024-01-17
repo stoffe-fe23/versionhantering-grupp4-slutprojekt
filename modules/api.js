@@ -37,7 +37,9 @@ import {
     query,
     orderBy,
     limit,
-    where
+    where,
+    increment,
+    arrayUnion,
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-lite.js';
 
 
@@ -375,17 +377,43 @@ async function deleteChatMessage(messageid) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Edit an existing message in the database. 
-async function editChatMessage(messageid, newMessage) {
-    const docMessage = await getDoc(doc(db, "chatmeddelande", messageid));
+async function editChatMessage(messageId, newMessage) {
+    const docMessage = await getDoc(doc(db, "chatmeddelande", messageId));
     if (docMessage.exists()) {
         const docMessageData = docMessage.data();
 
         if (docMessageData.authorid == currentUser.uid) {
-            return await updateDoc(doc(db, "chatmeddelande", messageid), { message: newMessage });
+            return await updateDoc(doc(db, "chatmeddelande", messageId), { message: newMessage });
         }
         else {
             throw new Error("You can only edit messages you have created");
         }
+    }
+    else {
+        throw new Error("Could not find the message to edit.");
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Increase the "Likes" counter for this message 
+async function likeChatMessage(messageId) {
+    if (!userIsLoggedIn()) {
+        throw new Error("You must be logged in to like a message.");
+    }
+
+    const docMessage = await getDoc(doc(db, "chatmeddelande", messageId));
+    if (docMessage.exists()) {
+        const docMessageData = docMessage.data();
+
+        // A user may only like a message once
+        if ((docMessageData !== undefined) && (docMessageData.likers !== undefined) && Array.isArray(docMessageData.likers)) {
+            if (docMessageData.likers.includes(currentUser.uid)) {
+                throw new Error("You have already liked this message before.");
+            }
+        }
+
+        return await updateDoc(doc(db, "chatmeddelande", messageId), { likes: increment(1), likers: arrayUnion(currentUser.uid) });
     }
     else {
         throw new Error("Could not find the message to edit.");
@@ -464,6 +492,7 @@ export {
     getChatMessages,
     deleteChatMessage,
     editChatMessage,
+    likeChatMessage,
     dbGetCollectionDocuments,
     dbStoreDocument,
     userLogin,
@@ -480,4 +509,5 @@ export {
     userSendEmailVerification,
     getIsUserId,
     getUserPicture,
+    getIsValidText,
 };

@@ -16,13 +16,13 @@
 </head>
 <body>
     <header>
-        <!-- Login form shown if the visitor is not logged in: Move or redesign -->
+        <!-- TODO: Login form shown if the visitor is not logged in: Move or redesign -->
         <form id="login-form">
             <div><label for="login-email">E-mail address:</label><input type="email" id="login-email" name="login-email" placeholder="your@email.address" required></div>
             <div><label for="login-password">Password:</label><input type="password" id="login-password" name="login-password" required></div>
             <button id="login-button">Log in</button>
         </form>
-        <!-- Info/logoff bar shown instead of login form if the user is currently logged in: Move or redesign -->
+        <!-- TODO: Info/logoff bar shown instead of login form if the user is currently logged in: Move or redesign -->
         <div id="logged-in">
             <span>Current user:</span><span><span id="logged-in-email"></span><span id="logged-in-last"></span></span>
             <button id="logoff-button">Log off</button><div id="update-user-wrapper"><button id="update-user">Change name</button></div>
@@ -31,18 +31,17 @@
     <main>
         <section id="messages">
             <h2>Gritsquare</h2>
-            <div id="messageboard">
-
-            </div>
+            <!-- Box displaying messages -->
+            <div id="messageboard"></div>
         </section>
-        <!-- Box displaying messages fetched from the database: Replace this with proper layout -->
+        
         <div id="store-form-wrapper">
             <form id="store-form">
                 <div id="store-value-wrapper"><label for="store-value">Add message</label><input type="text" id="store-value" name="store-value"><button id="store-button">Save!</button></div>
             </form>
             <div id="button-bar"><div id="fetch-values-wrapper"><button id="fetch-values">Refresh Messages</button></div></div>
         </div>
-        <!-- Basic form for creating a new user: Move or replace this -->
+        <!-- TODO: Basic form for creating a new user: Move or replace this -->
         <form id="new-user-form">
             <h2>Create new user</h2>
             <div><label for="new-user-name">Display name:</label><input type="text" id="new-user-name" name="new-user-name" placeholder="Your name" maxlength="20" required></div>
@@ -53,7 +52,7 @@
         </form>
         
     </main>
-    <!-- Popup dialog for changing display name. Move to Edit Profile instead? -->
+    <!-- TODO: Popup dialog for changing display name. Move to Edit Profile instead? -->
     <dialog id="change-name-dialog">
         <form id="change-name-form" method="dialog" autocomplete="off">
             <label for="change-name-input">Your name:</label>

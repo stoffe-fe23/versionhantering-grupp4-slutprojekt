@@ -31,6 +31,8 @@ setUserLoginCallback(userLoggedInCallback);
 // Configure function to run when the user has logged off
 setUserLogoffCallback(userLoggedOffCallback);
 
+// Load messages when page loads
+refreshMessages();
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
