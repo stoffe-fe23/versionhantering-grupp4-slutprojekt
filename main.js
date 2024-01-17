@@ -17,6 +17,9 @@ import {
     userUpdateProfile,
     setUserLoginCallback,
     setUserLogoffCallback,
+    userDelete,
+    userSetPassword,
+    userSendEmailVerification
 } from './modules/api.js';
 
 
@@ -25,6 +28,7 @@ setUserLoginCallback(userLoggedInCallback);
 
 // Configure function to run when the user has logged off
 setUserLogoffCallback(userLoggedOffCallback);
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////

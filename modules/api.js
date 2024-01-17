@@ -14,7 +14,13 @@ import {
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
-    updateProfile
+    updateProfile,
+    updatePassword,
+    deleteUser,
+    sendPasswordResetEmail,
+    sendEmailVerification,
+    reauthenticateWithCredential,
+    EmailAuthProvider
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 import {
@@ -215,6 +221,65 @@ async function createNewUser(userEmail, userPassword, userName) {
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Delete the current user from the system. The user's password must be specified to
+// confirm the deletion. 
+async function userDelete(userPassword) {
+    if (userIsLoggedIn()) {
+        // Require reauthentication before deletion for safety.
+        const authCredential = EmailAuthProvider.credential(auth.currentUser.email, userPassword);
+        return reauthenticateWithCredential(auth.currentUser, authCredential).then(() => {
+            // User reauthenticated, delete the account.
+            return deleteUser(auth.currentUser).then(() => {
+                currentUser = null;
+            });
+        });
+    }
+    else {
+        throw new Error("Unable to delete user. No user is logged in.");
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Change the password of the current user. Both the old password and the desired new
+// password must be specified. 
+async function userSetPassword(oldPassword, newPassword) {
+    if (userIsLoggedIn()) {
+        // Require reauthentication before password change for safety.
+        const authCredential = EmailAuthProvider.credential(auth.currentUser.email, oldPassword);
+        return reauthenticateWithCredential(auth.currentUser, authCredential).then(() => {
+            // User reauthenticated, update the password.
+            return updatePassword(auth.currentUser, newPassword).then(() => {
+                console.log("USER PASSWORD UPDATED");
+            });
+        });
+    }
+    else {
+        throw new Error("Unable to change password. No user is logged in.");
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Send a verification email to the email address of the current user
+async function userSendEmailVerification() {
+    if (!userIsLoggedIn()) {
+        throw new Error("Unable to send verification email. No user is logged in.");
+    }
+
+    if (currentUser.emailVerified) {
+        throw new Error("This account is already verified.");
+    }
+
+    return sendEmailVerification(auth.currentUser).then(() => {
+        console.log("USER VERIFICATION EMAIL SENT");
+    });
+}
+
+
+
 /****************************************************************************************
  * CHAT MESSAGES
  ****************************************************************************************/
@@ -383,5 +448,8 @@ export {
     setUserLoginCallback,
     setUserLogoffCallback,
     getCurrentUserProfile,
-    createNewUser
+    createNewUser,
+    userDelete,
+    userSetPassword,
+    userSendEmailVerification
 };
