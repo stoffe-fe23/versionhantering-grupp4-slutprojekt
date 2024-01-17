@@ -12,6 +12,7 @@
     <title>Gritsquare - konceptdemo</title>
     <script type="module" src="./main.js" type="module"></script>
     <link rel="stylesheet" href="./css/mainstyle.css">
+    <link rel="stylesheet" href="./css/message.css">
 </head>
 <body>
     <header>
@@ -28,12 +29,16 @@
         </div>
     </header>
     <main>
-        <h1>Gritsquare Concept Demo</h1>
+        <section id="messages">
+            <h2>Gritsquare</h2>
+            <div id="messageboard">
+
+            </div>
+        </section>
         <!-- Box displaying messages fetched from the database: Replace this with proper layout -->
         <div id="store-form-wrapper">
             <form id="store-form">
                 <div id="store-value-wrapper"><label for="store-value">Add message</label><input type="text" id="store-value" name="store-value"><button id="store-button">Save!</button></div>
-                <div id="output"></div>
             </form>
             <div id="button-bar"><div id="fetch-values-wrapper"><button id="fetch-values">Refresh Messages</button></div></div>
         </div>

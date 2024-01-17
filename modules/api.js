@@ -43,11 +43,13 @@ import {
 
 import { firebaseConfig } from './apiconfig.js';
 
+// Firebase Initialization
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore(app);
 
 
+// Global variables
 let currentUser = auth.currentUser;
 let userLoginCallback;
 let userLogoffCallback;
@@ -73,10 +75,18 @@ function setUserLogoffCallback(callbackFunc) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Returns true if there is currently a user logged on, otherwise false.
-function userIsLoggedIn() {
-    return (currentUser !== null);
+// If the requireVerified is set, it also required the user account to have been verified.
+// (I.e. user getting a confirmation email and clicking on the link)
+function userIsLoggedIn(requireVerified = false) {
+    return (currentUser !== null) && (!requireVerified || (requireVerified && currentUser.emailVerified));
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Check if the currently logged in user has the specified userId.
+function getIsUserId(userId) {
+    return userIsLoggedIn() && (currentUser.uid == userId);
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Update authenticated user status. Run relevant callback functions set with the 
@@ -121,6 +131,7 @@ async function userLogoff() {
         console.error("LOG OFF FAILED", error);
     });
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Get the name of the current user or "No name" if no user is logged on or the user has
@@ -200,6 +211,21 @@ async function getCurrentUserProfile() {
         }
     }
     return userProfile;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Retrieve the profile picture of the specified user.
+async function getUserPicture(userId) {
+    console.log("GET PICTURE FOR", userId);
+    const docProfile = await getDoc(doc(db, "userprofiles", userId));
+    if (docProfile.exists()) {
+        const docProfileData = docProfile.data();
+        if (getIsValidText(docProfileData.picture)) {
+            return docProfileData.picture;
+        }
+        return "";
+    }
 }
 
 
@@ -451,5 +477,7 @@ export {
     createNewUser,
     userDelete,
     userSetPassword,
-    userSendEmailVerification
+    userSendEmailVerification,
+    getIsUserId,
+    getUserPicture,
 };

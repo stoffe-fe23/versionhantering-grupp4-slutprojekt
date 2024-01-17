@@ -22,6 +22,8 @@ import {
     userSendEmailVerification
 } from './modules/api.js';
 
+import { buildMessageBoard } from './modules/message.js';
+
 
 // Configure function to run when a user has logged in
 setUserLoginCallback(userLoggedInCallback);
@@ -48,7 +50,7 @@ document.querySelector("#store-form").addEventListener("submit", (event) => {
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Update Messages from database
+// EXAMPLE: Manually refresh the message list
 document.querySelector("#fetch-values").addEventListener("click", (event) => {
     refreshMessages();
 });
@@ -56,46 +58,7 @@ document.querySelector("#fetch-values").addEventListener("click", (event) => {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // EXAMPLE: Fetch the 20 most recent Messages from the database and display them
 function refreshMessages() {
-    getChatMessages(20).then((dbData) => {
-        const outputBox = document.querySelector("#output");
-        outputBox.innerHTML = "";
-
-
-        if ((dbData !== undefined) && (dbData !== null) && (typeof dbData == "object") && (Object.keys(dbData).length > 0)) {
-            for (const docName in dbData) {
-                outputBox.appendChild(newOutputMessage(dbData[docName], docName));
-            }
-        }
-
-        console.log("CHAT MESSAGES", dbData);
-    });
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Build and return a Message HTML/DOM-element
-//          dataItem is an object containing the message data
-//          docName is the message-ID (i.e. document name in the database) used to uniquely identify this message
-function newOutputMessage(dataItem, docName) {
-    const dataContainer = document.createElement("div");
-    const dataDate = document.createElement("div");
-    const dataMessage = document.createElement("div");
-    const dataAuthor = document.createElement("div");
-
-    console.log("DATAITEM", docName, dataItem);
-    dataDate.classList.add("fetched-data-date");
-    dataMessage.classList.add("fetched-data-message");
-    dataAuthor.classList.add("fetched-data-author");
-    dataDate.innerText = ((dataItem.date.seconds !== undefined) && (dataItem.date.seconds !== null) ? timestampToDateTime(dataItem.date.seconds, false) : "Date missing");
-    dataMessage.innerText = ((dataItem.message !== undefined) && (dataItem.message.length > 0) ? dataItem.message : "No message");
-    dataAuthor.innerText = ((dataItem.authorname !== undefined) && (dataItem.authorname.length > 0) ? dataItem.authorname : "No name");
-
-    dataContainer.append(dataDate, dataMessage, dataAuthor);
-
-    // Store the messageID and authorID in an attribute for potential use in edit/delete ops
-    dataContainer.setAttribute("messageid", docName);
-    dataContainer.setAttribute("authorid", dataItem.authorid);
-
-    return dataContainer;
+    buildMessageBoard(20);
 }
 
 
@@ -258,11 +221,4 @@ function showMessageForm(isVisible) {
         userUserForm.classList.add("show");
     }
 
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Convert a timestamp number to a displayable date string
-function timestampToDateTime(timestamp, isMilliSeconds = true) {
-    const dateObj = new Date(isMilliSeconds ? timestamp : timestamp * 1000);
-    return `${dateObj.toLocaleDateString('sv-SE')} ${dateObj.toLocaleTimeString('sv-SE')}`;
 }

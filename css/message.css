@@ -1,0 +1,88 @@
+/*
+    Versionshantering slutprojekt (FE23)
+    Grupp 4
+
+    Stylesheet for message cards.
+*/
+
+.message-card {
+    display: grid;
+    width: 300px;
+    background-color: lightgreen;
+    color: black;
+    grid-template-areas:
+        "message-date"    
+        "message-text"
+        "message-author"
+        "message-footer";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 5fr auto;
+    align-items: stretch;
+    justify-content: center;
+    justify-items: center;
+    gap: 0;
+    padding: 1rem;
+}
+
+.message-date {
+    grid-area: message-date;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    font-size: 0.9em;
+    background-color: rgba(0,0,0,0.75);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+}
+.message-text {
+    grid-area: message-text;
+    padding: 0.5rem 1.5rem;
+}
+
+.message-author {
+    grid-area: message-author;
+    font-style: italic;
+    font-size: 0.8em;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    padding-top: 0.25rem;
+    border-top: 1px dotted black;
+}
+
+.message-author img {
+    max-width: 42px;
+}
+
+.message-author span {
+    font-size: 1.1em;
+}
+
+.message-footer {
+    grid-area: message-footer;
+    margin-top: 1rem;
+}
+
+.message-edit-button {
+    display: none;
+}
+
+.message-edit-button.show {
+    display: block;
+}
+
+
+#messageboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1rem 0.5rem 3rem 0.5rem;
+}
+
+#messageboard article {
+    flex: 1 1 300px;
+}
+
