@@ -23,7 +23,7 @@ import {
 } from './modules/api.js';
 
 import { showErrorMessage, clearErrorMessages } from './modules/interface.js';
-import { buildMessageBoard, createColorPicker } from './modules/message.js';
+import { createColorPicker } from './modules/message.js';
 
 
 // Configure function to run when a user has logged in
@@ -32,8 +32,6 @@ setUserLoginCallback(userLoggedInCallback);
 // Configure function to run when the user has logged off
 setUserLogoffCallback(userLoggedOffCallback);
 
-// Load messages when page loads
-refreshMessages();
 
 // EXAMPLE: Build color picker menu for "New Message" form
 createNewMessageColorPicker();
@@ -48,7 +46,7 @@ document.querySelector("#store-form").addEventListener("submit", (event) => {
         const messageInput = document.querySelector("#store-value");
         const messageColor = document.querySelector("#store-color").value.trim();
 
-        addChatMessage(messageInput.value.trim()).then((newDoc) => {
+        addChatMessage(messageInput.value.trim(), messageColor).then((newDoc) => {
             refreshMessages();
             messageInput.value = '';
             messageInput.focus();
@@ -67,7 +65,7 @@ document.querySelector("#fetch-values").addEventListener("click", (event) => {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // EXAMPLE: Fetch the 20 most recent Messages from the database and display them
 function refreshMessages() {
-    buildMessageBoard(20);
+    // Removed: Should be updating automatically now, no need for manual refressh.
 }
 
 

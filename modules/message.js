@@ -11,6 +11,7 @@ import {
     getIsUserId,
     getUserPicture,
     getChatMessages,
+    getChatMessagesOnUpdate,
     deleteChatMessage,
     editChatMessage,
     likeChatMessage,
@@ -29,19 +30,12 @@ const messageBackgroundColors = {
     lightgray: 'Gray'
 };
 
-/*
-let messageUpdateInterval;
+let messagesSnapshot;
+let boardInitialized = false;
 
 
-// Check for new messages every 30 seconds.
-messageUpdateInterval = setInterval(() => {
-    if (!getIsEditingAnyMessage()) {
-        console.log("Not editing");
-    }
-}, 30000);
-
-*/
-
+// Load up to 30 available messages and listen for changes
+initializeMessageBoard(30);
 
 
 
@@ -66,6 +60,7 @@ function getIsEditingAnyMessage() {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Fetch and build message cards to display on the messageboard
+/*
 function buildMessageBoard(displayMax) {
     const messageBoard = document.querySelector("#messageboard");
     messageBoard.innerHTML = "";
@@ -77,6 +72,76 @@ function buildMessageBoard(displayMax) {
             }
         }
     });
+}
+*/
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Fetch and build messageboard and listen for changes in the database.
+function initializeMessageBoard(displayMax) {
+    messagesSnapshot = getChatMessagesOnUpdate(displayMax, (updatedData) => {
+        const messageBoard = document.querySelector("#messageboard");
+
+        updatedData.docChanges().forEach((change) => {
+            if (change.type === "added") {
+                if (boardInitialized) {
+                    messageBoard.prepend(createMessageCard(change.doc.data(), change.doc.id));
+                }
+                else {
+                    messageBoard.append(createMessageCard(change.doc.data(), change.doc.id));
+                }
+                console.log(" >>>> New message!", change.doc.id, change.doc.data());
+            }
+            if (change.type === "modified") {
+                updateMessageCard(change.doc.data(), change.doc.id);
+                console.log(" >>>> Modified message!", change.doc.id, change.doc.data());
+            }
+            if (change.type === "removed") {
+                deleteMessageCard(change.doc.id);
+                console.log(" >>>> Deleted message!", change.doc.id, change.doc.data());
+            }
+        });
+
+        boardInitialized = true;
+    });
+
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Update information about an existing message
+function updateMessageCard(messageData, messageId) {
+    const messageCard = document.querySelector(`article[messageid="${messageId}"].message-card`);
+
+    if ((messageCard !== undefined) && (messageCard !== null)) {
+        const messageDate = messageCard.querySelector(".message-date");
+        const messageText = messageCard.querySelector(".message-text");
+        const messageAuthor = messageCard.querySelector(".message-author span");
+        const messageLikes = messageCard.querySelector(".message-like-button");
+        const colorsClasses = Object.keys(messageBackgroundColors).map((val) => `background-${val}`);
+
+        colorsClasses.forEach((elem) => { messageCard.classList.remove(elem); });
+        if (getIsValidText(messageData.color)) {
+            messageCard.classList.add(`background-${messageData.color}`);
+        }
+
+        messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
+        messageText.innerText = ((messageData.message !== undefined) && (messageData.message.length > 0) ? messageData.message : "No message");
+        messageLikes.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes : 0})`;
+        messageAuthor.innerText = ((messageData.authorname !== undefined) && (messageData.authorname.length > 0) ? messageData.authorname : "No name");
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Remove an existing message from the board
+function deleteMessageCard(messageId) {
+    const messageCard = document.querySelector(`article[messageid="${messageId}"].message-card`);
+
+    if ((messageCard !== undefined) && (messageCard !== null)) {
+        console.log("REMOVING MESSAGE", messageId);
+        messageCard.remove();
+    }
 }
 
 
@@ -216,9 +281,7 @@ function messageEditorSubmitCallback(event) {
     }
     else if (event.submitter.classList.contains("message-edit-delete")) {
         if (confirm("Are you sure you wish to permanently remove this message?")) {
-            deleteChatMessage(messageId).then(() => {
-                buildMessageBoard();
-            }).catch((error) => {
+            deleteChatMessage(messageId).catch((error) => {
                 console.error("Error deleting message:", error);
                 showErrorMessage(error, true);
             });
@@ -351,4 +414,4 @@ function timestampToDateTime(timestamp, isMilliSeconds = true) {
 }
 
 
-export { createMessageCard, buildMessageBoard, createColorPicker };
+export { createMessageCard, createColorPicker };

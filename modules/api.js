@@ -40,7 +40,9 @@ import {
     where,
     increment,
     arrayUnion,
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-lite.js';
+    onSnapshot,
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+// } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-lite.js';
 
 
 import { firebaseConfig } from './apiconfig.js';
@@ -55,6 +57,7 @@ const db = getFirestore(app);
 let currentUser = auth.currentUser;
 let userLoginCallback;
 let userLogoffCallback;
+let messagesSnapshot;
 
 
 /****************************************************************************************
@@ -317,7 +320,7 @@ async function userSendEmailVerification() {
 // Function returns a Promise with an object as callback parameter containing properties 
 // with Message objects. The property names are the message ID / database document name.
 async function getChatMessages(messageLimit = 30) {
-    return dbGetCollectionDocuments(db, 'chatmeddelande', ["date", "desc"]).then((dbData) => {
+    return dbGetCollectionDocuments(db, 'chatmeddelande', ["date", "desc"], messageLimit).then((dbData) => {
         const chatMessages = {};
 
         if ((dbData !== undefined) && (dbData !== null) && Array.isArray(dbData) && (dbData.length > 0)) {
@@ -328,6 +331,13 @@ async function getChatMessages(messageLimit = 30) {
 
         return chatMessages;
     });
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//  
+function getChatMessagesOnUpdate(messageLimit = 30, onUpdateCallback = null) {
+    return dbSetCollectionDocumentsListener(db, 'chatmeddelande', ["date", "desc"], messageLimit, onUpdateCallback);
 }
 
 
@@ -453,6 +463,41 @@ async function dbGetCollectionDocuments(db, collectionName, sortResultBy, result
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Retrieve up to resultLimit documents from the collectionName collection, sorted by
+// the sortResultBy parameter.
+//  - db is the database handler global.
+//  - collectionName is a string with the name of the Database collection
+//  - sortResultBy is an array where the first element is the name of the field to sort by, and
+//              the second element is either "asc" or "desc" to set the sort order.
+//  - resultLimit is an integer number to limit how many documents to retrieve
+//  - onUpdateCallback is a callback function to run whenever the observed data changes in the DB.
+async function dbSetCollectionDocumentsListener(db, collectionName, sortResultBy, resultLimit = 30, onUpdateCallback = null) {
+    try {
+        if (typeof onUpdateCallback == "function") {
+            const fetchQuery = query(collection(db, collectionName), orderBy(...sortResultBy), limit(resultLimit));
+            return onSnapshot(fetchQuery, onUpdateCallback);
+        }
+        else {
+            throw new Error("Unable to fetch data: No valid listener callback function has been set!");
+        }
+    }
+    catch (error) {
+        console.error("Error reading from collection: ", error);
+    }
+}
+
+/*
+const fetchQuery = query(collection(db, "cities"), where("state", "==", "CA"));
+const unsubscribe = onSnapshot(fetchQuery, (querySnapshot) => {
+  const cities = [];
+  querySnapshot.forEach((doc) => {
+      cities.push(doc.data().name);
+  });
+  console.log("Current cities in CA: ", cities.join(", "));
+});
+*/
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Store a new document in the database.
@@ -493,11 +538,10 @@ function getIsValidText(text) {
 export {
     addChatMessage,
     getChatMessages,
+    getChatMessagesOnUpdate,
     deleteChatMessage,
     editChatMessage,
     likeChatMessage,
-    dbGetCollectionDocuments,
-    dbStoreDocument,
     userLogin,
     userLogoff,
     userIsLoggedIn,
