@@ -3,7 +3,7 @@
     Versionshantering slutprojekt (FE23)
     Grupp 4
 
-    Functionality for building user interface elements.
+    Functionality for showing, creating and editing messages.
 */
 
 import {
@@ -23,11 +23,16 @@ import {
 
 import { showErrorMessage, clearErrorMessages } from './interface.js';
 
+
+const SHOW_MAX_MESSAGES = 30;
+const SHORT_MESSAGE_LIMIT = 200;
+
+
 // Cache fetched user profile images to avoid needless DB queries. 
 let profilePictureCache = {};
 
-// List of available background colors, the property name is part of the CSS-class prefixed by "background-", 
-// i.e. "background-lightgreen". The value is displayed to the user in color picker menus. 
+// Colors (with associated CSS class identifier) available in color pickers
+// Key is the name of a CSS class with a "background-" prefix.
 const messageBackgroundColors = {
     lightgreen: 'Green',
     lightyellow: 'Yellow',
@@ -41,46 +46,8 @@ let messagesSnapshot;
 let boardInitialized = false;
 
 
-// Load up to 30 available messages and listen for changes
-initializeMessageBoard(30);
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// Check if the editor form is currently open for any message.
-function getIsEditingAnyMessage() {
-    if (!userIsLoggedIn()) {
-        return;
-    }
-
-    const messageEditors = document.querySelectorAll(".message-edit-form");
-    if ((messageEditors !== undefined) && (messageEditors.length > 0)) {
-        for (const messageEditor of messageEditors) {
-            if (messageEditor.classList.contains("show")) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// Fetch and build message cards to display on the messageboard
-/*
-function buildMessageBoard(displayMax) {
-    const messageBoard = document.querySelector("#messageboard");
-    messageBoard.innerHTML = "";
-
-    getChatMessages(displayMax).then((messageList) => {
-        if ((messageList !== undefined) && (messageList !== null) && (typeof messageList == "object") && (Object.keys(messageList).length > 0)) {
-            for (const messageId in messageList) {
-                messageBoard.appendChild(createMessageCard(messageList[messageId], messageId));
-            }
-        }
-    });
-}
-*/
+// Load up to 30 available messages and listen for changes when the page loads
+initializeMessageBoard(SHOW_MAX_MESSAGES);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -91,21 +58,19 @@ function initializeMessageBoard(displayMax) {
 
         updatedData.docChanges().forEach((change) => {
             if (change.type === "added") {
+                // Insert new messages first, but not when initially building the board
                 if (boardInitialized) {
                     messageBoard.prepend(createMessageCard(change.doc.data(), change.doc.id));
                 }
                 else {
                     messageBoard.append(createMessageCard(change.doc.data(), change.doc.id));
                 }
-                console.log(" >>>> New message!", change.doc.id, change.doc.data());
             }
             if (change.type === "modified") {
                 updateMessageCard(change.doc.data(), change.doc.id);
-                console.log(" >>>> Modified message!", change.doc.id, change.doc.data());
             }
             if (change.type === "removed") {
                 deleteMessageCard(change.doc.id);
-                console.log(" >>>> Deleted message!", change.doc.id, change.doc.data());
             }
         });
 
@@ -125,23 +90,37 @@ function updateMessageCard(messageData, messageId) {
         const messageText = messageCard.querySelector(".message-text");
         const messageAuthor = messageCard.querySelector(".message-author span");
         const messageLikes = messageCard.querySelector(".message-like-button");
-        const colorsClasses = Object.keys(messageBackgroundColors).map((val) => `background-${val}`);
 
+        const messageEditor = messageCard.querySelector(".message-edit-form");
         const editorText = messageCard.querySelector(".message-edit-text");
         const editorColor = messageCard.querySelector(".message-edit-color");
 
-        colorsClasses.forEach((elem) => { messageCard.classList.remove(elem); });
-        if (getIsValidText(messageData.color)) {
-            messageCard.classList.add(`background-${messageData.color}`);
-        }
+        const messageFullTextBox = messageCard.querySelector(".message-fulltext-box");
+        const messageFullTextButton = messageCard.querySelector(".message-fulltext-button");
+
+        const trimmedText = getTruncatedText(messageData.message, SHORT_MESSAGE_LIMIT);
+
+        messageCard.setAttribute("card-color", messageData.color);
+        setElementBackgroundColor(messageCard, messageData.color);
+
+        messageEditor.setAttribute("card-color", messageData.color);
+        setElementBackgroundColor(messageEditor, messageData.color);
 
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
-        messageText.innerText = ((messageData.message !== undefined) && (messageData.message.length > 0) ? messageData.message : "No message");
         messageLikes.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes : 0})`;
         messageAuthor.innerText = ((messageData.authorname !== undefined) && (messageData.authorname.length > 0) ? messageData.authorname : "No name");
-
-        editorText.value = messageText.innerText;
+        messageText.innerText = (getIsValidText(messageData.message) ? trimmedText : "No message");
+        messageFullTextBox.innerText = (getIsValidText(messageData.message) ? messageData.message : "");
+        editorText.innerHTML = (getIsValidText(messageData.message) ? messageData.message : "");
         editorColor.value = messageData.color;
+
+        // Text is longer than the limit to display directly on the message note, load it in the viewer
+        if (messageData.message.length > SHORT_MESSAGE_LIMIT) {
+            messageFullTextButton.classList.remove("hide");
+        }
+        else {
+            messageFullTextButton.classList.add("hide");
+        }
     }
 }
 
@@ -170,9 +149,8 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
     const messageEditButton = document.createElement("button");
     const messageLikeButton = document.createElement("button");
     const messageEditor = createMessageEditor(messageData, messageId);
-    let messageAuthor;
 
-    // TODO: Trim messages to 50-100 ish characters to show on card, and make popup to show the full text if longer
+    let messageAuthor;
 
     if (isNewMessage) {
         messageDate.innerText = 'New Message';
@@ -182,7 +160,7 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
     }
     else {
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
-        messageText.innerText = ((messageData.message !== undefined) && (messageData.message.length > 0) ? messageData.message : "No message");
+        messageText.innerText = (getIsValidText(messageData.message) ? getTruncatedText(messageData.message, SHORT_MESSAGE_LIMIT) : "No message");
         messageEditButton.innerText = "Edit";
         messageLikeButton.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes : 0})`;
     }
@@ -211,7 +189,6 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
             });
         });
 
-
         // Author name and picture
         messageAuthor = createAuthorSignature(messageData.authorname, './images/profile-test-image.png');
         if ((profilePictureCache[messageData.authorid] !== undefined) && (profilePictureCache[messageData.authorid] !== null)) {
@@ -231,7 +208,6 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 
         }
 
-
         // Edit button if current user is the creator of this message
         if ((messageId !== null) && getIsUserId(messageData.authorid)) {
             messageEditButton.classList.add("show");
@@ -247,6 +223,7 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 
         messageCard.setAttribute("messageid", messageId);
         messageCard.setAttribute("authorid", messageData.authorid);
+        messageCard.setAttribute("card-color", messageData.color);
     }
     else {
         // New Message
@@ -275,6 +252,41 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
         messageEditor,
     );
 
+    // Full message view popup on long messages.
+    if (!isNewMessage) {
+        const messageFullTextDialog = document.createElement("dialog");
+        const messageFullTextBox = document.createElement("div");
+        const messageFullTextButton = document.createElement("button");
+
+        messageFullTextBox.innerText = (getIsValidText(messageData.message) ? messageData.message : "");
+        messageFullTextButton.innerText = "View full";
+
+        messageFullTextDialog.classList.add("message-fulltext-dialog");
+        messageFullTextBox.classList.add("message-fulltext-box");
+        messageFullTextButton.classList.add("message-fulltext-button");
+
+        messageFullTextDialog.id = `dialog-${messageId}`;
+        messageFullTextBox.id = `longtext-${messageId}`;
+
+        messageFooter.appendChild(messageFullTextButton);
+        messageFullTextDialog.appendChild(messageFullTextBox);
+        messageCard.appendChild(messageFullTextDialog);
+
+        if (messageData.message.length <= SHORT_MESSAGE_LIMIT) {
+            messageFullTextButton.classList.add("hide");
+        }
+
+        messageFullTextDialog.addEventListener("click", (event) => {
+            if (event.target.id == event.currentTarget.id) {
+                event.currentTarget.close();
+            }
+        });
+
+        messageFullTextButton.addEventListener("click", (event) => {
+            messageFullTextDialog.showModal();
+        });
+    }
+
     return messageCard;
 }
 
@@ -284,50 +296,23 @@ function newMessageEditorSubmitCallback(event) {
     event.preventDefault();
 
     const formElement = event.currentTarget;
-    const parentElement = formElement.parentElement;
+    const parentElement = document.querySelector("#new-message-card");
 
     if (event.submitter.classList.contains("message-edit-save")) {
         const messageText = formElement.querySelector("textarea").value.trim();
         const messageColor = formElement.querySelector("select").value;
 
-        addChatMessage(messageText, messageColor).then((param) => {
-            console.log("######## NEW MESSAGE #############");
-            const messageEditor = document.querySelector("#new-message-card");
-            console.log("######## NEW MESSAGE #############", messageEditor, param);
-            messageEditor.remove();
-            /*
-            const messageTextBox = parentElement.querySelector(".message-text");
-            const colorsClasses = Object.keys(messageBackgroundColors).map((val) => `background-${val}`);
-
-            messageTextBox.innerText = messageText;
-
-            colorsClasses.forEach((elem) => {
-                formElement.classList.remove(elem);
-                parentElement.classList.remove(elem);
-            });
-
-            formElement.classList.add(`background-${messageColor}`);
-            parentElement.classList.add(`background-${messageColor}`);
-            formElement.classList.remove("show");
-
-            console.log("Message added", messageId);
-            */
+        addChatMessage(messageText, messageColor).then((doc) => {
+            // The database update will handle showing the new message, remove the New Message editor card.
+            document.querySelector("#new-message-card").remove();
         }).catch((error) => {
             console.error("Error adding message:", error);
             showErrorMessage(error, true);
         });
     }
     else if (event.submitter.classList.contains("message-edit-cancel")) {
-        formElement.reset();
-        formElement.classList.remove("show");
-    }
-    else if (event.submitter.classList.contains("message-edit-delete")) {
-        if (confirm("Are you sure you wish to permanently remove this message?")) {
-            deleteChatMessage(messageId).catch((error) => {
-                console.error("Error deleting message:", error);
-                showErrorMessage(error, true);
-            });
-        }
+        // Abort creating new message - close the editor
+        parentElement.remove();
     }
 }
 
@@ -347,20 +332,7 @@ function messageEditorSubmitCallback(event) {
         const messageColor = formElement.querySelector("select").value;
 
         editChatMessage(messageId, messageText, messageColor).then(() => {
-            const messageTextBox = parentElement.querySelector(".message-text");
-            const colorsClasses = Object.keys(messageBackgroundColors).map((val) => `background-${val}`);
-
-            messageTextBox.innerText = messageText;
-
-            colorsClasses.forEach((elem) => {
-                formElement.classList.remove(elem);
-                parentElement.classList.remove(elem);
-            });
-
-            formElement.classList.add(`background-${messageColor}`);
-            parentElement.classList.add(`background-${messageColor}`);
             formElement.classList.remove("show");
-
             console.log("Message edited", messageId);
         }).catch((error) => {
             console.error("Error editing message:", error);
@@ -368,8 +340,23 @@ function messageEditorSubmitCallback(event) {
         });
     }
     else if (event.submitter.classList.contains("message-edit-cancel")) {
+        // Reset form and close editor
         formElement.reset();
         formElement.classList.remove("show");
+
+        // Restore the correct background color if it was changed in the editor
+        for (const colorElement of [formElement, parentElement]) {
+            const backgroundColor = colorElement.getAttribute("card-color");
+            if (getIsValidText(backgroundColor)) {
+                setElementBackgroundColor(colorElement, backgroundColor);
+            }
+        }
+
+        // Reset color picker as well since reset() does not seem to work for it... 
+        const formBackground = formElement.getAttribute("card-color");
+        if (getIsValidText(formBackground)) {
+            formElement.querySelector(".message-edit-color select").value = formBackground;
+        }
     }
     else if (event.submitter.classList.contains("message-edit-delete")) {
         if (confirm("Are you sure you wish to permanently remove this message?")) {
@@ -434,27 +421,42 @@ function createMessageEditor(messageData, messageId) {
     messageEditCancel.classList.add("message-edit-cancel");
     messageEditColor.classList.add("message-edit-color");
 
+    // Disallow empty messages
+    messageEditText.setAttribute("minlength", 3);
+    messageEditText.setAttribute("required", true);
+    messageEditCancel.setAttribute("formnovalidate", true);
+    messageEditDelete.setAttribute("formnovalidate", true);
+
     if (!isNewMessage) {
         messageEditor.setAttribute("messageid", messageId);
         messageEditor.setAttribute("authorid", messageData.authorid);
 
-        messageEditText.innerText = messageData.message;
+        messageEditText.innerHTML = messageData.message;
     }
-    messageEditSave.innerText = "Save";
+    messageEditSave.innerText = (isNewMessage ? "Create" : "Save");
     messageEditDelete.innerText = "Delete";
     messageEditCancel.innerText = "Cancel";
 
     if (!isNewMessage && getIsValidText(messageData.color)) {
         messageEditor.classList.add(`background-${messageData.color}`);
+        messageEditor.setAttribute("card-color", messageData.color);
     }
 
-    messageEditColor.appendChild(createColorPicker(isNewMessage ? "" : messageData.color));
+    messageEditColor.appendChild(createColorPicker(!isNewMessage ? messageData.color : ""));
 
-    messageEditButtons.append(
-        messageEditSave,
-        messageEditCancel,
-        messageEditDelete
-    );
+    if (isNewMessage) {
+        messageEditButtons.append(
+            messageEditSave,
+            messageEditCancel,
+        );
+    }
+    else {
+        messageEditButtons.append(
+            messageEditSave,
+            messageEditCancel,
+            messageEditDelete
+        );
+    }
 
     messageEditor.append(
         messageEditText,
@@ -481,9 +483,39 @@ function createColorPicker(defaultValue) {
         selectItem.classList.add(`background-${bgColor}`);
         selectList.appendChild(selectItem);
     }
+
+    // Update color of editor card to preview the change
+    selectList.addEventListener("change", (event) => {
+        const cardElement = getFirstParentWithClass(event.target, 'message-card');
+        const formElement = getFirstParentWithClass(event.target, 'message-edit-form');
+
+        setElementBackgroundColor(cardElement, event.currentTarget.value);
+        setElementBackgroundColor(formElement, event.currentTarget.value);
+    });
     return selectList;
 }
 
+
+function setElementBackgroundColor(targetElement, newColor) {
+    const colorsClasses = Object.keys(messageBackgroundColors).map((val) => `background-${val}`);
+    colorsClasses.forEach((elem) => {
+        targetElement.classList.remove(elem);
+    });
+
+    if (getIsValidText(newColor)) {
+        targetElement.classList.add(`background-${newColor}`);
+    }
+}
+
+
+function getFirstParentWithClass(startElement, className, maxDepth = 10) {
+    let checkElement = startElement.parentElement;
+    while ((!checkElement.classList.contains(className)) && (maxDepth > 0)) {
+        maxDepth--;
+        checkElement = checkElement.parentElement;
+    }
+    return (checkElement.classList.contains(className) ? checkElement : null);
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
