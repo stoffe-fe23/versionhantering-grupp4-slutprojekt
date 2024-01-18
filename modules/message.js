@@ -20,8 +20,11 @@ import {
 
 import { showErrorMessage, clearErrorMessages } from './interface.js';
 
+// Cache fetched user profile images to avoid needless DB queries. 
 let profilePictureCache = {};
 
+// List of available background colors, the property name is part of the CSS-class prefixed by "background-", 
+// i.e. "background-lightgreen". The value is displayed to the user in color picker menus. 
 const messageBackgroundColors = {
     lightgreen: 'Green',
     lightyellow: 'Yellow',
@@ -30,6 +33,7 @@ const messageBackgroundColors = {
     lightgray: 'Gray'
 };
 
+// Globals used by listener for changes to the "chatmeddelande" DB-collection.
 let messagesSnapshot;
 let boardInitialized = false;
 
@@ -120,6 +124,9 @@ function updateMessageCard(messageData, messageId) {
         const messageLikes = messageCard.querySelector(".message-like-button");
         const colorsClasses = Object.keys(messageBackgroundColors).map((val) => `background-${val}`);
 
+        const editorText = messageCard.querySelector(".message-edit-text");
+        const editorColor = messageCard.querySelector(".message-edit-color");
+
         colorsClasses.forEach((elem) => { messageCard.classList.remove(elem); });
         if (getIsValidText(messageData.color)) {
             messageCard.classList.add(`background-${messageData.color}`);
@@ -129,6 +136,9 @@ function updateMessageCard(messageData, messageId) {
         messageText.innerText = ((messageData.message !== undefined) && (messageData.message.length > 0) ? messageData.message : "No message");
         messageLikes.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes : 0})`;
         messageAuthor.innerText = ((messageData.authorname !== undefined) && (messageData.authorname.length > 0) ? messageData.authorname : "No name");
+
+        editorText.value = messageText.innerText;
+        editorColor.value = messageData.color;
     }
 }
 

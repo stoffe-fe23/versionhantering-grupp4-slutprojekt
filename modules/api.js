@@ -37,7 +37,6 @@ import {
     query,
     orderBy,
     limit,
-    where,
     increment,
     arrayUnion,
     onSnapshot,
@@ -53,11 +52,10 @@ const auth = getAuth();
 const db = getFirestore(app);
 
 
-// Global variables
+// Global variables used for logging on/off users
 let currentUser = auth.currentUser;
 let userLoginCallback;
 let userLogoffCallback;
-let messagesSnapshot;
 
 
 /****************************************************************************************
@@ -319,6 +317,10 @@ async function userSendEmailVerification() {
 // Retrieve up to messageLimit Messages from the database, in falling chronological order.
 // Function returns a Promise with an object as callback parameter containing properties 
 // with Message objects. The property names are the message ID / database document name.
+// 
+// Use this for single requests to fetch a current snapshot of available messages. 
+// Use getChatMessagesOnUpdate() below instead to continually listen for changes within
+// the set of messages. 
 async function getChatMessages(messageLimit = 30) {
     return dbGetCollectionDocuments(db, 'chatmeddelande', ["date", "desc"], messageLimit).then((dbData) => {
         const chatMessages = {};
@@ -335,7 +337,13 @@ async function getChatMessages(messageLimit = 30) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-//  
+// Listen for changes to the messages database and run the specified callback function
+// whenever something has changed on the server. Use this instead of getChatMessages()
+// to keep the message list automatically updated without further requests. 
+//
+// Use getChatMessages() instead to get a current snapshot of messages with no automatic 
+// updates.  
+//  N.B. Only call this function once per page load!
 function getChatMessagesOnUpdate(messageLimit = 30, onUpdateCallback = null) {
     return dbSetCollectionDocumentsListener(db, 'chatmeddelande', ["date", "desc"], messageLimit, onUpdateCallback);
 }
@@ -487,16 +495,6 @@ async function dbSetCollectionDocumentsListener(db, collectionName, sortResultBy
     }
 }
 
-/*
-const fetchQuery = query(collection(db, "cities"), where("state", "==", "CA"));
-const unsubscribe = onSnapshot(fetchQuery, (querySnapshot) => {
-  const cities = [];
-  querySnapshot.forEach((doc) => {
-      cities.push(doc.data().name);
-  });
-  console.log("Current cities in CA: ", cities.join(", "));
-});
-*/
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
