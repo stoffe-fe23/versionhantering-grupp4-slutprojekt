@@ -220,13 +220,22 @@ async function getCurrentUserProfile() {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Retrieve the profile picture of the specified user.
 async function getUserPicture(userId) {
+
+    if (!userIsLoggedIn()) {
+        return "./images/profile-test-image.png";
+    }
+
+    if ((userId === undefined) || (userId === null)) {
+        userId = currentUser.uid;
+    }
+
     const docProfile = await getDoc(doc(db, "userprofiles", userId));
     if (docProfile.exists()) {
         const docProfileData = docProfile.data();
         if (getIsValidText(docProfileData.picture)) {
             return docProfileData.picture;
         }
-        return "";
+        return "./images/profile-test-image.png";
     }
 }
 

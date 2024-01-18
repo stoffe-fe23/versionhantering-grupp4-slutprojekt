@@ -15,6 +15,7 @@
     position: relative;
     display: grid;
     width: 300px;
+    min-height: 250px;
     background-color: var(--messageCardBackgroundDefault);
     color: black;
     grid-template-areas:
@@ -112,6 +113,14 @@
     box-shadow: 3px 3px 10px rgba(0,0,0, 0.3);
 }
 
+
+#message-new-wrapper {
+    display: none;
+}
+
+#message-new-wrapper.show {
+    display: block;
+}
 
 
 

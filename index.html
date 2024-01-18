@@ -23,12 +23,11 @@
                 <li>Contact us</li>
             </ul>
         </nav>
-        <button id="user-menu-button"><img src="./images/profile-test-image.png">User Menu</button>
+        <button id="user-menu-button"><img src="./images/profile-test-image.png"><span>User Menu</span></button>
     </header>
     <main>
         <div id="errors"></div>
         <section id="messages">
-            <h2>Gritsquare</h2>
             <!-- Box displaying messages -->
             <div id="message-new-wrapper"><button id="message-new-button">New Message</button></div>
             <div id="messageboard"></div>
@@ -45,36 +44,42 @@
     </footer>
     <!-- Popup dialog for logging in or creating a new user account -->
     <dialog id="user-login-dialog">
-        <!-- Login form shown if the visitor is not logged in -->
-        <form id="login-form">
-            <div><label for="login-email">E-mail address:</label><input type="email" id="login-email" name="login-email" placeholder="your@email.address" required></div>
-            <div><label for="login-password">Password:</label><input type="password" id="login-password" name="login-password" required></div>
-            <button id="login-button">Log in</button>
-        </form>
-        <!-- Info/logoff bar shown instead of login form if the user is currently logged in -->
-        <div id="logged-in">
-            <span>Current user:</span><span><span id="logged-in-email"></span><span id="logged-in-last"></span></span>
-            <button id="logoff-button">Log off</button><div id="update-user-wrapper"><button id="update-user">Change name</button></div>
+        <div id="user-dialog-wrapper">
+            <!-- USER NOT LOGGED IN: Login form -->
+            
+            <form id="login-form">
+                <div><h2>Log in</h2></div>
+                <div><label for="login-email">E-mail address:</label><input type="email" id="login-email" name="login-email" placeholder="your@email.address" required></div>
+                <div><label for="login-password">Password:</label><input type="password" id="login-password" name="login-password" required></div>
+                <button id="login-button">Log in</button>
+            </form>
+            <!-- USER LOGGED IN: User info and logoff button -->
+            <div id="logged-in">
+                <span>Current user:</span><span><span id="logged-in-email"></span><span id="logged-in-last"></span></span>
+                <button id="logoff-button">Log off</button><div id="update-user-wrapper"><button id="update-user">User profile</button></div>
+            </div>
+            <!-- USER NOT LOGGED IN: Form for creating a new user -->
+            <form id="new-user-form">
+                <h2>Create new user</h2>
+                <div><label for="new-user-name">Display name:</label><input type="text" id="new-user-name" name="new-user-name" placeholder="Your name" maxlength="20" required></div>
+                <div><label for="new-user-email">E-mail address:</label><input type="email" id="new-user-email" name="new-user-email" placeholder="your@email.address" required></div>
+                <div><label for="new-user-password">Password:</label><input type="password" id="new-user-password" name="new-user-password" required></div>
+                <div><label for="new-user-password-again">Confirm password:</label><input type="password" id="new-user-password-again" name="new-user-password-again" required></div>
+                <button id="new-user-button">Create account</button>
+            </form>
         </div>
-        <!-- Basic form for creating a new user -->
-        <form id="new-user-form">
-            <h2>Create new user</h2>
-            <div><label for="new-user-name">Display name:</label><input type="text" id="new-user-name" name="new-user-name" placeholder="Your name" maxlength="20" required></div>
-            <div><label for="new-user-email">E-mail address:</label><input type="email" id="new-user-email" name="new-user-email" placeholder="your@email.address" required></div>
-            <div><label for="new-user-password">Password:</label><input type="password" id="new-user-password" name="new-user-password" required></div>
-            <div><label for="new-user-password-again">Confirm password:</label><input type="password" id="new-user-password-again" name="new-user-password-again" required></div>
-            <button id="new-user-button">Create account</button>
-        </form>
     </dialog>
     <!-- Popup dialog for showing the full text of a very long message -->
-    <dialog id="message-long-text-dialog"></dialog>
+    <dialog id="message-long-text-dialog"><div id="message-long-text-wrapper"></div></dialog>
     <!-- Popup dialog for showing/editing the current user's profile -->
     <dialog id="user-profile-dialog">
-        <form id="change-name-form" method="dialog" autocomplete="off">
-            <label for="change-name-input">Your name:</label>
-            <input type="text" id="change-name-input" value="" minlength="2" maxlength="20" required />
-            <button id="change-name-submit">Save</button>
-        </form>
+        <div id="user-profile-wrapper">
+            <form id="change-name-form" method="dialog" autocomplete="off">
+                <label for="change-name-input">Your name:</label>
+                <input type="text" id="change-name-input" value="" minlength="2" maxlength="20" required />
+                <button id="change-name-submit">Save</button>
+            </form>
+        </div>
     </dialog>
 </body>
 </html>

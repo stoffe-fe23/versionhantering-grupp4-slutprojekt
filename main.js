@@ -17,6 +17,7 @@ import {
     userUpdateProfile,
     setUserLoginCallback,
     setUserLogoffCallback,
+    getUserPicture,
     userDelete,
     userSetPassword,
     userSendEmailVerification
@@ -34,43 +35,53 @@ setUserLogoffCallback(userLoggedOffCallback);
 
 
 // EXAMPLE: Build color picker menu for "New Message" form
-createNewMessageColorPicker();
+// createNewMessageColorPicker();
+
+
+
+// Open the login/new user dialog box
+document.querySelector("#user-menu-button").addEventListener("click", (event) => {
+    const loginDialog = document.querySelector("#user-login-dialog");
+    loginDialog.showModal();
+});
+
+// Close the login dialog when clicking outside it
+document.querySelector("#user-login-dialog").addEventListener("click", (event) => {
+    if (event.target.id == event.currentTarget.id) {
+        event.currentTarget.close();
+    }
+});
+
+// Close the login dialog when pressing the ESC key
+document.querySelector("#user-login-dialog").addEventListener("keyup", (event) => {
+    if (event.key == "Escape") {
+        event.currentTarget.close();
+    }
+});
+
 
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // EXAMPLE: Create a new Message
-document.querySelector("#store-form").addEventListener("submit", (event) => {
+/* document.querySelector("#store-form").addEventListener("submit", (event) => {
     event.preventDefault();
     if (userIsLoggedIn()) {
         const messageInput = document.querySelector("#store-value");
         const messageColor = document.querySelector("#store-color").value.trim();
 
         addChatMessage(messageInput.value.trim(), messageColor).then((newDoc) => {
-            refreshMessages();
             messageInput.value = '';
             messageInput.focus();
         }).catch((error) => {
             showErrorMessage(error);
         });
     }
-});
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Manually refresh the message list
-document.querySelector("#fetch-values").addEventListener("click", (event) => {
-    refreshMessages();
-});
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Fetch the 20 most recent Messages from the database and display them
-function refreshMessages() {
-    // Removed: Should be updating automatically now, no need for manual refressh.
-}
+}); */
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Login form
+// Login form
 document.querySelector("#login-form").addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -78,7 +89,9 @@ document.querySelector("#login-form").addEventListener("submit", (event) => {
         const loginName = document.querySelector("#login-email").value.trim();
         const loginPassword = document.querySelector("#login-password").value.trim();
 
-        userLogin(loginName, loginPassword).catch((error) => {
+        userLogin(loginName, loginPassword).then(() => {
+            document.querySelector("#user-login-dialog").close();
+        }).catch((error) => {
             /*
                 If login fails errorCode may be set to one of the following:
                  - auth/invalid-email: Thrown if the email address is not valid.
@@ -99,10 +112,12 @@ document.querySelector("#login-form").addEventListener("submit", (event) => {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Log off button
+// Log off button
 document.querySelector("#logoff-button").addEventListener("click", (event) => {
     if (userIsLoggedIn()) {
-        userLogoff();
+        userLogoff().then(() => {
+            document.querySelector("#user-login-dialog").close();
+        });
     }
 });
 
@@ -141,14 +156,28 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Change user name button
+// User Profile button
 document.querySelector("#update-user").addEventListener("click", (event) => {
     if (userIsLoggedIn()) {
         const inputField = document.querySelector("#change-name-input");
         inputField.value = getCurrentUserName();
-        inputField.focus();
-        inputField.select();
-        document.querySelector("#change-name-dialog").showModal();
+
+        document.querySelector("#user-login-dialog").close();
+        document.querySelector("#user-profile-dialog").showModal();
+    }
+});
+
+// Close the user profile dialog when clicking outside it
+document.querySelector("#user-profile-dialog").addEventListener("click", (event) => {
+    if (event.target.id == event.currentTarget.id) {
+        event.currentTarget.close();
+    }
+});
+
+// Close the user profile  dialog when pressing the ESC key
+document.querySelector("#user-profile-dialog").addEventListener("keyup", (event) => {
+    if (event.key == "Escape") {
+        event.currentTarget.close();
     }
 });
 
@@ -163,19 +192,18 @@ document.querySelector("#change-name-form").addEventListener("submit", (event) =
 
         userUpdateProfile(profileData).then((param) => {
             getCurrentUserProfile().then((currUser) => {
+                const userName = getCurrentUserName();
+                document.querySelector("#logged-in-email").innerHTML = `${userName} <span>(${currUser.email})</span>`;
+                document.querySelector("#user-menu-button span").innerText = userName;
                 console.log("PROFILE UPDATED", currUser, param);
-                document.querySelector("#change-name-dialog").close();
-                document.querySelector("#logged-in-email").innerHTML = `${getCurrentUserName()} <span>(${currUser.email})</span>`;
             });
         });
     }
 });
 
 
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: This function is run when user login is completed
+// USER LOG IN: This function is run when user login is completed
 function userLoggedInCallback(currUser) {
     console.log("ANV INLOGG", currUser);
 
@@ -189,13 +217,20 @@ function userLoggedInCallback(currUser) {
         userDate.innerText = `last login: ${currUser.lastLogin}`;
         loginForm.classList.remove("show");
         logoutBox.classList.add("show");
-        showMessageForm(true);
+
+        document.querySelector("#user-menu-button span").innerText = getCurrentUserName();
+        getUserPicture().then((userPicture) => {
+            document.querySelector("#user-menu-button img").src = userPicture;
+        });
+
+
+        showLoggedInUserElements(true);
     });
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: This function is run when user logoff is concluded.
+// USER LOG OFF: This function is run when user logoff is concluded.
 function userLoggedOffCallback() {
     const loginForm = document.querySelector("#login-form");
     const logoutBox = document.querySelector("#logged-in");
@@ -206,28 +241,28 @@ function userLoggedOffCallback() {
     userDate.innerText = '';
     loginForm.classList.add("show");
     logoutBox.classList.remove("show");
-    showMessageForm(false);
+
+    document.querySelector("#user-menu-button span").innerText = "Log in";
+    document.querySelector("#user-menu-button img").src = './images/profile-test-image.png';
+
+    showLoggedInUserElements(false);
     console.log("ANV. UTLOGG");
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Toggle visible components depending on if a user is logged on or not
-function showMessageForm(isVisible) {
-    const storeForm = document.querySelector("#store-value-wrapper");
-    const storeButton = document.querySelector("#store-button");
-    const nameButton = document.querySelector("#update-user");
-    const userUserForm = document.querySelector("#new-user-form");
+// Toggle visible interface components depending on if a user is logged on or not
+function showLoggedInUserElements(isLoggedOn) {
+    const newMessageButton = document.querySelector("#message-new-wrapper");
+    const newUserForm = document.querySelector("#new-user-form");
 
-    storeButton.disabled = !isVisible;
-    nameButton.disabled = !isVisible;
-    if (isVisible) {
-        storeForm.classList.add("show");
-        userUserForm.classList.remove("show");
+    if (isLoggedOn) {
+        newUserForm.classList.remove("show");
+        newMessageButton.classList.add("show");
     }
     else {
-        storeForm.classList.remove("show");
-        userUserForm.classList.add("show");
+        newUserForm.classList.add("show");
+        newMessageButton.classList.remove("show");
     }
 
 }
@@ -235,9 +270,9 @@ function showMessageForm(isVisible) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // EXAMPLE: Create select menu with color picker for message background colors
-function createNewMessageColorPicker() {
+/* function createNewMessageColorPicker() {
     const targetContainer = document.querySelector("#store-color-wrapper");
     const colorPickerElem = createColorPicker();
     colorPickerElem.id = 'store-color';
     targetContainer.appendChild(colorPickerElem);
-}
+} */
