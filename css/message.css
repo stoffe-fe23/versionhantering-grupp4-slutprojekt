@@ -1,0 +1,180 @@
+/*
+    Versionshantering slutprojekt (FE23)
+    Grupp 4
+
+    Styles for showing and editing messages.
+*/
+
+:root {
+    --messageCardBackgroundDefault: lightgreen;
+    --messageFont: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+    --messageTextSize: 0.9rem;
+}
+
+.message-card {
+    position: relative;
+    display: grid;
+    width: 300px;
+    background-color: var(--messageCardBackgroundDefault);
+    color: black;
+    grid-template-areas:
+        "message-date"    
+        "message-text"
+        "message-author"
+        "message-footer";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 5fr auto;
+    align-items: stretch;
+    justify-content: center;
+    justify-items: center;
+    gap: 0;
+    padding: 0;
+}
+
+.message-date {
+    grid-area: message-date;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    font-size: 0.9em;
+    background-color: rgba(0,0,0,0.75);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0px 0px 12px 12px;
+}
+
+.message-text {
+    grid-area: message-text;
+    padding: 0.5rem 1.5rem;
+    font-size: var(--messageTextSize);
+}
+
+.message-author {
+    grid-area: message-author;
+    font-style: italic;
+    font-size: 0.8em;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.75rem 0 0.5rem 0;
+    padding: 0.25rem 0.75rem 0 0.75rem;
+}
+
+.message-author img {
+    max-width: 42px;
+    max-height: 42px;
+}
+
+.message-author span {
+    font-size: 1.1em;
+}
+
+.message-footer {
+    grid-area: message-footer;
+    background-color: rgba(0,0,0,0.5);
+    padding: 0.25rem 0.75rem;
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.message-like-button {
+    display: block;
+    border: 0;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+.message-edit-button {
+    display: none;
+    border: 0;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+.message-edit-button.show {
+    display: block;
+}
+
+#messageboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 1rem 0.5rem 3rem 0.5rem;
+}
+
+#messageboard article {
+    flex: 0 1 300px;
+    box-shadow: 3px 3px 10px rgba(0,0,0, 0.3);
+}
+
+
+
+
+
+.message-edit-form {
+    grid-area: message-text;
+    display: none;
+    flex-direction: column; 
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    min-height: 250px;
+    gap: 0.5rem;
+    background-color: var(--messageCardBackgroundDefault);
+    color: black;
+}
+
+.message-edit-form.show {
+    display: flex;
+}
+
+.message-edit-text {
+    flex: 1 1 100%;
+    resize: none;
+    width: 100%;
+    height: 100%;   
+    padding: 0.5rem 1.2rem;
+    background-color: transparent;
+    font-family: var(--messageFont);
+    font-size: var(--messageTextSize);
+}
+
+.message-edit-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.message-edit-color {
+    width: 100%;
+}
+
+.message-edit-color select {
+    width: 100%;
+}
+
+.background-lightgreen {
+    background-color: rgb(144,238,144);
+}
+
+.background-lightyellow {
+    background-color: rgb(255,255,224);
+}
+
+.background-lightblue {
+    background-color: rgb(173,216,230);
+}
+
+.background-lightpink {
+    background-color: rgb(255,182,193);
+}
+
+.background-lightgray {
+    background-color: rgb(211,211,211);
+}

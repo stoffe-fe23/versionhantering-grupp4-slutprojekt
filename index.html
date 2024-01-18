@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+    Versionshantering slutprojekt (FE23)
+    Grupp 4
+
+    Main page of the site.
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gritsquare - Grupp 4</title>
+    <script type="module" src="./main.js" type="module"></script>
+    <link rel="stylesheet" href="./css/mainstyle.css">
+    <link rel="stylesheet" href="./css/message.css">
+</head>
+<body>
+    <header>
+        <!-- TODO: Login form shown if the visitor is not logged in: Move or redesign -->
+        <form id="login-form">
+            <div><label for="login-email">E-mail address:</label><input type="email" id="login-email" name="login-email" placeholder="your@email.address" required></div>
+            <div><label for="login-password">Password:</label><input type="password" id="login-password" name="login-password" required></div>
+            <button id="login-button">Log in</button>
+        </form>
+        <!-- TODO: Info/logoff bar shown instead of login form if the user is currently logged in: Move or redesign -->
+        <div id="logged-in">
+            <span>Current user:</span><span><span id="logged-in-email"></span><span id="logged-in-last"></span></span>
+            <button id="logoff-button">Log off</button><div id="update-user-wrapper"><button id="update-user">Change name</button></div>
+        </div>
+    </header>
+    <main>
+        <div id="errors"></div>
+        <section id="messages">
+            <h2>Gritsquare</h2>
+            <!-- Box displaying messages -->
+            <div id="messageboard"></div>
+        </section>
+        
+        <div id="store-form-wrapper">
+            <div id="button-bar"><button id="fetch-values">Refresh Messages</button></div>
+            <form id="store-form">
+                <div id="store-value-wrapper"><label for="store-value">Add message</label><input type="text" id="store-value" name="store-value">
+                    <div id="store-color-wrapper"><label for="store-color">Note color</label></div>
+                    <button id="store-button">Save!</button>
+                </div>
+            </form>
+            
+        </div>
+        <!-- TODO: Basic form for creating a new user: Move or replace this -->
+        <form id="new-user-form">
+            <h2>Create new user</h2>
+            <div><label for="new-user-name">Display name:</label><input type="text" id="new-user-name" name="new-user-name" placeholder="Your name" maxlength="20" required></div>
+            <div><label for="new-user-email">E-mail address:</label><input type="email" id="new-user-email" name="new-user-email" placeholder="your@email.address" required></div>
+            <div><label for="new-user-password">Password:</label><input type="password" id="new-user-password" name="new-user-password" required></div>
+            <div><label for="new-user-password-again">Confirm password:</label><input type="password" id="new-user-password-again" name="new-user-password-again" required></div>
+            <button id="new-user-button">Create account</button>
+        </form>
+        
+    </main>
+    <!-- TODO: Popup dialog for changing display name. Move to Edit Profile instead? -->
+    <dialog id="change-name-dialog">
+        <form id="change-name-form" method="dialog" autocomplete="off">
+            <label for="change-name-input">Your name:</label>
+            <input type="text" id="change-name-input" value="" minlength="2" maxlength="20" required />
+            <button id="change-name-submit">Save</button>
+        </form>
+    </dialog>
+</body>
+</html>
