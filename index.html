@@ -16,37 +16,47 @@
 </head>
 <body>
     <header>
-        <!-- TODO: Login form shown if the visitor is not logged in: Move or redesign -->
-        <form id="login-form">
-            <div><label for="login-email">E-mail address:</label><input type="email" id="login-email" name="login-email" placeholder="your@email.address" required></div>
-            <div><label for="login-password">Password:</label><input type="password" id="login-password" name="login-password" required></div>
-            <button id="login-button">Log in</button>
-        </form>
-        <!-- TODO: Info/logoff bar shown instead of login form if the user is currently logged in: Move or redesign -->
-        <div id="logged-in">
-            <span>Current user:</span><span><span id="logged-in-email"></span><span id="logged-in-last"></span></span>
-            <button id="logoff-button">Log off</button><div id="update-user-wrapper"><button id="update-user">Change name</button></div>
-        </div>
+        <nav>
+            <ul>
+                <li>GritSquare</li>
+                <li>About us</li>
+                <li>Contact us</li>
+            </ul>
+        </nav>
+        <button id="user-menu-button"><img src="./images/profile-test-image.png">User Menu</button>
     </header>
     <main>
         <div id="errors"></div>
         <section id="messages">
             <h2>Gritsquare</h2>
             <!-- Box displaying messages -->
+            <div id="message-new-wrapper"><button id="message-new-button">New Message</button></div>
             <div id="messageboard"></div>
+        </section>    
+        <section id="about">
+            <!-- About Us Page -->
         </section>
-        
-        <div id="store-form-wrapper">
-            <div id="button-bar"><button id="fetch-values">Refresh Messages</button></div>
-            <form id="store-form">
-                <div id="store-value-wrapper"><label for="store-value">Add message</label><input type="text" id="store-value" name="store-value">
-                    <div id="store-color-wrapper"><label for="store-color">Note color</label></div>
-                    <button id="store-button">Save!</button>
-                </div>
-            </form>
-            
+        <section id="contact">
+            <!-- Contact Us page -->
+        </section>
+    </main>
+    <footer>
+        Sidfot!
+    </footer>
+    <!-- Popup dialog for logging in or creating a new user account -->
+    <dialog id="user-login-dialog">
+        <!-- Login form shown if the visitor is not logged in -->
+        <form id="login-form">
+            <div><label for="login-email">E-mail address:</label><input type="email" id="login-email" name="login-email" placeholder="your@email.address" required></div>
+            <div><label for="login-password">Password:</label><input type="password" id="login-password" name="login-password" required></div>
+            <button id="login-button">Log in</button>
+        </form>
+        <!-- Info/logoff bar shown instead of login form if the user is currently logged in -->
+        <div id="logged-in">
+            <span>Current user:</span><span><span id="logged-in-email"></span><span id="logged-in-last"></span></span>
+            <button id="logoff-button">Log off</button><div id="update-user-wrapper"><button id="update-user">Change name</button></div>
         </div>
-        <!-- TODO: Basic form for creating a new user: Move or replace this -->
+        <!-- Basic form for creating a new user -->
         <form id="new-user-form">
             <h2>Create new user</h2>
             <div><label for="new-user-name">Display name:</label><input type="text" id="new-user-name" name="new-user-name" placeholder="Your name" maxlength="20" required></div>
@@ -55,10 +65,11 @@
             <div><label for="new-user-password-again">Confirm password:</label><input type="password" id="new-user-password-again" name="new-user-password-again" required></div>
             <button id="new-user-button">Create account</button>
         </form>
-        
-    </main>
-    <!-- TODO: Popup dialog for changing display name. Move to Edit Profile instead? -->
-    <dialog id="change-name-dialog">
+    </dialog>
+    <!-- Popup dialog for showing the full text of a very long message -->
+    <dialog id="message-long-text-dialog"></dialog>
+    <!-- Popup dialog for showing/editing the current user's profile -->
+    <dialog id="user-profile-dialog">
         <form id="change-name-form" method="dialog" autocomplete="off">
             <label for="change-name-input">Your name:</label>
             <input type="text" id="change-name-input" value="" minlength="2" maxlength="20" required />
