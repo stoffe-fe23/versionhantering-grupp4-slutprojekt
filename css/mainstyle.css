@@ -49,6 +49,7 @@ header {
 #user-menu-button img {
     max-width: 80px;
     max-height: 80px;
+    border-radius: 50%;
 }
 
 main {

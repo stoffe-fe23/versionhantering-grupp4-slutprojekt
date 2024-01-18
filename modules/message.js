@@ -14,8 +14,11 @@ import {
     getChatMessagesOnUpdate,
     deleteChatMessage,
     editChatMessage,
+    addChatMessage,
     likeChatMessage,
     getIsValidText,
+    getCurrentUserProfile,
+    getCurrentUserName,
 } from './api.js';
 
 import { showErrorMessage, clearErrorMessages } from './interface.js';
@@ -159,7 +162,7 @@ function deleteMessageCard(messageId) {
 // EXAMPLE: Build and return a Message HTML/DOM-element
 //          dataItem is an object containing the message data
 //          docName is the message-ID (i.e. document name in the database) used to uniquely identify this message
-function createMessageCard(messageData, messageId = null) {
+function createMessageCard(messageData, messageId, isNewMessage = false) {
     const messageCard = document.createElement("article");
     const messageDate = document.createElement("div");
     const messageText = document.createElement("div");
@@ -167,13 +170,22 @@ function createMessageCard(messageData, messageId = null) {
     const messageEditButton = document.createElement("button");
     const messageLikeButton = document.createElement("button");
     const messageEditor = createMessageEditor(messageData, messageId);
+    let messageAuthor;
 
     // TODO: Trim messages to 50-100 ish characters to show on card, and make popup to show the full text if longer
 
-    messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
-    messageText.innerText = ((messageData.message !== undefined) && (messageData.message.length > 0) ? messageData.message : "No message");
-    messageEditButton.innerText = "Edit";
-    messageLikeButton.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes : 0})`;
+    if (isNewMessage) {
+        messageDate.innerText = 'New Message';
+        messageText.innerText = '';
+        messageEditButton.classList.add("hide");
+        messageLikeButton.classList.add("hide");
+    }
+    else {
+        messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
+        messageText.innerText = ((messageData.message !== undefined) && (messageData.message.length > 0) ? messageData.message : "No message");
+        messageEditButton.innerText = "Edit";
+        messageLikeButton.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes : 0})`;
+    }
 
     messageCard.classList.add("message-card");
     messageDate.classList.add("message-date");
@@ -182,53 +194,73 @@ function createMessageCard(messageData, messageId = null) {
     messageEditButton.classList.add("message-edit-button");
     messageLikeButton.classList.add("message-like-button");
 
-    // Custom background-color
-    if (getIsValidText(messageData.color)) {
-        messageCard.classList.add(`background-${messageData.color}`);
-    }
-
-    // Like button
-    messageLikeButton.addEventListener("click", (event) => {
-        likeChatMessage(messageId).then(() => {
-            messageLikeButton.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes + 1 : 1})`;
-            console.log("MESSAGE LIKED", messageId);
-        }).catch((error) => {
-            console.error("MESSAGE LIKE ERROR", error);
-            showErrorMessage(error, true);
-        });
-    });
-
-    // Author name and picture
-    const messageAuthor = createAuthorSignature(messageData.authorname, './images/profile-test-image.png');
-    if ((profilePictureCache[messageData.authorid] !== undefined) && (profilePictureCache[messageData.authorid] !== null)) {
-        const userPicture = profilePictureCache[messageData.authorid];
-        if (userPicture.length > 0) {
-            setAuthorSignaturePicture(messageAuthor, userPicture);
+    if (!isNewMessage) {
+        // Custom background-color
+        if (getIsValidText(messageData.color)) {
+            messageCard.classList.add(`background-${messageData.color}`);
         }
 
-    }
-    else {
-        getUserPicture(messageData.authorid).then((userPicture) => {
-            if (userPicture.length > 0) {
-                profilePictureCache[messageData.authorid] = userPicture;
-                setAuthorSignaturePicture(messageAuthor, userPicture);
-            }
+        // Like button
+        messageLikeButton.addEventListener("click", (event) => {
+            likeChatMessage(messageId).then(() => {
+                messageLikeButton.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes + 1 : 1})`;
+                console.log("MESSAGE LIKED", messageId);
+            }).catch((error) => {
+                console.error("MESSAGE LIKE ERROR", error);
+                showErrorMessage(error, true);
+            });
         });
 
+
+        // Author name and picture
+        messageAuthor = createAuthorSignature(messageData.authorname, './images/profile-test-image.png');
+        if ((profilePictureCache[messageData.authorid] !== undefined) && (profilePictureCache[messageData.authorid] !== null)) {
+            const userPicture = profilePictureCache[messageData.authorid];
+            if (userPicture.length > 0) {
+                setAuthorSignaturePicture(messageAuthor, userPicture);
+            }
+
+        }
+        else {
+            getUserPicture(messageData.authorid).then((userPicture) => {
+                if (userPicture.length > 0) {
+                    profilePictureCache[messageData.authorid] = userPicture;
+                    setAuthorSignaturePicture(messageAuthor, userPicture);
+                }
+            });
+
+        }
+
+
+        // Edit button if current user is the creator of this message
+        if ((messageId !== null) && getIsUserId(messageData.authorid)) {
+            messageEditButton.classList.add("show");
+        }
+
+        // Hide/show the message editor
+        messageEditButton.addEventListener("click", (event) => {
+            messageEditor.classList.toggle("show");
+        });
+
+        // Message editor
+        messageEditor.addEventListener("submit", messageEditorSubmitCallback);
+
+        messageCard.setAttribute("messageid", messageId);
+        messageCard.setAttribute("authorid", messageData.authorid);
     }
+    else {
+        // New Message
+        messageAuthor = createAuthorSignature(getCurrentUserName(), './images/profile-test-image.png');
+        getUserPicture().then((userPicture) => {
+            setAuthorSignaturePicture(messageAuthor, userPicture);
+        });
 
-    // Edit button if current user is the creator of this message
-    if ((messageId !== null) && getIsUserId(messageData.authorid)) {
-        messageEditButton.classList.add("show");
+        messageEditor.classList.add("show");
+        messageEditor.id = "new-message-editor";
+        messageCard.id = "new-message-card";
+
+        messageEditor.addEventListener("submit", newMessageEditorSubmitCallback);
     }
-
-    // Hide/show the message editor
-    messageEditButton.addEventListener("click", (event) => {
-        messageEditor.classList.toggle("show");
-    });
-
-    // Message editor
-    messageEditor.addEventListener("submit", messageEditorSubmitCallback);
 
     messageFooter.append(
         messageEditButton,
@@ -243,10 +275,60 @@ function createMessageCard(messageData, messageId = null) {
         messageEditor,
     );
 
-    messageCard.setAttribute("messageid", messageId);
-    messageCard.setAttribute("authorid", messageData.authorid);
-
     return messageCard;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Event callback for submitting the new Message form
+function newMessageEditorSubmitCallback(event) {
+    event.preventDefault();
+
+    const formElement = event.currentTarget;
+    const parentElement = formElement.parentElement;
+
+    if (event.submitter.classList.contains("message-edit-save")) {
+        const messageText = formElement.querySelector("textarea").value.trim();
+        const messageColor = formElement.querySelector("select").value;
+
+        addChatMessage(messageText, messageColor).then((param) => {
+            console.log("######## NEW MESSAGE #############");
+            const messageEditor = document.querySelector("#new-message-card");
+            console.log("######## NEW MESSAGE #############", messageEditor, param);
+            messageEditor.remove();
+            /*
+            const messageTextBox = parentElement.querySelector(".message-text");
+            const colorsClasses = Object.keys(messageBackgroundColors).map((val) => `background-${val}`);
+
+            messageTextBox.innerText = messageText;
+
+            colorsClasses.forEach((elem) => {
+                formElement.classList.remove(elem);
+                parentElement.classList.remove(elem);
+            });
+
+            formElement.classList.add(`background-${messageColor}`);
+            parentElement.classList.add(`background-${messageColor}`);
+            formElement.classList.remove("show");
+
+            console.log("Message added", messageId);
+            */
+        }).catch((error) => {
+            console.error("Error adding message:", error);
+            showErrorMessage(error, true);
+        });
+    }
+    else if (event.submitter.classList.contains("message-edit-cancel")) {
+        formElement.reset();
+        formElement.classList.remove("show");
+    }
+    else if (event.submitter.classList.contains("message-edit-delete")) {
+        if (confirm("Are you sure you wish to permanently remove this message?")) {
+            deleteChatMessage(messageId).catch((error) => {
+                console.error("Error deleting message:", error);
+                showErrorMessage(error, true);
+            });
+        }
+    }
 }
 
 
@@ -342,6 +424,8 @@ function createMessageEditor(messageData, messageId) {
     const messageEditCancel = document.createElement("button");
     const messageEditColor = document.createElement("div");
 
+    const isNewMessage = ((messageId === undefined) || (messageId === null) || (messageData === undefined) || (messageData == null));
+
     messageEditor.classList.add("message-edit-form");
     messageEditText.classList.add("message-edit-text");
     messageEditButtons.classList.add("message-edit-buttons");
@@ -350,19 +434,21 @@ function createMessageEditor(messageData, messageId) {
     messageEditCancel.classList.add("message-edit-cancel");
     messageEditColor.classList.add("message-edit-color");
 
-    messageEditor.setAttribute("messageid", messageId);
-    messageEditor.setAttribute("authorid", messageData.authorid);
+    if (!isNewMessage) {
+        messageEditor.setAttribute("messageid", messageId);
+        messageEditor.setAttribute("authorid", messageData.authorid);
 
-    messageEditText.innerText = messageData.message;
+        messageEditText.innerText = messageData.message;
+    }
     messageEditSave.innerText = "Save";
     messageEditDelete.innerText = "Delete";
     messageEditCancel.innerText = "Cancel";
 
-    if (getIsValidText(messageData.color)) {
+    if (!isNewMessage && getIsValidText(messageData.color)) {
         messageEditor.classList.add(`background-${messageData.color}`);
     }
 
-    messageEditColor.appendChild(createColorPicker(messageData.color));
+    messageEditColor.appendChild(createColorPicker(isNewMessage ? "" : messageData.color));
 
     messageEditButtons.append(
         messageEditSave,

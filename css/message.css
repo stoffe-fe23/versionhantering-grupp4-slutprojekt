@@ -11,6 +11,10 @@
     --messageTextSize: 0.9rem;
 }
 
+.hide {
+    display: none !important;
+}
+
 .message-card {
     position: relative;
     display: grid;
@@ -65,6 +69,7 @@
 .message-author img {
     max-width: 42px;
     max-height: 42px;
+    border-radius: 50%;
 }
 
 .message-author span {
@@ -100,6 +105,38 @@
     display: block;
 }
 
+#messages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#message-new-wrapper {
+    display: none;
+    width: 100%;
+}
+
+#message-new-wrapper.show {
+    display: flex;
+}
+
+#message-new-button {
+    height: 70px;
+    width: 70px;
+    border: 0px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: 2rem;
+    box-shadow: 3px 3px 10px rgba(0,0,0, 0.3);
+    background-color: orange;
+}
+
+#message-new-button:hover {
+    background-color: yellow;
+    box-shadow: 0 0 20px yellow, 0 0 40px orange;
+}
+
+
 #messageboard {
     display: flex;
     flex-wrap: wrap;
@@ -112,17 +149,6 @@
     flex: 0 1 300px;
     box-shadow: 3px 3px 10px rgba(0,0,0, 0.3);
 }
-
-
-#message-new-wrapper {
-    display: none;
-}
-
-#message-new-wrapper.show {
-    display: block;
-}
-
-
 
 
 .message-edit-form {

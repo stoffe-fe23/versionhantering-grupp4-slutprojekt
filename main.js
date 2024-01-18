@@ -24,7 +24,7 @@ import {
 } from './modules/api.js';
 
 import { showErrorMessage, clearErrorMessages } from './modules/interface.js';
-import { createColorPicker } from './modules/message.js';
+import { createColorPicker, createMessageCard } from './modules/message.js';
 
 
 // Configure function to run when a user has logged in
@@ -266,6 +266,18 @@ function showLoggedInUserElements(isLoggedOn) {
     }
 
 }
+
+
+document.querySelector("#message-new-button").addEventListener("click", (event) => {
+    event.preventDefault();
+
+    const messageBoard = document.querySelector("#messageboard");
+    const newMessageForm = createMessageCard(null, null, true);
+    const newMessageInput = newMessageForm.querySelector(".message-edit-text");
+
+    messageBoard.prepend(newMessageForm);
+    newMessageInput.focus();
+});
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
