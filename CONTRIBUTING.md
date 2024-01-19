@@ -3,8 +3,8 @@
 
 ## Allmänt:
 - Använd om möjligt befintliga funktioner för API-anrop för att hantera meddelande, användare och databasanrop (se [api.js](https://github.com/stoffe-fe23/versionhantering-grupp4-slutprojekt/wiki/Script-functions-%E2%80%90-api)).
-- Vid visuella ändringar, tänk på att webbplatsen skall fungera och se OK ut i både darkmode och lightmode-läge.
-- Webbplatsen har två vyer: desktop och mobile. Design-ändringar bör ha mobile-first upplägg.
+- Vid visuella ändringar, tänk på att webbplatsen skall fungera och se OK ut i både darkmode och lightmode-läge. ("darkmode" klass på body-tagen = dark mode aktivt)
+- Webbplatsen skall ha två vyer: desktop och mobile. Design-ändringar bör ha mobile-first upplägg i åtanke.
 
 
 ## Vid ändring i befintliga filer:

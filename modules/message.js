@@ -15,9 +15,7 @@ import {
     addChatMessage,
     likeChatMessage,
     getIsValidText,
-    getCurrentUserProfile,
     getCurrentUserId,
-    getCurrentUserName,
     buildAuthorProfilesCache,
 } from './api.js';
 

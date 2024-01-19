@@ -6,8 +6,6 @@
 */
 
 import {
-    addChatMessage,
-    getChatMessages,
     userLogin,
     userLogoff,
     userIsLoggedIn,
@@ -24,7 +22,7 @@ import {
 } from './modules/api.js';
 
 import { showErrorMessage, clearErrorMessages } from './modules/interface.js';
-import { createColorPicker, createMessageCard } from './modules/message.js';
+import { createMessageCard } from './modules/message.js';
 
 
 // Configure function to run when a user has logged in
@@ -236,6 +234,8 @@ document.querySelector("#change-name-form").addEventListener("submit", (event) =
                 const userName = getCurrentUserName();
                 document.querySelector("#logged-in-email").innerHTML = `${userName} <span>(${currUser.email})</span>`;
                 document.querySelector("#user-menu-button span").innerText = userName;
+
+                document.querySelector("#user-profile-dialog").close();
                 console.log("PROFILE UPDATED", currUser, param);
             });
         });
