@@ -21,6 +21,7 @@ function showErrorMessage(errorText, clearOldMessages = false) {
     const errorMsg = document.createElement("div");
     errorMsg.innerText = errorText;
     errorBox.appendChild(errorMsg);
+    errorBox.scrollTo();
 }
 
 

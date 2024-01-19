@@ -11,10 +11,15 @@
     --messageTextSize: 0.9rem;
 }
 
+.hide {
+    display: none !important;
+}
+
 .message-card {
     position: relative;
     display: grid;
     width: 300px;
+    min-height: 250px;
     background-color: var(--messageCardBackgroundDefault);
     color: black;
     grid-template-areas:
@@ -64,6 +69,7 @@
 .message-author img {
     max-width: 42px;
     max-height: 42px;
+    border-radius: 50%;
 }
 
 .message-author span {
@@ -79,7 +85,19 @@
     justify-content: flex-start;
 }
 
+.message-footer button:hover {
+    color: yellow;
+}
+
 .message-like-button {
+    display: block;
+    border: 0;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+.message-fulltext-button {
     display: block;
     border: 0;
     background-color: transparent;
@@ -99,6 +117,38 @@
     display: block;
 }
 
+#messages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#message-new-wrapper {
+    display: none;
+    width: 100%;
+}
+
+#message-new-wrapper.show {
+    display: flex;
+}
+
+#message-new-button {
+    height: 70px;
+    width: 70px;
+    border: 0px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: 2rem;
+    box-shadow: 3px 3px 10px rgba(0,0,0, 0.3);
+    background-color: orange;
+}
+
+#message-new-button:hover {
+    background-color: yellow;
+    box-shadow: 0 0 20px yellow, 0 0 40px orange;
+}
+
+
 #messageboard {
     display: flex;
     flex-wrap: wrap;
@@ -111,9 +161,6 @@
     flex: 0 1 300px;
     box-shadow: 3px 3px 10px rgba(0,0,0, 0.3);
 }
-
-
-
 
 
 .message-edit-form {
@@ -142,6 +189,7 @@
     background-color: transparent;
     font-family: var(--messageFont);
     font-size: var(--messageTextSize);
+    border: 0;
 }
 
 .message-edit-buttons {
@@ -177,4 +225,15 @@
 
 .background-lightgray {
     background-color: rgb(211,211,211);
+}
+
+
+.message-fulltext-dialog {
+    max-width: 800px;
+    max-height: 60vh;
+}
+
+.message-fulltext-box {
+    width: 100%;
+    overflow-y: auto;
 }

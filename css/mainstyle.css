@@ -29,12 +29,52 @@ body {
 
 header {
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    background-color: grey;
-    padding: 1rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 0;
     min-height: 4rem;
     margin-bottom: 3rem;
+}
+
+body > footer {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+#about, 
+#contact {
+    max-width: 1024px;
+    margin: 0 auto;
+}
+
+#about .content, 
+#contact .content {
+    margin: 0 2.5rem;
+    margin: 1px solid orange;
+}
+
+#user-menu-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    padding: 1rem;
+    outline: 0;
+}
+
+#user-menu-button img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 50%;
+}
+
+#user-menu-button span {
+    color: white;
 }
 
 main {
@@ -63,17 +103,6 @@ section#messages {
 
 form label {
     margin-right: 0.5rem;
-}
-
-#login-form {
-    display: none;
-    justify-content: flex-end;
-    gap: 1rem;
-    padding: 0.25rem;
-}
-
-#login-form.show {
-    display: flex;
 }
 
 
@@ -162,14 +191,92 @@ form label {
     content: "--";
 }
 
+/* Burger menu button placeholder */
+#mainmenu-toggle {
+    position: absolute;
+    left: -100px;
+}
+
+#mainmenu-button {
+    padding: 1rem;
+    background-color: lightgray;
+    margin: 1rem;
+}
+
+
+/* Main menu placeholder */
+#mainmenu {
+    margin-top: 0px;
+    background-color: lightgray;
+    padding: 1rem 2rem;
+    border-radius: 0px 0px 25px 25px;
+    box-shadow: 5px 5px 10px rgba(0,0,0, 0.25);
+}
+
+#mainmenu ul {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#mainmenu ul li {
+    padding: 0px;
+    margin: 0px;
+}
+
+#mainmenu ul li a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#mainmenu ul li img {
+    display: block;
+}
+
+#mainmenu ul li span {
+    display: block;
+    white-space: nowrap;
+}
+
+#login-form {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid black;
+    padding: 1rem;
+    margin: 0.5rem;
+    gap: 1rem;
+}
+
+#login-form.show {
+    display: flex;
+}
+
+#login-form label {
+    display: block;
+    font-size: 0.75em;
+}
+
 
 #new-user-form {
     display: none;
+    flex-direction: column;
+    align-items: center;
     border: 1px solid black;
     padding: 1rem;
     margin: 0.5rem;
 }
 
 #new-user-form.show {
+    display: flex;
+}
+
+#new-user-form label {
     display: block;
+    font-size: 0.75em;
 }

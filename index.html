@@ -16,54 +16,83 @@
 </head>
 <body>
     <header>
-        <!-- TODO: Login form shown if the visitor is not logged in: Move or redesign -->
-        <form id="login-form">
-            <div><label for="login-email">E-mail address:</label><input type="email" id="login-email" name="login-email" placeholder="your@email.address" required></div>
-            <div><label for="login-password">Password:</label><input type="password" id="login-password" name="login-password" required></div>
-            <button id="login-button">Log in</button>
-        </form>
-        <!-- TODO: Info/logoff bar shown instead of login form if the user is currently logged in: Move or redesign -->
-        <div id="logged-in">
-            <span>Current user:</span><span><span id="logged-in-email"></span><span id="logged-in-last"></span></span>
-            <button id="logoff-button">Log off</button><div id="update-user-wrapper"><button id="update-user">Change name</button></div>
-        </div>
+        <input id="mainmenu-toggle" type="checkbox" />
+        <label id="mainmenu-button" for="mainmenu-toggle">Burger menu<br>button</label>
+        <nav id="mainmenu">
+            <ul>
+                <li><a class="menu-option" id="menu-messages" href=""><img src="./images/icon-messages-placeholder.png"><span>GritSquare</span></a></li>
+                <li><a class="menu-option" id="menu-about" href=""><img src="./images/icon-about-placeholder.png"><span>About us</span></a></li>
+                <li><a class="menu-option" id="menu-contact" href=""><img src="./images/icon-contact-placeholder.png"><span>Contact us</span></a></li>
+            </ul>
+        </nav>
+        <button id="user-menu-button"><img src="./images/profile-test-image.png"><span>User Menu</span></button>
     </header>
     <main>
         <div id="errors"></div>
         <section id="messages">
-            <h2>Gritsquare</h2>
             <!-- Box displaying messages -->
+            <div id="message-new-wrapper"><button id="message-new-button">Add Message</button></div>
             <div id="messageboard"></div>
+        </section>    
+        <section id="about" class="hide">
+            <!-- About Us Page -->
+            <div class="content">
+                <h2>About us</h2>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum quasi excepturi deleniti tempora repudiandae odit deserunt quas quae nesciunt!</p> 
+                <p>Facilis, repudiandae reiciendis similique, temporibus mollitia praesentium necessitatibus corporis aut natus sed ipsam adipisci fugit suscipit architecto id illo aspernatur dolor cupiditate facere explicabo sequi, nesciunt nemo? Nesciunt sed libero ut?</p>
+            </div>
         </section>
-        
-        <div id="store-form-wrapper">
-            <div id="button-bar"><button id="fetch-values">Refresh Messages</button></div>
-            <form id="store-form">
-                <div id="store-value-wrapper"><label for="store-value">Add message</label><input type="text" id="store-value" name="store-value">
-                    <div id="store-color-wrapper"><label for="store-color">Note color</label></div>
-                    <button id="store-button">Save!</button>
-                </div>
-            </form>
-            
-        </div>
-        <!-- TODO: Basic form for creating a new user: Move or replace this -->
-        <form id="new-user-form">
-            <h2>Create new user</h2>
-            <div><label for="new-user-name">Display name:</label><input type="text" id="new-user-name" name="new-user-name" placeholder="Your name" maxlength="20" required></div>
-            <div><label for="new-user-email">E-mail address:</label><input type="email" id="new-user-email" name="new-user-email" placeholder="your@email.address" required></div>
-            <div><label for="new-user-password">Password:</label><input type="password" id="new-user-password" name="new-user-password" required></div>
-            <div><label for="new-user-password-again">Confirm password:</label><input type="password" id="new-user-password-again" name="new-user-password-again" required></div>
-            <button id="new-user-button">Create account</button>
-        </form>
-        
+        <section id="contact" class="hide">
+            <!-- Contact Us page -->
+            <div class="content">
+                <h2>Contact us</h2>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum quasi excepturi deleniti tempora repudiandae odit deserunt quas quae nesciunt!</p> 
+                <p>Facilis, repudiandae reiciendis similique, temporibus mollitia praesentium necessitatibus corporis aut natus sed ipsam adipisci fugit suscipit architecto id illo aspernatur dolor cupiditate facere explicabo sequi, nesciunt nemo? Nesciunt sed libero ut?</p>
+            </div>
+        </section>
     </main>
-    <!-- TODO: Popup dialog for changing display name. Move to Edit Profile instead? -->
-    <dialog id="change-name-dialog">
-        <form id="change-name-form" method="dialog" autocomplete="off">
-            <label for="change-name-input">Your name:</label>
-            <input type="text" id="change-name-input" value="" minlength="2" maxlength="20" required />
-            <button id="change-name-submit">Save</button>
-        </form>
+    <footer>
+        Sidfot!
+    </footer>
+    <!-- Popup dialog for logging in or creating a new user account -->
+    <dialog id="user-login-dialog">
+        <div id="user-dialog-wrapper">
+            <!-- USER NOT LOGGED IN: Login form -->
+            <form id="login-form">
+                <div id="login-title-box"><h2>Log in</h2></div>
+                <div id="login-email-box"><label for="login-email">E-mail address:</label><input type="email" id="login-email" name="login-email" placeholder="your@email.address" required></div>
+                <div id="login-password-box"><label for="login-password">Password:</label><input type="password" id="login-password" name="login-password" required></div>
+                <div id="login-button-box"><button id="login-button">Log in</button></div>
+            </form>
+            <!-- USER LOGGED IN: User info and logoff button -->
+            <div id="logged-in">
+                <h2>Work in Progress</h2>
+                <span>Current user:</span><span><span id="logged-in-email"></span><span id="logged-in-last"></span></span>
+                <button id="logoff-button">Log off</button><div id="update-user-wrapper"><button id="update-user">User profile</button></div>
+            </div>
+            <!-- USER NOT LOGGED IN: Form for creating a new user -->
+            <form id="new-user-form">
+                <div id="newuser-title-box"><h2>Sign up</h2></div>
+                <div id="newuser-name-box"><label for="new-user-name">Display name:</label><input type="text" id="new-user-name" name="new-user-name" placeholder="Your name" maxlength="20" required></div>
+                <div id="newuser-email-box"><label for="new-user-email">E-mail address:</label><input type="email" id="new-user-email" name="new-user-email" placeholder="your@email.address" required></div>
+                <div id="newuser-password-box"><label for="new-user-password">Password:</label><input type="password" id="new-user-password" name="new-user-password" required></div>
+                <div id="newuser-password-confirm-box"><label for="new-user-password-again">Confirm password:</label><input type="password" id="new-user-password-again" name="new-user-password-again" required></div>
+                <div id="newuser-button-box"><button id="new-user-button">Create account</button></div>
+            </form>
+        </div>
+    </dialog>
+    <!-- Popup dialog for showing the full text of a very long message -->
+    <dialog id="message-long-text-dialog"><div id="message-long-text-wrapper"></div></dialog>
+    <!-- Popup dialog for showing/editing the current user's profile -->
+    <dialog id="user-profile-dialog">
+        <div id="user-profile-wrapper">
+            <h2>Profile - Work in Progress</h2>
+            <form id="change-name-form" method="dialog" autocomplete="off">
+                <label for="change-name-input">Your name:</label>
+                <input type="text" id="change-name-input" value="" minlength="2" maxlength="20" required />
+                <button id="change-name-submit">Save</button>
+            </form>
+        </div>
     </dialog>
 </body>
 </html>
