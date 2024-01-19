@@ -16,11 +16,13 @@
 </head>
 <body>
     <header>
-        <nav>
+        <input id="mainmenu-toggle" type="checkbox" />
+        <label id="mainmenu-button" for="mainmenu-toggle">Burger menu here</label>
+        <nav id="mainmenu">
             <ul>
-                <li>GritSquare</li>
-                <li>About us</li>
-                <li>Contact us</li>
+                <li><a id="menu-messages" href=""><img src="./images/icon-messages-placeholder.png"><span>GritSquare</span></a></li>
+                <li><a id="menu-about" href=""><img src="./images/icon-about-placeholder.png"><span>About us</span></a></li>
+                <li><a id="menu-contact" href=""><img src="./images/icon-contact-placeholder.png"><span>Contact us</span></a></li>
             </ul>
         </nav>
         <button id="user-menu-button"><img src="./images/profile-test-image.png"><span>User Menu</span></button>

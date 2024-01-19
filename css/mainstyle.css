@@ -29,9 +29,9 @@ body {
 
 header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    padding: 1rem;
+    padding: 0;
     min-height: 4rem;
     margin-bottom: 3rem;
 }
@@ -44,6 +44,7 @@ header {
     cursor: pointer;
     background-color: transparent;
     border: 0;
+    padding: 1rem;
 }
 
 #user-menu-button img {
@@ -188,3 +189,54 @@ form label {
 #new-user-form.show {
     display: block;
 }
+
+/* Burger menu button placeholder */
+#mainmenu-toggle {
+    position: absolute;
+    left: -100px;
+}
+
+#mainmenu-button {
+    padding: 1rem;
+    background-color: lightgray;
+}
+
+
+/* Main menu placeholder */
+#mainmenu {
+    margin-top: 0px;
+    background-color: lightgray;
+    padding: 1rem 2rem;
+    border-radius: 0px 0px 25px 25px;
+}
+
+#mainmenu ul {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#mainmenu ul li {
+    padding: 0px;
+    margin: 0px;
+}
+
+#mainmenu ul li a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#mainmenu ul li img {
+    display: block;
+}
+
+#mainmenu ul li span {
+    display: block;
+}
+
+
