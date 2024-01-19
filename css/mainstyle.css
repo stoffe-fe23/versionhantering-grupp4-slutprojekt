@@ -36,6 +36,13 @@ header {
     margin-bottom: 3rem;
 }
 
+footer {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
 #user-menu-button {
     display: flex;
     flex-direction: column;
@@ -51,6 +58,10 @@ header {
     max-width: 80px;
     max-height: 80px;
     border-radius: 50%;
+}
+
+#user-menu-button span {
+    color: white;
 }
 
 main {
@@ -199,6 +210,7 @@ form label {
 #mainmenu-button {
     padding: 1rem;
     background-color: lightgray;
+    margin: 1rem;
 }
 
 
@@ -208,6 +220,7 @@ form label {
     background-color: lightgray;
     padding: 1rem 2rem;
     border-radius: 0px 0px 25px 25px;
+    box-shadow: 5px 5px 10px rgba(0,0,0, 0.25);
 }
 
 #mainmenu ul {
