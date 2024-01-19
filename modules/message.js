@@ -36,7 +36,7 @@ const messageBackgroundColors = {
     lightgray: 'Gray'
 };
 
-// Globals used by listener for changes to the "chatmeddelande" DB-collection.
+// Globals used by listener for changes to the "chatmeddelande" and "userprofiles" DB-collections.
 let messagesSnapshot;
 let authorsSnapshot;
 let authorCacheInitialized = false;
@@ -139,11 +139,9 @@ function updateMessageCard(messageData, messageId) {
         const messageDate = messageCard.querySelector(".message-date");
         const messageText = messageCard.querySelector(".message-text");
         const messageLikes = messageCard.querySelector(".message-like-button");
-
         const messageEditor = messageCard.querySelector(".message-edit-form");
         const editorText = messageCard.querySelector(".message-edit-text");
         const editorColor = messageCard.querySelector(".message-edit-color");
-
         const messageFullTextBox = messageCard.querySelector(".message-fulltext-box");
         const messageFullTextButton = messageCard.querySelector(".message-fulltext-button");
 
@@ -165,7 +163,7 @@ function updateMessageCard(messageData, messageId) {
         editorText.innerHTML = (getIsValidText(messageData.message) ? messageData.message : "");
         editorColor.value = messageData.color;
 
-        // Text is longer than the limit to display directly on the message note, load it in the viewer
+        // Text is longer than the limit to display directly on the message note, show viewer button
         if (messageData.message.length > SHORT_MESSAGE_LIMIT) {
             messageFullTextButton.classList.remove("hide");
         }
@@ -189,9 +187,11 @@ function deleteMessageCard(messageId) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Build and return a Message HTML/DOM-element
-//          dataItem is an object containing the message data
-//          docName is the message-ID (i.e. document name in the database) used to uniquely identify this message
+// Build and return a Message HTML/DOM-element
+//  - messageData  - object with message info to show in the element
+//  - messageId    - the message id (DB Doc-name) of the message
+//  - isNewMessage - if set to true the two previous params are ignored and a blank card
+//                   used to create a new message is displayed instead. 
 function createMessageCard(messageData, messageId, isNewMessage = false) {
     const messageCard = document.createElement("article");
     const messageDate = document.createElement("div");
