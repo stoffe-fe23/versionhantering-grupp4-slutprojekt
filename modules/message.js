@@ -24,7 +24,7 @@ import {
 import { showErrorMessage, clearErrorMessages } from './interface.js';
 
 
-const SHOW_MAX_MESSAGES = 30;
+const SHOW_MAX_MESSAGES = 32;
 const SHORT_MESSAGE_LIMIT = 200;
 
 

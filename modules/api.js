@@ -316,6 +316,27 @@ async function userSendEmailVerification() {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Change the e-mail address of the current user. The user's password must be specified to
+// confirm the address change. 
+async function userSetEmail(userPassword, newEmail) {
+    if (userIsLoggedIn(true)) {
+        // Require reauthentication before password change for safety.
+        const authCredential = EmailAuthProvider.credential(auth.currentUser.email, userPassword);
+        return reauthenticateWithCredential(auth.currentUser, authCredential).then(() => {
+            // User reauthenticated, update the e-mail address.
+            return updateEmail(auth.currentUser, newEmail).then(() => {
+                console.log("USER E-MAIL UPDATED");
+                userSendEmailVerification();
+            });
+        });
+    }
+    else {
+        throw new Error("Unable to change e-mail address. No user is logged in.");
+    }
+}
+
+
 
 /****************************************************************************************
  * CHAT MESSAGES
@@ -561,6 +582,7 @@ export {
     userDelete,
     userSetPassword,
     userSendEmailVerification,
+    userSetEmail,
     getIsUserId,
     getUserPicture,
     getIsValidText,

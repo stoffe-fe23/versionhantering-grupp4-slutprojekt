@@ -133,7 +133,11 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
     const newName = document.querySelector("#new-user-name").value.trim();
 
     if (newPassword == newPasswordConfirm) {
-        createNewUser(newEmail, newPassword, newName).catch((error) => {
+        createNewUser(newEmail, newPassword, newName).then((data) => {
+            userSendEmailVerification().then(() => {
+                console.log("Verification mail sent.");
+            });
+        }).catch((error) => {
             /*
                 If an error occurs during creation, errorCode may be one of:
                 - auth/email-already-in-use: Thrown if there already exists an account with the given email address.
@@ -268,15 +272,25 @@ function showLoggedInUserElements(isLoggedOn) {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Button to add a new message - show New Message editor
 document.querySelector("#message-new-button").addEventListener("click", (event) => {
     event.preventDefault();
 
-    const messageBoard = document.querySelector("#messageboard");
-    const newMessageForm = createMessageCard(null, null, true);
-    const newMessageInput = newMessageForm.querySelector(".message-edit-text");
+    if (userIsLoggedIn(true)) {
+        const messageBoard = document.querySelector("#messageboard");
+        const newMessageForm = createMessageCard(null, null, true);
+        const newMessageInput = newMessageForm.querySelector(".message-edit-text");
 
-    messageBoard.prepend(newMessageForm);
-    newMessageInput.focus();
+        messageBoard.prepend(newMessageForm);
+        newMessageInput.focus();
+    }
+    else if (userIsLoggedIn()) {
+        showErrorMessage("Your account must be verified to post messages. Check your inbox for an e-mail with a verification link.");
+    }
+    else {
+        showErrorMessage("You must be logged in to add new messages.");
+    }
 });
 
 
