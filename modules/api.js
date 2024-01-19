@@ -130,7 +130,7 @@ async function userLogin(loginName, loginPassword) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Log off the current user.  Use the onAuthStateChanged callback set with the 
-// setUserLogoffCallback() function to respond when the login process has finished.
+// setUserLogoffCallback() function to respond when the logoff process has finished.
 async function userLogoff() {
     return signOut(auth).then(() => {
         currentUser = null;

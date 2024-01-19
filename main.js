@@ -55,7 +55,7 @@ document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {
             case "menu-contact": contactSection.classList.remove("hide"); break;
         }
 
-        document.querySelector("#mainmenu-toggle").checked = false;
+        // document.querySelector("#mainmenu-toggle").checked = false;
     });
 });
 

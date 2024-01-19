@@ -127,40 +127,6 @@ form label {
     display: flex;
 }
 
-#store-form-wrapper {
-    display: flex;
-    border: 1px solid white;
-    justify-content: space-between;
-}
-
-#store-form {
-    display: flex;
-    flex-direction: column;
-}
-
-#store-form.show {
-    display: flex;
-}
-
-#store-value-wrapper {
-    display: none;
-    justify-content: flex-end;
-    padding: 0.5rem;
-}
-
-#store-value-wrapper.show {
-    display: flex;
-}
-
-#store-value {
-    width: 600px;
-}
-
-#fetch-values-wrapper {
-    padding: 0.5rem;
-}
-
-
 #logged-in-last {
     display: block;
     font-size: 0.7em;
@@ -181,36 +147,18 @@ form label {
     padding: 1rem 2rem;
 }
 
-.fetched-data-author {
-    font-size: 0.9em;
-    font-style: italic;
-    color: blue;
-}
-
-.fetched-data-author::before {
-    content: "--";
-}
-
-/* Burger menu button placeholder */
-#mainmenu-toggle {
-    position: absolute;
-    left: -100px;
-}
-
-#mainmenu-button {
-    padding: 1rem;
-    background-color: lightgray;
-    margin: 1rem;
-}
 
 
 /* Main menu placeholder */
 #mainmenu {
+    position: relative;
+    top: -150px;
     margin-top: 0px;
     background-color: lightgray;
     padding: 1rem 2rem;
     border-radius: 0px 0px 25px 25px;
     box-shadow: 5px 5px 10px rgba(0,0,0, 0.25);
+    transition: top 300ms ease-out;
 }
 
 #mainmenu ul {
@@ -279,4 +227,70 @@ form label {
 #new-user-form label {
     display: block;
     font-size: 0.75em;
+}
+
+
+/* Burger menu button placeholder */
+#mainmenu-toggle {
+    position: absolute;
+    left: -100px !important;
+}
+
+#mainmenu-button {
+    display: flex;
+    width: 3.2rem;
+    height: 3.2rem;
+    align-items: center;
+    color: white;
+    background-color: black;
+    padding: 3px 5px 3px 5px;
+    cursor: pointer;
+    margin: 1rem;
+    padding: 0.7rem;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+#mainmenu-toggle:checked ~ #mainmenu {
+    top: 0px;
+    transition: top 300ms ease-in;
+}
+
+#mainmenu-button span {
+    position: relative;
+    font-size: 1pt;
+    color: transparent;
+}
+
+#mainmenu-button span,
+#mainmenu-button span::before,
+#mainmenu-button span::after {
+    display: block;
+    background: white;
+    height: 3px;
+    width: 100%;
+    border-radius: 2px;
+    margin: 0px;
+    padding: 0px;
+}
+
+#mainmenu-button span::before {
+    position: absolute;
+    content: "";
+    bottom: 8px;
+}
+  
+#mainmenu-button span::after {
+    position: absolute;
+    content: "";
+    top: 8px;
+}
+
+#mainmenu-button:focus span,
+#mainmenu-button:focus span::before,
+#mainmenu-button:focus span::after,
+#mainmenu-button:hover span,
+#mainmenu-button:hover span::before,
+#mainmenu-button:hover span::after {
+  background-color: orange;
 }
