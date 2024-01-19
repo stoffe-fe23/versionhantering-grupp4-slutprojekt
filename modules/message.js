@@ -69,7 +69,8 @@ function initializeDatabaseListeners() {
                 };
 
                 if (change.type === "modified") {
-                    // TODO: Uppdatera meddelanden skapade av denna användaren!
+                    // Update the author info of messages by this author
+                    updateMessageCardsAuthor(userId);
                 }
             }
             if (change.type === "removed") {
@@ -118,6 +119,20 @@ function initializeMessageBoard(displayMax) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+// Update the profile info (name and picture) from cache on all messages posted by the
+// specified author. 
+function updateMessageCardsAuthor(authorId) {
+    const messageCards = document.querySelectorAll(`article[authorid="${authorId}"].message-card`);
+
+    if ((messageCards !== undefined) && (messageCards !== null) && (messageCards.length > 0)) {
+        for (const messageCard of messageCards) {
+            setAuthorInfoFromCache(messageCard, authorId);
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
 // Update information about an existing message
 function updateMessageCard(messageData, messageId) {
     const messageCard = document.querySelector(`article[messageid="${messageId}"].message-card`);
@@ -125,8 +140,6 @@ function updateMessageCard(messageData, messageId) {
     if ((messageCard !== undefined) && (messageCard !== null)) {
         const messageDate = messageCard.querySelector(".message-date");
         const messageText = messageCard.querySelector(".message-text");
-        const messageAuthor = messageCard.querySelector(".message-author span");
-        const messageAuthorPic = messageCard.querySelector(".message-author img");
         const messageLikes = messageCard.querySelector(".message-like-button");
 
         const messageEditor = messageCard.querySelector(".message-edit-form");
@@ -147,8 +160,7 @@ function updateMessageCard(messageData, messageId) {
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
         messageLikes.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes : 0})`;
 
-        messageAuthor.innerText = (getIsValidText(userProfileCache[messageData.authorid].name) ? userProfileCache[messageData.authorid].name : "No name");
-        messageAuthorPic.src = (getIsValidText(userProfileCache[messageData.authorid].picture) ? userProfileCache[messageData.authorid].picture : './images/profile-test-image.png');
+        setAuthorInfoFromCache(messageCard, messageData.authorid);
 
         messageText.innerText = (getIsValidText(messageData.message) ? trimmedText : "No message");
         messageFullTextBox.innerText = (getIsValidText(messageData.message) ? messageData.message : "");
@@ -497,6 +509,17 @@ function createMessageEditor(messageData, messageId) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+// Update the author fields of a message card with the cached information
+function setAuthorInfoFromCache(messageCard, authorId) {
+    const messageAuthorName = messageCard.querySelector(".message-author span");
+    const messageAuthorPic = messageCard.querySelector(".message-author img");
+
+    messageAuthorName.innerText = (getIsValidText(userProfileCache[authorId].name) ? userProfileCache[authorId].name : "No name");
+    messageAuthorPic.src = (getIsValidText(userProfileCache[authorId].picture) ? userProfileCache[authorId].picture : './images/profile-test-image.png');
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
 // Create a select menu for choosing background color of messages
 function createColorPicker(defaultValue) {
     const selectList = document.createElement("select");
@@ -524,6 +547,8 @@ function createColorPicker(defaultValue) {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Set the background color of the specified card to the specified CSS class
 function setElementBackgroundColor(targetElement, newColor) {
     const colorsClasses = Object.keys(messageBackgroundColors).map((val) => `background-${val}`);
     colorsClasses.forEach((elem) => {
@@ -535,7 +560,8 @@ function setElementBackgroundColor(targetElement, newColor) {
     }
 }
 
-
+///////////////////////////////////////////////////////////////////////////////////////////
+// Get the first parent of the start element that has the specified class
 function getFirstParentWithClass(startElement, className, maxDepth = 10) {
     let checkElement = startElement.parentElement;
     while ((!checkElement.classList.contains(className)) && (maxDepth > 0)) {
