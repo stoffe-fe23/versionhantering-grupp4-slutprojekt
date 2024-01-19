@@ -1,12 +1,16 @@
 # versionhantering-grupp4-slutprojekt
 ## Slutprojekt versionshantering "GritSquare" - grupp 4
 
+Erika Larsson
+Kamyar Alinejad
+Kristoffer Bengtsson 🚩
+
 ### Om projektet
 Sidan är en "Anslagstavla" där man kan fästa färgade lappar med text (liknande post-it lappar på en whiteboard). 
 Inloggade användare kan skapa nya lappar, redigera innehållet på lappar de skapat, och ta bort sina lappar.
 Användare kan även "Gilla" en lapp. 
 
-Besökare kan skapa ett användarkonto där de anger e-postadress (används för inloggning) och namn och en profilbild som syns på meddelande de skapar.
+Besökare kan skapa ett användarkonto där de anger e-postadress (används för inloggning), en profilbild och ett namn som syns på meddelande de skapar.
 
 
 ### Nya features

@@ -92,8 +92,8 @@ function getIsUserId(userId) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Update authenticated user status. Run relevant callback functions set with the 
-// setUserLoginCallback() and setUserLogoffCallback() functions. 
+// Update authenticated user status when user logs in or off. Run relevant callback 
+// functions set with the setUserLoginCallback() and setUserLogoffCallback() functions. 
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
