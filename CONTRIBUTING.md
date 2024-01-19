@@ -20,6 +20,7 @@ else {
     doSomethingElse();
 }
 ```
+![Set indentation to 4 spaces here](https://github.com/stoffe-fe23/versionhantering-grupp4-slutprojekt/blob/main/images/doc-indentation.png?raw=true)
 
 ## Vid skapande av nya filer:
 - **Nya CSS-filer:** skall ligga i css-mappen.
