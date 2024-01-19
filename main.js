@@ -35,6 +35,8 @@ setUserLogoffCallback(userLoggedOffCallback);
 
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Main navigation menu
 document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {
     menuLink.addEventListener("click", (event) => {
         event.preventDefault();
@@ -59,6 +61,32 @@ document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {
     });
 });
 
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Button to add a new message - show New Message editor
+document.querySelector("#message-new-button").addEventListener("click", (event) => {
+    event.preventDefault();
+
+    if (userIsLoggedIn(true)) {
+        // Avoid opening another new message if one is already open...
+        const newMessageCard = document.querySelector("#new-message-card");
+        if ((newMessageCard === null) || (newMessageCard === undefined)) {
+            const messageBoard = document.querySelector("#messageboard");
+            const newMessageForm = createMessageCard(null, null, true);
+            const newMessageInput = newMessageForm.querySelector(".message-edit-text");
+
+            messageBoard.prepend(newMessageForm);
+            newMessageInput.focus();
+        }
+    }
+    else if (userIsLoggedIn()) {
+        showErrorMessage("Your account must be verified to post messages. Check your inbox for an e-mail with a verification link.");
+    }
+    else {
+        showErrorMessage("You must be logged in to add new messages.");
+    }
+});
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -213,29 +241,6 @@ document.querySelector("#change-name-form").addEventListener("submit", (event) =
         });
     }
 });
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// Button to add a new message - show New Message editor
-document.querySelector("#message-new-button").addEventListener("click", (event) => {
-    event.preventDefault();
-
-    if (userIsLoggedIn(true)) {
-        const messageBoard = document.querySelector("#messageboard");
-        const newMessageForm = createMessageCard(null, null, true);
-        const newMessageInput = newMessageForm.querySelector(".message-edit-text");
-
-        messageBoard.prepend(newMessageForm);
-        newMessageInput.focus();
-    }
-    else if (userIsLoggedIn()) {
-        showErrorMessage("Your account must be verified to post messages. Check your inbox for an e-mail with a verification link.");
-    }
-    else {
-        showErrorMessage("You must be logged in to add new messages.");
-    }
-});
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////

@@ -36,7 +36,7 @@ header {
     margin-bottom: 3rem;
 }
 
-footer {
+body > footer {
     display: flex;
     justify-content: center;
     padding: 2rem;
@@ -55,8 +55,6 @@ footer {
     margin: 1px solid orange;
 }
 
-
-
 #user-menu-button {
     display: flex;
     flex-direction: column;
@@ -66,6 +64,7 @@ footer {
     background-color: transparent;
     border: 0;
     padding: 1rem;
+    outline: 0;
 }
 
 #user-menu-button img {
@@ -104,17 +103,6 @@ section#messages {
 
 form label {
     margin-right: 0.5rem;
-}
-
-#login-form {
-    display: none;
-    justify-content: flex-end;
-    gap: 1rem;
-    padding: 0.25rem;
-}
-
-#login-form.show {
-    display: flex;
 }
 
 
@@ -203,18 +191,6 @@ form label {
     content: "--";
 }
 
-
-#new-user-form {
-    display: none;
-    border: 1px solid black;
-    padding: 1rem;
-    margin: 0.5rem;
-}
-
-#new-user-form.show {
-    display: block;
-}
-
 /* Burger menu button placeholder */
 #mainmenu-toggle {
     position: absolute;
@@ -264,6 +240,43 @@ form label {
 
 #mainmenu ul li span {
     display: block;
+    white-space: nowrap;
+}
+
+#login-form {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid black;
+    padding: 1rem;
+    margin: 0.5rem;
+    gap: 1rem;
+}
+
+#login-form.show {
+    display: flex;
+}
+
+#login-form label {
+    display: block;
+    font-size: 0.75em;
 }
 
 
+#new-user-form {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid black;
+    padding: 1rem;
+    margin: 0.5rem;
+}
+
+#new-user-form.show {
+    display: flex;
+}
+
+#new-user-form label {
+    display: block;
+    font-size: 0.75em;
+}

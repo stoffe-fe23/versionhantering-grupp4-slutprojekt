@@ -41,8 +41,6 @@ import {
     arrayUnion,
     onSnapshot,
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-// } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-lite.js';
-
 
 import { firebaseConfig } from './apiconfig.js';
 
@@ -56,6 +54,7 @@ const db = getFirestore(app);
 let currentUser = auth.currentUser;
 let userLoginCallback;
 let userLogoffCallback;
+
 
 
 /****************************************************************************************
@@ -89,6 +88,12 @@ function userIsLoggedIn(requireVerified = false) {
 // Check if the currently logged in user has the specified userId.
 function getIsUserId(userId) {
     return userIsLoggedIn() && (currentUser.uid == userId);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Check if the currently logged in user has the specified userId.
+function getCurrentUserId() {
+    return (userIsLoggedIn() ? currentUser.uid : 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -337,6 +342,38 @@ async function userSetEmail(userPassword, newEmail) {
 }
 
 
+async function getUserProfiles() {
+    return dbGetCollectionDocuments(db, 'userprofiles', ['userid', 'asc'], -1).then((dbData) => {
+        const userProfileCache = {};
+
+        if ((dbData !== undefined) && (dbData !== null) && Array.isArray(dbData) && (dbData.length > 0)) {
+            for (const dataItem of dbData) {
+                const userId = dataItem.data.userid;
+                const userName = (getIsValidText(dataItem.data.username) ? dataItem.data.username : "No name");
+                const userPicture = (getIsValidText(dataItem.data.picture) ? dataItem.data.picture : './images/profile-test-image.png');
+
+                userProfileCache[userId] = {
+                    userid: dataItem.data.userid,
+                    name: userName,
+                    picture: userPicture,
+                };
+            }
+        }
+        return userProfileCache;
+    });
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Listen for changes to the user profiles database and run the specified callback function
+// whenever something has changed on the server. Use this instead of getChatMessages()
+// to keep the message list automatically updated without further requests. 
+// 
+//  N.B. Only call this function once per page load!
+async function buildAuthorProfilesCache(onProfileUpdateCallback = null) {
+    return await dbSetCollectionDocumentsListener(db, 'userprofiles', ['userid', 'asc'], -1, onProfileUpdateCallback);
+}
+
+
 
 /****************************************************************************************
  * CHAT MESSAGES
@@ -483,7 +520,13 @@ async function likeChatMessage(messageId) {
 //  - resultLimit is an integer number to limit how many documents to retrieve
 async function dbGetCollectionDocuments(db, collectionName, sortResultBy, resultLimit = 30) {
     try {
-        const fetchQuery = query(collection(db, collectionName), orderBy(...sortResultBy), limit(resultLimit));
+        let fetchQuery;
+        if (resultLimit == -1) {
+            fetchQuery = query(collection(db, collectionName), orderBy(...sortResultBy));
+        }
+        else {
+            fetchQuery = query(collection(db, collectionName), orderBy(...sortResultBy), limit(resultLimit));
+        }
         const dbDocuments = await getDocs(fetchQuery);
 
         const resultArray = [];
@@ -513,7 +556,14 @@ async function dbGetCollectionDocuments(db, collectionName, sortResultBy, result
 async function dbSetCollectionDocumentsListener(db, collectionName, sortResultBy, resultLimit = 30, onUpdateCallback = null) {
     try {
         if (typeof onUpdateCallback == "function") {
-            const fetchQuery = query(collection(db, collectionName), orderBy(...sortResultBy), limit(resultLimit));
+            let fetchQuery;
+            if (resultLimit == -1) {
+                fetchQuery = query(collection(db, collectionName), orderBy(...sortResultBy));
+            }
+            else {
+                fetchQuery = query(collection(db, collectionName), orderBy(...sortResultBy), limit(resultLimit));
+            }
+
             return onSnapshot(fetchQuery, onUpdateCallback);
         }
         else {
@@ -584,6 +634,9 @@ export {
     userSendEmailVerification,
     userSetEmail,
     getIsUserId,
+    getCurrentUserId,
     getUserPicture,
     getIsValidText,
+    getUserProfiles,
+    buildAuthorProfilesCache,
 };

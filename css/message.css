@@ -189,6 +189,7 @@
     background-color: transparent;
     font-family: var(--messageFont);
     font-size: var(--messageTextSize);
+    border: 0;
 }
 
 .message-edit-buttons {

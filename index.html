@@ -17,7 +17,7 @@
 <body>
     <header>
         <input id="mainmenu-toggle" type="checkbox" />
-        <label id="mainmenu-button" for="mainmenu-toggle">Burger menu here</label>
+        <label id="mainmenu-button" for="mainmenu-toggle">Burger menu<br>button</label>
         <nav id="mainmenu">
             <ul>
                 <li><a class="menu-option" id="menu-messages" href=""><img src="./images/icon-messages-placeholder.png"><span>GritSquare</span></a></li>
@@ -58,26 +58,26 @@
     <dialog id="user-login-dialog">
         <div id="user-dialog-wrapper">
             <!-- USER NOT LOGGED IN: Login form -->
-            
             <form id="login-form">
-                <div><h2>Log in</h2></div>
-                <div><label for="login-email">E-mail address:</label><input type="email" id="login-email" name="login-email" placeholder="your@email.address" required></div>
-                <div><label for="login-password">Password:</label><input type="password" id="login-password" name="login-password" required></div>
-                <button id="login-button">Log in</button>
+                <div id="login-title-box"><h2>Log in</h2></div>
+                <div id="login-email-box"><label for="login-email">E-mail address:</label><input type="email" id="login-email" name="login-email" placeholder="your@email.address" required></div>
+                <div id="login-password-box"><label for="login-password">Password:</label><input type="password" id="login-password" name="login-password" required></div>
+                <div id="login-button-box"><button id="login-button">Log in</button></div>
             </form>
             <!-- USER LOGGED IN: User info and logoff button -->
             <div id="logged-in">
+                <h2>Work in Progress</h2>
                 <span>Current user:</span><span><span id="logged-in-email"></span><span id="logged-in-last"></span></span>
                 <button id="logoff-button">Log off</button><div id="update-user-wrapper"><button id="update-user">User profile</button></div>
             </div>
             <!-- USER NOT LOGGED IN: Form for creating a new user -->
             <form id="new-user-form">
-                <h2>Create new user</h2>
-                <div><label for="new-user-name">Display name:</label><input type="text" id="new-user-name" name="new-user-name" placeholder="Your name" maxlength="20" required></div>
-                <div><label for="new-user-email">E-mail address:</label><input type="email" id="new-user-email" name="new-user-email" placeholder="your@email.address" required></div>
-                <div><label for="new-user-password">Password:</label><input type="password" id="new-user-password" name="new-user-password" required></div>
-                <div><label for="new-user-password-again">Confirm password:</label><input type="password" id="new-user-password-again" name="new-user-password-again" required></div>
-                <button id="new-user-button">Create account</button>
+                <div id="newuser-title-box"><h2>Sign up</h2></div>
+                <div id="newuser-name-box"><label for="new-user-name">Display name:</label><input type="text" id="new-user-name" name="new-user-name" placeholder="Your name" maxlength="20" required></div>
+                <div id="newuser-email-box"><label for="new-user-email">E-mail address:</label><input type="email" id="new-user-email" name="new-user-email" placeholder="your@email.address" required></div>
+                <div id="newuser-password-box"><label for="new-user-password">Password:</label><input type="password" id="new-user-password" name="new-user-password" required></div>
+                <div id="newuser-password-confirm-box"><label for="new-user-password-again">Confirm password:</label><input type="password" id="new-user-password-again" name="new-user-password-again" required></div>
+                <div id="newuser-button-box"><button id="new-user-button">Create account</button></div>
             </form>
         </div>
     </dialog>
@@ -86,6 +86,7 @@
     <!-- Popup dialog for showing/editing the current user's profile -->
     <dialog id="user-profile-dialog">
         <div id="user-profile-wrapper">
+            <h2>Profile - Work in Progress</h2>
             <form id="change-name-form" method="dialog" autocomplete="off">
                 <label for="change-name-input">Your name:</label>
                 <input type="text" id="change-name-input" value="" minlength="2" maxlength="20" required />

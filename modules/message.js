@@ -9,8 +9,6 @@
 import {
     userIsLoggedIn,
     getIsUserId,
-    getUserPicture,
-    getChatMessages,
     getChatMessagesOnUpdate,
     deleteChatMessage,
     editChatMessage,
@@ -18,7 +16,9 @@ import {
     likeChatMessage,
     getIsValidText,
     getCurrentUserProfile,
+    getCurrentUserId,
     getCurrentUserName,
+    buildAuthorProfilesCache,
 } from './api.js';
 
 import { showErrorMessage, clearErrorMessages } from './interface.js';
@@ -27,9 +27,6 @@ import { showErrorMessage, clearErrorMessages } from './interface.js';
 const SHOW_MAX_MESSAGES = 32;
 const SHORT_MESSAGE_LIMIT = 200;
 
-
-// Cache fetched user profile images to avoid needless DB queries. 
-let profilePictureCache = {};
 
 // Colors (with associated CSS class identifier) available in color pickers
 // Key is the name of a CSS class with a "background-" prefix.
@@ -43,11 +40,52 @@ const messageBackgroundColors = {
 
 // Globals used by listener for changes to the "chatmeddelande" DB-collection.
 let messagesSnapshot;
+let authorsSnapshot;
+let authorCacheInitialized = false;
 let boardInitialized = false;
+let userProfileCache = {};
 
 
-// Load up to 30 available messages and listen for changes when the page loads
-initializeMessageBoard(SHOW_MAX_MESSAGES);
+initializeDatabaseListeners();
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Build and update author cache and start listening for messages from the DB
+function initializeDatabaseListeners() {
+    // First fetch and cache a list of author names and pictures
+    authorsSnapshot = buildAuthorProfilesCache((updatedData) => {
+        updatedData.docChanges().forEach((change) => {
+            if ((change.type === "added") || (change.type === "modified")) {
+                const profileData = change.doc.data();
+                const userId = profileData.userid;
+                const userName = (getIsValidText(profileData.username) ? profileData.username : "No name");
+                const userPicture = (getIsValidText(profileData.picture) ? profileData.picture : './images/profile-test-image.png');
+
+                userProfileCache[userId] = {
+                    userid: userId,
+                    name: userName,
+                    picture: userPicture,
+                };
+
+                if (change.type === "modified") {
+                    // TODO: Uppdatera meddelanden skapade av denna användaren!
+                }
+            }
+            if (change.type === "removed") {
+                delete userProfileCache[userId];
+                console.log("###### USER PROFILE DELETE", userId);
+            }
+        });
+
+        // After initial author list is first loaded, start to listen for messages
+        if (!authorCacheInitialized) {
+            initializeMessageBoard(SHOW_MAX_MESSAGES);
+            authorCacheInitialized = true;
+        }
+    });
+    return authorsSnapshot;
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +93,6 @@ initializeMessageBoard(SHOW_MAX_MESSAGES);
 function initializeMessageBoard(displayMax) {
     messagesSnapshot = getChatMessagesOnUpdate(displayMax, (updatedData) => {
         const messageBoard = document.querySelector("#messageboard");
-
         updatedData.docChanges().forEach((change) => {
             if (change.type === "added") {
                 // Insert new messages first, but not when initially building the board
@@ -89,6 +126,7 @@ function updateMessageCard(messageData, messageId) {
         const messageDate = messageCard.querySelector(".message-date");
         const messageText = messageCard.querySelector(".message-text");
         const messageAuthor = messageCard.querySelector(".message-author span");
+        const messageAuthorPic = messageCard.querySelector(".message-author img");
         const messageLikes = messageCard.querySelector(".message-like-button");
 
         const messageEditor = messageCard.querySelector(".message-edit-form");
@@ -108,7 +146,10 @@ function updateMessageCard(messageData, messageId) {
 
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
         messageLikes.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes : 0})`;
-        messageAuthor.innerText = ((messageData.authorname !== undefined) && (messageData.authorname.length > 0) ? messageData.authorname : "No name");
+
+        messageAuthor.innerText = (getIsValidText(userProfileCache[messageData.authorid].name) ? userProfileCache[messageData.authorid].name : "No name");
+        messageAuthorPic.src = (getIsValidText(userProfileCache[messageData.authorid].picture) ? userProfileCache[messageData.authorid].picture : './images/profile-test-image.png');
+
         messageText.innerText = (getIsValidText(messageData.message) ? trimmedText : "No message");
         messageFullTextBox.innerText = (getIsValidText(messageData.message) ? messageData.message : "");
         editorText.innerHTML = (getIsValidText(messageData.message) ? messageData.message : "");
@@ -189,24 +230,11 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
             });
         });
 
+
+        userProfileCache[messageData.authorid].name
+
         // Author name and picture
-        messageAuthor = createAuthorSignature(messageData.authorname, './images/profile-test-image.png');
-        if ((profilePictureCache[messageData.authorid] !== undefined) && (profilePictureCache[messageData.authorid] !== null)) {
-            const userPicture = profilePictureCache[messageData.authorid];
-            if (userPicture.length > 0) {
-                setAuthorSignaturePicture(messageAuthor, userPicture);
-            }
-
-        }
-        else {
-            getUserPicture(messageData.authorid).then((userPicture) => {
-                if (userPicture.length > 0) {
-                    profilePictureCache[messageData.authorid] = userPicture;
-                    setAuthorSignaturePicture(messageAuthor, userPicture);
-                }
-            });
-
-        }
+        messageAuthor = createAuthorSignature(userProfileCache[messageData.authorid].name, userProfileCache[messageData.authorid].picture);
 
         // Edit button if current user is the creator of this message
         if ((messageId !== null) && getIsUserId(messageData.authorid)) {
@@ -215,7 +243,9 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 
         // Hide/show the message editor
         messageEditButton.addEventListener("click", (event) => {
+            const messageEditInput = messageEditor.querySelector("textarea");
             messageEditor.classList.toggle("show");
+            messageEditInput.focus();
         });
 
         // Message editor
@@ -227,10 +257,8 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
     }
     else {
         // New Message
-        messageAuthor = createAuthorSignature(getCurrentUserName(), './images/profile-test-image.png');
-        getUserPicture().then((userPicture) => {
-            setAuthorSignaturePicture(messageAuthor, userPicture);
-        });
+        const currUserId = getCurrentUserId();
+        messageAuthor = createAuthorSignature(userProfileCache[currUserId].name, userProfileCache[currUserId].picture);
 
         messageEditor.classList.add("show");
         messageEditor.id = "new-message-editor";
