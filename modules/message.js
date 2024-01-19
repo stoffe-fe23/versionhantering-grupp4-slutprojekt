@@ -44,6 +44,7 @@ let boardInitialized = false;
 let userProfileCache = {};
 
 
+// Start watching the userprofiles and chatmessages databases for initial load and updates
 initializeDatabaseListeners();
 
 
@@ -117,20 +118,6 @@ function initializeMessageBoard(displayMax) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Update the profile info (name and picture) from cache on all messages posted by the
-// specified author. 
-function updateMessageCardsAuthor(authorId) {
-    const messageCards = document.querySelectorAll(`article[authorid="${authorId}"].message-card`);
-
-    if ((messageCards !== undefined) && (messageCards !== null) && (messageCards.length > 0)) {
-        for (const messageCard of messageCards) {
-            setAuthorInfoFromCache(messageCard, authorId);
-        }
-    }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
 // Update information about an existing message
 function updateMessageCard(messageData, messageId) {
     const messageCard = document.querySelector(`article[messageid="${messageId}"].message-card`);
@@ -169,6 +156,20 @@ function updateMessageCard(messageData, messageId) {
         }
         else {
             messageFullTextButton.classList.add("hide");
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Update the profile info (name and picture) from cache on all messages posted by the
+// specified author. 
+function updateMessageCardsAuthor(authorId) {
+    const messageCards = document.querySelectorAll(`article[authorid="${authorId}"].message-card`);
+
+    if ((messageCards !== undefined) && (messageCards !== null) && (messageCards.length > 0)) {
+        for (const messageCard of messageCards) {
+            setAuthorInfoFromCache(messageCard, authorId);
         }
     }
 }
@@ -416,24 +417,13 @@ function createAuthorSignature(authorName, authorPicture = '') {
     messageAuthor.classList.add("message-author");
     messageAuthor.appendChild(messageAuthorName);
 
-    setAuthorSignaturePicture(messageAuthor, authorPicture);
+    if (authorPicture.length > 0) {
+        const messageAuthorPicture = document.createElement("img");
+        messageAuthorPicture.src = authorPicture;
+        messageAuthor.appendChild(messageAuthorPicture);
+    }
 
     return messageAuthor;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// Update the author profile picture of a message
-function setAuthorSignaturePicture(messageAuthorBox, authorPicture) {
-    if (authorPicture.length > 0) {
-        let messageAuthorPicture = messageAuthorBox.querySelector("img");
-        if ((messageAuthorPicture === undefined) || (messageAuthorPicture === null)) {
-            messageAuthorPicture = document.createElement("img");
-        }
-
-        messageAuthorPicture.src = authorPicture;
-        messageAuthorBox.appendChild(messageAuthorPicture);
-    }
 }
 
 
@@ -482,18 +472,12 @@ function createMessageEditor(messageData, messageId) {
 
     messageEditColor.appendChild(createColorPicker(!isNewMessage ? messageData.color : ""));
 
-    if (isNewMessage) {
-        messageEditButtons.append(
-            messageEditSave,
-            messageEditCancel,
-        );
-    }
-    else {
-        messageEditButtons.append(
-            messageEditSave,
-            messageEditCancel,
-            messageEditDelete
-        );
+    messageEditButtons.append(
+        messageEditSave,
+        messageEditCancel,
+    );
+    if (!isNewMessage) {
+        messageEditButtons.appendChild(messageEditDelete);
     }
 
     messageEditor.append(
@@ -501,13 +485,12 @@ function createMessageEditor(messageData, messageId) {
         messageEditColor,
         messageEditButtons
     );
-
     return messageEditor;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Update the author fields of a message card with the cached information
+// Update the author fields of a message card with the cached name and picture
 function setAuthorInfoFromCache(messageCard, authorId) {
     const messageAuthorName = messageCard.querySelector(".message-author span");
     const messageAuthorPic = messageCard.querySelector(".message-author img");
@@ -518,7 +501,7 @@ function setAuthorInfoFromCache(messageCard, authorId) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Create a select menu for choosing background color of messages
+// Create a select menu for choosing background color of message cards
 function createColorPicker(defaultValue) {
     const selectList = document.createElement("select");
 
@@ -546,17 +529,17 @@ function createColorPicker(defaultValue) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Set the background color of the specified card to the specified CSS class
+// Set the background color of the specified card to the specified CSS class "background-newColor"
 function setElementBackgroundColor(targetElement, newColor) {
     const colorsClasses = Object.keys(messageBackgroundColors).map((val) => `background-${val}`);
     colorsClasses.forEach((elem) => {
         targetElement.classList.remove(elem);
     });
-
     if (getIsValidText(newColor)) {
         targetElement.classList.add(`background-${newColor}`);
     }
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Get the first parent of the start element that has the specified class
@@ -583,7 +566,6 @@ export function getTruncatedText(truncText, maxLength) {
     }
     return truncText;
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////

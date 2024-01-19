@@ -15,7 +15,6 @@ import {
     userUpdateProfile,
     setUserLoginCallback,
     setUserLogoffCallback,
-    getUserPicture,
     userDelete,
     userSetPassword,
     userSendEmailVerification
@@ -222,7 +221,7 @@ document.querySelector("#user-profile-dialog").addEventListener("keyup", (event)
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Change user name form
+// EXAMPLE: Change user name form - TODO: Change to or include in User Profile form
 document.querySelector("#change-name-form").addEventListener("submit", (event) => {
     event.preventDefault();
     if (userIsLoggedIn()) {
@@ -245,25 +244,20 @@ document.querySelector("#change-name-form").addEventListener("submit", (event) =
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // USER LOG IN: This function is run when user login is completed
-function userLoggedInCallback(currUser) {
-    console.log("ANV INLOGG", currUser);
-
+function userLoggedInCallback() {
     getCurrentUserProfile().then((currUser) => {
         const loginForm = document.querySelector("#login-form");
         const logoutBox = document.querySelector("#logged-in");
         const userEmail = document.querySelector("#logged-in-email");
         const userDate = document.querySelector("#logged-in-last");
 
-        userEmail.innerHTML = `${getCurrentUserName()} <span>(${currUser.email})</span>`;
+        userEmail.innerHTML = `${currUser.displayName} <span>(${currUser.email})</span>`;
         userDate.innerText = `last login: ${currUser.lastLogin}`;
         loginForm.classList.remove("show");
         logoutBox.classList.add("show");
 
-        document.querySelector("#user-menu-button span").innerText = getCurrentUserName();
-        getUserPicture().then((userPicture) => {
-            document.querySelector("#user-menu-button img").src = userPicture;
-        });
-
+        document.querySelector("#user-menu-button span").innerText = currUser.displayName;
+        document.querySelector("#user-menu-button img").src = currUser.picture;
 
         showLoggedInUserElements(true);
     });
