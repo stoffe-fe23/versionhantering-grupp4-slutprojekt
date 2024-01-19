@@ -34,10 +34,35 @@ setUserLoginCallback(userLoggedInCallback);
 setUserLogoffCallback(userLoggedOffCallback);
 
 
-// EXAMPLE: Build color picker menu for "New Message" form
-// createNewMessageColorPicker();
+
+document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {
+    menuLink.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        const messagesSection = document.querySelector("#messages");
+        const aboutSection = document.querySelector("#about");
+        const contactSection = document.querySelector("#contact");
+
+        clearErrorMessages();
+
+        messagesSection.classList.add("hide");
+        aboutSection.classList.add("hide");
+        contactSection.classList.add("hide");
+
+        switch (event.currentTarget.id) {
+            case "menu-messages": messagesSection.classList.remove("hide"); break;
+            case "menu-about": aboutSection.classList.remove("hide"); break;
+            case "menu-contact": contactSection.classList.remove("hide"); break;
+        }
+
+        document.querySelector("#mainmenu-toggle").checked = false;
+    });
+});
 
 
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// User button events
 
 // Open the login/new user dialog box
 document.querySelector("#user-menu-button").addEventListener("click", (event) => {
@@ -60,26 +85,6 @@ document.querySelector("#user-login-dialog").addEventListener("keyup", (event) =
 });
 
 
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Create a new Message
-/* document.querySelector("#store-form").addEventListener("submit", (event) => {
-    event.preventDefault();
-    if (userIsLoggedIn()) {
-        const messageInput = document.querySelector("#store-value");
-        const messageColor = document.querySelector("#store-color").value.trim();
-
-        addChatMessage(messageInput.value.trim(), messageColor).then((newDoc) => {
-            messageInput.value = '';
-            messageInput.focus();
-        }).catch((error) => {
-            showErrorMessage(error);
-        });
-    }
-}); */
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Login form
 document.querySelector("#login-form").addEventListener("submit", (event) => {
@@ -92,18 +97,20 @@ document.querySelector("#login-form").addEventListener("submit", (event) => {
         userLogin(loginName, loginPassword).then(() => {
             document.querySelector("#user-login-dialog").close();
         }).catch((error) => {
-            /*
-                If login fails errorCode may be set to one of the following:
-                 - auth/invalid-email: Thrown if the email address is not valid.
-                 - auth/user-disabled: Thrown if the user corresponding to the given email has been disabled.
-                 - auth/user-not-found: Thrown if there is no user corresponding to the given email.
-                 - auth/wrong-password: Thrown if the password is invalid for the given email, or the account corresponding to the email does not have a password set.
-                 - auth/invalid-credential: Also seems to be thrown if the specified user does not exist? 
-            */
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.error("LOGIN ERROR", errorMessage, errorCode);
-            showErrorMessage(`Login error: ${errorMessage} (${errorCode})`);
+            if (error.code !== undefined) {
+                switch (error.code) {
+                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid."); break;
+                    case "auth/user-disabled": showErrorMessage("Your user account has been suspended. Unable to log in."); break;
+                    case "auth/user-not-found": showErrorMessage("The specified user account does not exist."); break;
+                    case "auth/wrong-password": showErrorMessage("Incorrect username or password."); break;
+                    case "auth/invalid-credential": showErrorMessage("Incorrect username or password."); break;
+                    default: showErrorMessage(`Login error: ${error.message} (${error.code})`); break;
+                }
+            }
+            else {
+                showErrorMessage(`Login error: ${error}`);
+            }
+            console.error("LOGIN ERROR", error);
         });
 
         event.currentTarget.reset();
@@ -123,7 +130,7 @@ document.querySelector("#logoff-button").addEventListener("click", (event) => {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Create new user form
+// Create new user form
 document.querySelector("#new-user-form").addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -138,17 +145,19 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
                 console.log("Verification mail sent.");
             });
         }).catch((error) => {
-            /*
-                If an error occurs during creation, errorCode may be one of:
-                - auth/email-already-in-use: Thrown if there already exists an account with the given email address.
-                - auth/invalid-email: Thrown if the email address is not valid.
-                - auth/operation-not-allowed: Thrown if email/password accounts are not enabled.
-                - auth/weak-password: Specified password is too weak and disallowed
-            */
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log("USER CREATE ERROR", errorMessage, errorCode);
-            showErrorMessage(`New user error: ${errorMessage} (${errorCode})`);
+            if (error.code !== undefined) {
+                switch (error.code) {
+                    case "auth/email-already-in-use": showErrorMessage("Unable to create new account. You already have an account."); break;
+                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid."); break;
+                    case "auth/operation-not-allowed": showErrorMessage("You cannot create an account at this time. Try again later?"); break;
+                    case "auth/weak-password": showErrorMessage("The specified password is too weak. Use something less easy to guess."); break;
+                    default: showErrorMessage(`New user error: ${error.message} (${error.code})`); break;
+                }
+            }
+            else {
+                showErrorMessage(`New user error: ${error}`);
+            }
+            console.log("USER CREATE ERROR", error);
         });
         event.currentTarget.reset();
     }
@@ -204,6 +213,29 @@ document.querySelector("#change-name-form").addEventListener("submit", (event) =
         });
     }
 });
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Button to add a new message - show New Message editor
+document.querySelector("#message-new-button").addEventListener("click", (event) => {
+    event.preventDefault();
+
+    if (userIsLoggedIn(true)) {
+        const messageBoard = document.querySelector("#messageboard");
+        const newMessageForm = createMessageCard(null, null, true);
+        const newMessageInput = newMessageForm.querySelector(".message-edit-text");
+
+        messageBoard.prepend(newMessageForm);
+        newMessageInput.focus();
+    }
+    else if (userIsLoggedIn()) {
+        showErrorMessage("Your account must be verified to post messages. Check your inbox for an e-mail with a verification link.");
+    }
+    else {
+        showErrorMessage("You must be logged in to add new messages.");
+    }
+});
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -270,35 +302,3 @@ function showLoggedInUserElements(isLoggedOn) {
     }
 
 }
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// Button to add a new message - show New Message editor
-document.querySelector("#message-new-button").addEventListener("click", (event) => {
-    event.preventDefault();
-
-    if (userIsLoggedIn(true)) {
-        const messageBoard = document.querySelector("#messageboard");
-        const newMessageForm = createMessageCard(null, null, true);
-        const newMessageInput = newMessageForm.querySelector(".message-edit-text");
-
-        messageBoard.prepend(newMessageForm);
-        newMessageInput.focus();
-    }
-    else if (userIsLoggedIn()) {
-        showErrorMessage("Your account must be verified to post messages. Check your inbox for an e-mail with a verification link.");
-    }
-    else {
-        showErrorMessage("You must be logged in to add new messages.");
-    }
-});
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Create select menu with color picker for message background colors
-/* function createNewMessageColorPicker() {
-    const targetContainer = document.querySelector("#store-color-wrapper");
-    const colorPickerElem = createColorPicker();
-    colorPickerElem.id = 'store-color';
-    targetContainer.appendChild(colorPickerElem);
-} */

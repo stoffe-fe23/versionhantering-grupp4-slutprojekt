@@ -43,6 +43,20 @@ footer {
     margin-top: 2rem;
 }
 
+#about, 
+#contact {
+    max-width: 1024px;
+    margin: 0 auto;
+}
+
+#about .content, 
+#contact .content {
+    margin: 0 2.5rem;
+    margin: 1px solid orange;
+}
+
+
+
 #user-menu-button {
     display: flex;
     flex-direction: column;
