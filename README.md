@@ -13,4 +13,4 @@ Besökare kan skapa ett användarkonto där de anger e-postadress (används för
 Om du vill bidra med features till projektet:
 - Se: [enkla riktlinjer för samarbete](https://github.com/stoffe-fe23/versionhantering-grupp4-slutprojekt/blob/main/CONTRIBUTING.md)
 - Kontakta någon av oss för att få API-nyckel-filen apiconfig.js som behöver läggas i modules-mappen.
-- Se: [några förslag på features](https://github.com/stoffe-fe23/versionhantering-grupp4-slutprojekt/wiki/Features-f%C3%B6rslag)
+- Se: [några förslag på features](https://github.com/stoffe-fe23/versionhantering-grupp4-slutprojekt/wiki/Features-f%C3%B6rslag), inget krav om du har egna idéer.
