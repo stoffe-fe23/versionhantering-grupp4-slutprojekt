@@ -1,9 +1,9 @@
 # versionhantering-grupp4-slutprojekt
 ## Slutprojekt versionshantering "GritSquare" - grupp 4
 
-Erika Larsson
-Kamyar Alinejad
-Kristoffer Bengtsson 🚩
+- Erika Larsson
+- Kamyar Alinejad
+- Kristoffer Bengtsson 🚩
 
 ### Om projektet
 Sidan är en "Anslagstavla" där man kan fästa färgade lappar med text (liknande post-it lappar på en whiteboard). 
