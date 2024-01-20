@@ -16,8 +16,8 @@
 </head>
 <body>
     <header>
-        <input id="mainmenu-toggle" type="checkbox" />
-        <label id="mainmenu-button" for="mainmenu-toggle">Burger menu<br>button</label>
+        <input id="mainmenu-toggle" type="checkbox" checked />
+        <label id="mainmenu-button" for="mainmenu-toggle" tabindex="0"><span>Menu</span></label>
         <nav id="mainmenu">
             <ul>
                 <li><a class="menu-option" id="menu-messages" href=""><img src="./images/icon-messages-placeholder.png"><span>GritSquare</span></a></li>
@@ -29,6 +29,7 @@
     </header>
     <main>
         <div id="errors"></div>
+        <div id="status"></div>
         <section id="messages">
             <!-- Box displaying messages -->
             <div id="message-new-wrapper"><button id="message-new-button">Add Message</button></div>
@@ -52,7 +53,11 @@
         </section>
     </main>
     <footer>
-        Sidfot!
+        <!-- Sidfot! -->
+        <div id="colormode-toggle-wrapper">
+            <input type="radio" name="colormode-toggle" id ="colormode-toggle-dark" value="dark"><label for="colormode-toggle-dark">Dark</label>
+            <input type="radio" name="colormode-toggle" id ="colormode-toggle-light" value="light"><label for="colormode-toggle-light">Light</label>
+        </div>
     </footer>
     <!-- Popup dialog for logging in or creating a new user account -->
     <dialog id="user-login-dialog">

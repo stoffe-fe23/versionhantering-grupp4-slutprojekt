@@ -15,9 +15,7 @@ import {
     addChatMessage,
     likeChatMessage,
     getIsValidText,
-    getCurrentUserProfile,
     getCurrentUserId,
-    getCurrentUserName,
     buildAuthorProfilesCache,
 } from './api.js';
 
@@ -38,7 +36,7 @@ const messageBackgroundColors = {
     lightgray: 'Gray'
 };
 
-// Globals used by listener for changes to the "chatmeddelande" DB-collection.
+// Globals used by listener for changes to the "chatmeddelande" and "userprofiles" DB-collections.
 let messagesSnapshot;
 let authorsSnapshot;
 let authorCacheInitialized = false;
@@ -46,6 +44,7 @@ let boardInitialized = false;
 let userProfileCache = {};
 
 
+// Start watching the userprofiles and chatmessages databases for initial load and updates
 initializeDatabaseListeners();
 
 
@@ -119,20 +118,6 @@ function initializeMessageBoard(displayMax) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Update the profile info (name and picture) from cache on all messages posted by the
-// specified author. 
-function updateMessageCardsAuthor(authorId) {
-    const messageCards = document.querySelectorAll(`article[authorid="${authorId}"].message-card`);
-
-    if ((messageCards !== undefined) && (messageCards !== null) && (messageCards.length > 0)) {
-        for (const messageCard of messageCards) {
-            setAuthorInfoFromCache(messageCard, authorId);
-        }
-    }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
 // Update information about an existing message
 function updateMessageCard(messageData, messageId) {
     const messageCard = document.querySelector(`article[messageid="${messageId}"].message-card`);
@@ -141,11 +126,9 @@ function updateMessageCard(messageData, messageId) {
         const messageDate = messageCard.querySelector(".message-date");
         const messageText = messageCard.querySelector(".message-text");
         const messageLikes = messageCard.querySelector(".message-like-button");
-
         const messageEditor = messageCard.querySelector(".message-edit-form");
         const editorText = messageCard.querySelector(".message-edit-text");
         const editorColor = messageCard.querySelector(".message-edit-color");
-
         const messageFullTextBox = messageCard.querySelector(".message-fulltext-box");
         const messageFullTextButton = messageCard.querySelector(".message-fulltext-button");
 
@@ -167,12 +150,26 @@ function updateMessageCard(messageData, messageId) {
         editorText.innerHTML = (getIsValidText(messageData.message) ? messageData.message : "");
         editorColor.value = messageData.color;
 
-        // Text is longer than the limit to display directly on the message note, load it in the viewer
+        // Text is longer than the limit to display directly on the message note, show viewer button
         if (messageData.message.length > SHORT_MESSAGE_LIMIT) {
             messageFullTextButton.classList.remove("hide");
         }
         else {
             messageFullTextButton.classList.add("hide");
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Update the profile info (name and picture) from cache on all messages posted by the
+// specified author. 
+function updateMessageCardsAuthor(authorId) {
+    const messageCards = document.querySelectorAll(`article[authorid="${authorId}"].message-card`);
+
+    if ((messageCards !== undefined) && (messageCards !== null) && (messageCards.length > 0)) {
+        for (const messageCard of messageCards) {
+            setAuthorInfoFromCache(messageCard, authorId);
         }
     }
 }
@@ -191,9 +188,11 @@ function deleteMessageCard(messageId) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Build and return a Message HTML/DOM-element
-//          dataItem is an object containing the message data
-//          docName is the message-ID (i.e. document name in the database) used to uniquely identify this message
+// Build and return a Message HTML/DOM-element
+//  - messageData  - object with message info to show in the element
+//  - messageId    - the message id (DB Doc-name) of the message
+//  - isNewMessage - if set to true the two previous params are ignored and a blank card
+//                   used to create a new message is displayed instead. 
 function createMessageCard(messageData, messageId, isNewMessage = false) {
     const messageCard = document.createElement("article");
     const messageDate = document.createElement("div");
@@ -418,24 +417,13 @@ function createAuthorSignature(authorName, authorPicture = '') {
     messageAuthor.classList.add("message-author");
     messageAuthor.appendChild(messageAuthorName);
 
-    setAuthorSignaturePicture(messageAuthor, authorPicture);
+    if (authorPicture.length > 0) {
+        const messageAuthorPicture = document.createElement("img");
+        messageAuthorPicture.src = authorPicture;
+        messageAuthor.appendChild(messageAuthorPicture);
+    }
 
     return messageAuthor;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// Update the author profile picture of a message
-function setAuthorSignaturePicture(messageAuthorBox, authorPicture) {
-    if (authorPicture.length > 0) {
-        let messageAuthorPicture = messageAuthorBox.querySelector("img");
-        if ((messageAuthorPicture === undefined) || (messageAuthorPicture === null)) {
-            messageAuthorPicture = document.createElement("img");
-        }
-
-        messageAuthorPicture.src = authorPicture;
-        messageAuthorBox.appendChild(messageAuthorPicture);
-    }
 }
 
 
@@ -484,18 +472,12 @@ function createMessageEditor(messageData, messageId) {
 
     messageEditColor.appendChild(createColorPicker(!isNewMessage ? messageData.color : ""));
 
-    if (isNewMessage) {
-        messageEditButtons.append(
-            messageEditSave,
-            messageEditCancel,
-        );
-    }
-    else {
-        messageEditButtons.append(
-            messageEditSave,
-            messageEditCancel,
-            messageEditDelete
-        );
+    messageEditButtons.append(
+        messageEditSave,
+        messageEditCancel,
+    );
+    if (!isNewMessage) {
+        messageEditButtons.appendChild(messageEditDelete);
     }
 
     messageEditor.append(
@@ -503,13 +485,12 @@ function createMessageEditor(messageData, messageId) {
         messageEditColor,
         messageEditButtons
     );
-
     return messageEditor;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Update the author fields of a message card with the cached information
+// Update the author fields of a message card with the cached name and picture
 function setAuthorInfoFromCache(messageCard, authorId) {
     const messageAuthorName = messageCard.querySelector(".message-author span");
     const messageAuthorPic = messageCard.querySelector(".message-author img");
@@ -520,7 +501,7 @@ function setAuthorInfoFromCache(messageCard, authorId) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Create a select menu for choosing background color of messages
+// Create a select menu for choosing background color of message cards
 function createColorPicker(defaultValue) {
     const selectList = document.createElement("select");
 
@@ -548,17 +529,17 @@ function createColorPicker(defaultValue) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Set the background color of the specified card to the specified CSS class
+// Set the background color of the specified card to the specified CSS class "background-newColor"
 function setElementBackgroundColor(targetElement, newColor) {
     const colorsClasses = Object.keys(messageBackgroundColors).map((val) => `background-${val}`);
     colorsClasses.forEach((elem) => {
         targetElement.classList.remove(elem);
     });
-
     if (getIsValidText(newColor)) {
         targetElement.classList.add(`background-${newColor}`);
     }
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Get the first parent of the start element that has the specified class
@@ -585,7 +566,6 @@ export function getTruncatedText(truncText, maxLength) {
     }
     return truncText;
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////

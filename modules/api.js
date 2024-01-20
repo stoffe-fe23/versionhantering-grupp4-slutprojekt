@@ -61,6 +61,28 @@ let userLogoffCallback;
  * USER MANAGEMENT
  ****************************************************************************************/
 
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Update authenticated user status when user logs in or off. Run relevant callback 
+// functions set with the setUserLoginCallback() and setUserLogoffCallback() functions. 
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        currentUser = user;
+        if (typeof userLoginCallback == "function") {
+            userLoginCallback();
+        }
+        console.log("CURRENT USER", currentUser);
+    }
+    else {
+        currentUser = null;
+        if (typeof userLogoffCallback == "function") {
+            userLogoffCallback();
+        }
+        console.log("NO USER", currentUser);
+    }
+});
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Set the callback function to run when a user has completed logging on.
 function setUserLoginCallback(callbackFunc) {
@@ -90,31 +112,12 @@ function getIsUserId(userId) {
     return userIsLoggedIn() && (currentUser.uid == userId);
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Check if the currently logged in user has the specified userId.
 function getCurrentUserId() {
     return (userIsLoggedIn() ? currentUser.uid : 0);
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// Update authenticated user status when user logs in or off. Run relevant callback 
-// functions set with the setUserLoginCallback() and setUserLogoffCallback() functions. 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        currentUser = user;
-        if (typeof userLoginCallback == "function") {
-            userLoginCallback();
-        }
-        console.log("CURRENT USER", currentUser);
-    }
-    else {
-        currentUser = null;
-        if (typeof userLogoffCallback == "function") {
-            userLogoffCallback();
-        }
-        console.log("NO USER", currentUser);
-    }
-});
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -130,7 +133,7 @@ async function userLogin(loginName, loginPassword) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Log off the current user.  Use the onAuthStateChanged callback set with the 
-// setUserLogoffCallback() function to respond when the login process has finished.
+// setUserLogoffCallback() function to respond when the logoff process has finished.
 async function userLogoff() {
     return signOut(auth).then(() => {
         currentUser = null;
@@ -198,11 +201,11 @@ async function getCurrentUserProfile() {
     if (currentUser !== null) {
         userProfile = {
             uid: currentUser.uid,
-            displayName: currentUser.displayName,
+            displayName: (currentUser.displayName.length > 0 ? currentUser.displayName : "No name"),
             email: currentUser.email,
             verified: currentUser.emailVerified,
             phone: currentUser.phoneNumber,
-            picture: currentUser.photoURL,
+            picture: (getIsValidText(currentUser.photoURL) ? currentUser.photoURL : './images/profile-test-image.png'),
             color: '',
             lastLogin: currentUser.metadata.lastSignInTime,
         }
@@ -223,29 +226,6 @@ async function getCurrentUserProfile() {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Retrieve the profile picture of the specified user.
-async function getUserPicture(userId) {
-
-    if (!userIsLoggedIn()) {
-        return "./images/profile-test-image.png";
-    }
-
-    if ((userId === undefined) || (userId === null)) {
-        userId = currentUser.uid;
-    }
-
-    const docProfile = await getDoc(doc(db, "userprofiles", userId));
-    if (docProfile.exists()) {
-        const docProfileData = docProfile.data();
-        if (getIsValidText(docProfileData.picture)) {
-            return docProfileData.picture;
-        }
-        return "./images/profile-test-image.png";
-    }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
 // Add a new user account (login) to the system.
 // Returns a Promise with the credentials of the new user as callback parameter.
 async function createNewUser(userEmail, userPassword, userName) {
@@ -261,7 +241,6 @@ async function createNewUser(userEmail, userPassword, userName) {
         console.log("USER CREATED", userCredential);
     });
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -305,23 +284,6 @@ async function userSetPassword(oldPassword, newPassword) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Send a verification email to the email address of the current user
-async function userSendEmailVerification() {
-    if (!userIsLoggedIn()) {
-        throw new Error("Unable to send verification email. No user is logged in.");
-    }
-
-    if (currentUser.emailVerified) {
-        throw new Error("This account is already verified.");
-    }
-
-    return sendEmailVerification(auth.currentUser).then(() => {
-        console.log("USER VERIFICATION EMAIL SENT");
-    });
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
 // Change the e-mail address of the current user. The user's password must be specified to
 // confirm the address change. 
 async function userSetEmail(userPassword, newEmail) {
@@ -342,6 +304,25 @@ async function userSetEmail(userPassword, newEmail) {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Send a verification email to the email address of the current user
+async function userSendEmailVerification() {
+    if (!userIsLoggedIn()) {
+        throw new Error("Unable to send verification email. No user is logged in.");
+    }
+
+    if (currentUser.emailVerified) {
+        throw new Error("This account is already verified.");
+    }
+
+    return sendEmailVerification(auth.currentUser).then(() => {
+        console.log("USER VERIFICATION EMAIL SENT");
+    });
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Get a current snapshot of the Name and Picture of all users as parameter to the Promise
+// callback function. 
 async function getUserProfiles() {
     return dbGetCollectionDocuments(db, 'userprofiles', ['userid', 'asc'], -1).then((dbData) => {
         const userProfileCache = {};
@@ -363,13 +344,12 @@ async function getUserProfiles() {
     });
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Listen for changes to the user profiles database and run the specified callback function
-// whenever something has changed on the server. Use this instead of getChatMessages()
-// to keep the message list automatically updated without further requests. 
-// 
+// whenever something has changed on the server. 
 //  N.B. Only call this function once per page load!
-async function buildAuthorProfilesCache(onProfileUpdateCallback = null) {
+async function buildAuthorProfilesCache(onProfileUpdateCallback) {
     return await dbSetCollectionDocumentsListener(db, 'userprofiles', ['userid', 'asc'], -1, onProfileUpdateCallback);
 }
 
@@ -384,10 +364,6 @@ async function buildAuthorProfilesCache(onProfileUpdateCallback = null) {
 // Retrieve up to messageLimit Messages from the database, in falling chronological order.
 // Function returns a Promise with an object as callback parameter containing properties 
 // with Message objects. The property names are the message ID / database document name.
-// 
-// Use this for single requests to fetch a current snapshot of available messages. 
-// Use getChatMessagesOnUpdate() below instead to continually listen for changes within
-// the set of messages. 
 async function getChatMessages(messageLimit = 30) {
     return dbGetCollectionDocuments(db, 'chatmeddelande', ["date", "desc"], messageLimit).then((dbData) => {
         const chatMessages = {};
@@ -405,11 +381,7 @@ async function getChatMessages(messageLimit = 30) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Listen for changes to the messages database and run the specified callback function
-// whenever something has changed on the server. Use this instead of getChatMessages()
-// to keep the message list automatically updated without further requests. 
-//
-// Use getChatMessages() instead to get a current snapshot of messages with no automatic 
-// updates.  
+// whenever something has changed on the server. 
 //  N.B. Only call this function once per page load!
 function getChatMessagesOnUpdate(messageLimit = 30, onUpdateCallback = null) {
     return dbSetCollectionDocumentsListener(db, 'chatmeddelande', ["date", "desc"], messageLimit, onUpdateCallback);
@@ -510,6 +482,11 @@ async function likeChatMessage(messageId) {
 
 
 
+/****************************************************************************************
+ * GENERIC FUNCTIONS
+ ****************************************************************************************/
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Retrieve up to resultLimit documents from the collectionName collection, sorted by
 // the sortResultBy parameter.
@@ -543,6 +520,7 @@ async function dbGetCollectionDocuments(db, collectionName, sortResultBy, result
         console.error("Error reading from collection: ", error);
     }
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Retrieve up to resultLimit documents from the collectionName collection, sorted by
@@ -635,7 +613,6 @@ export {
     userSetEmail,
     getIsUserId,
     getCurrentUserId,
-    getUserPicture,
     getIsValidText,
     getUserProfiles,
     buildAuthorProfilesCache,

@@ -6,8 +6,6 @@
 */
 
 import {
-    addChatMessage,
-    getChatMessages,
     userLogin,
     userLogoff,
     userIsLoggedIn,
@@ -17,14 +15,13 @@ import {
     userUpdateProfile,
     setUserLoginCallback,
     setUserLogoffCallback,
-    getUserPicture,
     userDelete,
     userSetPassword,
     userSendEmailVerification
 } from './modules/api.js';
 
-import { showErrorMessage, clearErrorMessages } from './modules/interface.js';
-import { createColorPicker, createMessageCard } from './modules/message.js';
+import { showErrorMessage, clearErrorMessages, toggleDarkMode } from './modules/interface.js';
+import { createMessageCard } from './modules/message.js';
 
 
 // Configure function to run when a user has logged in
@@ -33,6 +30,25 @@ setUserLoginCallback(userLoggedInCallback);
 // Configure function to run when the user has logged off
 setUserLogoffCallback(userLoggedOffCallback);
 
+// Set default darkmode setting depending on visitor's system setting. 
+toggleDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Update the darkmode setting if the user's system setting changes. 
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+    toggleDarkMode(event.matches);
+});
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Radio-group to toggle darkmode on and off manually. 
+document.querySelectorAll(`#colormode-toggle-wrapper input[name="colormode-toggle"]`).forEach((modeRadio) => {
+    modeRadio.addEventListener("change", (event) => {
+        toggleDarkMode(event.currentTarget.value == "dark");
+    })
+});
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +73,7 @@ document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {
             case "menu-contact": contactSection.classList.remove("hide"); break;
         }
 
-        document.querySelector("#mainmenu-toggle").checked = false;
+        // document.querySelector("#mainmenu-toggle").checked = false;
     });
 });
 
@@ -224,7 +240,7 @@ document.querySelector("#user-profile-dialog").addEventListener("keyup", (event)
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Change user name form
+// EXAMPLE: Change user name form - TODO: Change to or include in User Profile form
 document.querySelector("#change-name-form").addEventListener("submit", (event) => {
     event.preventDefault();
     if (userIsLoggedIn()) {
@@ -236,6 +252,8 @@ document.querySelector("#change-name-form").addEventListener("submit", (event) =
                 const userName = getCurrentUserName();
                 document.querySelector("#logged-in-email").innerHTML = `${userName} <span>(${currUser.email})</span>`;
                 document.querySelector("#user-menu-button span").innerText = userName;
+
+                document.querySelector("#user-profile-dialog").close();
                 console.log("PROFILE UPDATED", currUser, param);
             });
         });
@@ -245,25 +263,20 @@ document.querySelector("#change-name-form").addEventListener("submit", (event) =
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // USER LOG IN: This function is run when user login is completed
-function userLoggedInCallback(currUser) {
-    console.log("ANV INLOGG", currUser);
-
+function userLoggedInCallback() {
     getCurrentUserProfile().then((currUser) => {
         const loginForm = document.querySelector("#login-form");
         const logoutBox = document.querySelector("#logged-in");
         const userEmail = document.querySelector("#logged-in-email");
         const userDate = document.querySelector("#logged-in-last");
 
-        userEmail.innerHTML = `${getCurrentUserName()} <span>(${currUser.email})</span>`;
+        userEmail.innerHTML = `${currUser.displayName} <span>(${currUser.email})</span>`;
         userDate.innerText = `last login: ${currUser.lastLogin}`;
         loginForm.classList.remove("show");
         logoutBox.classList.add("show");
 
-        document.querySelector("#user-menu-button span").innerText = getCurrentUserName();
-        getUserPicture().then((userPicture) => {
-            document.querySelector("#user-menu-button img").src = userPicture;
-        });
-
+        document.querySelector("#user-menu-button span").innerText = currUser.displayName;
+        document.querySelector("#user-menu-button img").src = currUser.picture;
 
         showLoggedInUserElements(true);
     });
