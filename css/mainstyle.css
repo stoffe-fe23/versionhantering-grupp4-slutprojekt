@@ -90,6 +90,16 @@ main {
     text-align: center;
 }
 
+#status {
+    display: none;
+    padding: 0.5rem 1rem;
+    background-color: darkblue;
+    color: white;
+    font-weight: 700;
+    text-align: center;
+}
+
+#status.show, 
 #errors.show {
     display: block;
 }
@@ -293,4 +303,59 @@ form label {
 #mainmenu-button:hover span::before,
 #mainmenu-button:hover span::after {
   background-color: orange;
+}
+
+#mainmenu-toggle:checked ~ #mainmenu-button span {
+    height: 0px;
+    background-color: yellow;
+}
+  
+#mainmenu-toggle:checked~ #mainmenu-button span::before {
+    transform: rotate(45deg);
+    top: -2px;
+    background-color: yellow;
+}
+  
+#mainmenu-toggle:checked ~ #mainmenu-button span::after {
+    transform: rotate(-45deg);
+    top: -2px;
+    background-color: yellow;
+}
+
+
+/* Darkmode switch */
+
+#colormode-toggle-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    border: 1px solid black;
+    border-radius: 15px;
+}
+
+#colormode-toggle-dark,
+#colormode-toggle-light {
+    position: absolute;
+    left: -100px !important;
+}
+
+label[for="colormode-toggle-dark"], 
+label[for="colormode-toggle-light"] {
+    padding: 0.4rem 1rem;
+    background-color: black;
+    color: lightgray;
+}
+
+label[for="colormode-toggle-dark"] {
+    border-radius: 15px 0px 0px 15px;
+}
+
+label[for="colormode-toggle-light"] {
+    border-radius: 0px 15px 15px 0px;
+}
+
+#colormode-toggle-dark:checked + label[for="colormode-toggle-dark"], 
+#colormode-toggle-light:checked + label[for="colormode-toggle-light"] {
+    background-color: orange;
+    color: black;
 }

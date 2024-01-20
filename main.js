@@ -20,7 +20,7 @@ import {
     userSendEmailVerification
 } from './modules/api.js';
 
-import { showErrorMessage, clearErrorMessages } from './modules/interface.js';
+import { showErrorMessage, clearErrorMessages, toggleDarkMode } from './modules/interface.js';
 import { createMessageCard } from './modules/message.js';
 
 
@@ -30,6 +30,25 @@ setUserLoginCallback(userLoggedInCallback);
 // Configure function to run when the user has logged off
 setUserLogoffCallback(userLoggedOffCallback);
 
+// Set default darkmode setting depending on visitor's system setting. 
+toggleDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Update the darkmode setting if the user's system setting changes. 
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+    toggleDarkMode(event.matches);
+});
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Radio-group to toggle darkmode on and off manually. 
+document.querySelectorAll(`#colormode-toggle-wrapper input[name="colormode-toggle"]`).forEach((modeRadio) => {
+    modeRadio.addEventListener("change", (event) => {
+        toggleDarkMode(event.currentTarget.value == "dark");
+    })
+});
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////

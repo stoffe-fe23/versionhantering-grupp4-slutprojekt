@@ -7,9 +7,11 @@
 
 
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////
-//
-function showErrorMessage(errorText, clearOldMessages = false) {
+// Show an error message to the user. If the autoCloseAfter parameter is set to a number
+// of milliseconds the error message will automatically close after that amount of time.
+function showErrorMessage(errorText, clearOldMessages = false, autoCloseAfter = 0) {
     const errorBox = document.querySelector("#errors");
 
     if (clearOldMessages) {
@@ -22,11 +24,20 @@ function showErrorMessage(errorText, clearOldMessages = false) {
     errorMsg.innerText = errorText;
     errorBox.appendChild(errorMsg);
     errorBox.scrollTo();
+
+    if (autoCloseAfter > 1000) {
+        setTimeout((errorMsg, errorBox) => {
+            errorMsg.remove();
+            if (errorBox.children.count <= 0) {
+                errorBox.classList.remove("show");
+            }
+        }, autoCloseAfter, errorMsg, errorBox);
+    }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-//
+// Remove any error messages displayed to the user.
 function clearErrorMessages() {
     const errorBox = document.querySelector("#errors");
     errorBox.innerHTML = '';
@@ -34,4 +45,57 @@ function clearErrorMessages() {
 }
 
 
-export { showErrorMessage, clearErrorMessages }; 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Show a feedback message that is not an error to the user. If the autoCloseAfter parameter 
+// is set to a number of milliseconds the status message will automatically close after that 
+// amount of time.
+function showStatusMessage(statusText, clearOldMessages = false, autoCloseAfter = 0) {
+    const statusBox = document.querySelector("#status");
+
+    if (clearOldMessages) {
+        statusBox.innerHTML = '';
+    }
+
+    console.log("Show status", statusText);
+    statusBox.classList.add("show");
+    const statusMsg = document.createElement("div");
+    statusMsg.innerText = statusText;
+    statusBox.appendChild(statusMsg);
+    statusBox.scrollTo();
+
+    if (autoCloseAfter > 1000) {
+        setTimeout((statusMsg, statusBox) => {
+            statusMsg.remove();
+            if (statusBox.children.count <= 0) {
+                statusBox.classList.remove("show");
+            }
+        }, autoCloseAfter, statusMsg, statusBox);
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Remove any error messages displayed to the user.
+function clearStatusMessages() {
+    const statusBox = document.querySelector("#status");
+    statusBox.innerHTML = '';
+    statusBox.classList.remove("show");
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// Toggle Dark Mode on and off
+function toggleDarkMode(enableDarkMode) {
+    console.log("DARK MODE", enableDarkMode);
+    if (enableDarkMode) {
+        document.body.classList.add("darkmode");
+        document.querySelector("#colormode-toggle-dark").checked = true;
+    }
+    else {
+        document.body.classList.remove("darkmode");
+        document.querySelector("#colormode-toggle-light").checked = true;
+    }
+}
+
+
+export { showErrorMessage, clearErrorMessages, showStatusMessage, clearStatusMessages, toggleDarkMode }; 
