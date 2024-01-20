@@ -73,6 +73,8 @@ document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {
             case "menu-contact": contactSection.classList.remove("hide"); break;
         }
 
+        // Put this back when mobile-first design is properly implemented
+        // Hides the main menu after picking a menu option. 
         // document.querySelector("#mainmenu-toggle").checked = false;
     });
 });
@@ -218,15 +220,21 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
     event.preventDefault();
     if (userIsLoggedIn()) {
         const inputValue = document.querySelector("#change-name-input").value.trim();
-        const profileData = { displayName: inputValue };
+
+        // TODO: If name or photo has changed, update value here.....
+        //  * Get current profile data to compare with: getCurrentUserProfile() ? 
+        const profileData = {
+            displayName: inputValue,
+            /* picture: urlToPicture,  */
+        };
 
         userUpdateProfile(profileData).then((param) => {
             getCurrentUserProfile().then((currUser) => {
                 const userName = getCurrentUserName();
-                document.querySelector("#logged-in-email").innerHTML = `${userName} <span>(${currUser.email})</span>`;
+                document.querySelector("#logged-in-name").innerHTML = userName;
+                document.querySelector("#logged-in-email").innerHTML = currUser.email;
                 document.querySelector("#user-menu-button span").innerText = userName;
 
-                document.querySelector("#user-profile-dialog").close();
                 console.log("PROFILE UPDATED", currUser, param);
             });
         });

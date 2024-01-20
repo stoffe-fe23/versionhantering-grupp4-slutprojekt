@@ -23,7 +23,6 @@ body {
     background-color: rgb(27, 43, 63);
     background: linear-gradient(to right top, rgb(27, 43, 63), rgb(60, 73, 92));
     color: white;
-    min-width: 600px;
     min-height: 100vh;
 }
 
@@ -352,7 +351,7 @@ form label {
 #mainmenu-button:hover span::after {
   background-color: orange;
 }
-
+/*
 #mainmenu-toggle:checked ~ #mainmenu-button span {
     height: 0px;
     background-color: yellow;
@@ -369,6 +368,7 @@ form label {
     top: -2px;
     background-color: yellow;
 }
+*/
 
 
 /* Darkmode switch */
