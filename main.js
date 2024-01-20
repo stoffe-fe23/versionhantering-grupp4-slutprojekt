@@ -213,35 +213,8 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// User Profile button
-document.querySelector("#update-user").addEventListener("click", (event) => {
-    if (userIsLoggedIn()) {
-        const inputField = document.querySelector("#change-name-input");
-        inputField.value = getCurrentUserName();
-
-        document.querySelector("#user-login-dialog").close();
-        document.querySelector("#user-profile-dialog").showModal();
-    }
-});
-
-// Close the user profile dialog when clicking outside it
-document.querySelector("#user-profile-dialog").addEventListener("click", (event) => {
-    if (event.target.id == event.currentTarget.id) {
-        event.currentTarget.close();
-    }
-});
-
-// Close the user profile  dialog when pressing the ESC key
-document.querySelector("#user-profile-dialog").addEventListener("keyup", (event) => {
-    if (event.key == "Escape") {
-        event.currentTarget.close();
-    }
-});
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Change user name form - TODO: Change to or include in User Profile form
-document.querySelector("#change-name-form").addEventListener("submit", (event) => {
+// Profile data form, change name and profile picture
+document.querySelector("#user-profile-form").addEventListener("submit", (event) => {
     event.preventDefault();
     if (userIsLoggedIn()) {
         const inputValue = document.querySelector("#change-name-input").value.trim();
@@ -262,23 +235,62 @@ document.querySelector("#change-name-form").addEventListener("submit", (event) =
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+// Account info form, change email address, password or remove account
+document.querySelector("#user-account-form").addEventListener("submit", (event) => {
+    const oldPassword = document.querySelector("#change-confirm-input");
+
+    // TODO: Update account data if something has changed, or remove account if that button is pressed
+    //  * Get current profile data to compare with: getCurrentUserProfile()
+    //  * Remove the user account with userDelete(oldPassword)
+    //  * Update user password with userSetPassword(oldPassword, newPassword)
+    //  * Change email address with userSetEmail(oldPassword, newEmail)
+
+    // User pressed the save-submit button
+    if (event.submitter.id == "change-account-submit") {
+        const newPassword = document.querySelector("#change-password-input");
+        const confirmPassword = document.querySelector("#change-password-again-input");
+        const newEmail = document.querySelector("#change-email-input");
+
+        if (newPassword.value.trim() !== confirmPassword.value.trim()) {
+            showErrorMessage("Your new password does not match.");
+        }
+
+        console.log("TODO", "Update account button pressed!");
+    }
+    // User pressed the delete submit button
+    else if (event.submitter.id == "change-account-remove") {
+        console.log("TODO", "Delete account button pressed!");
+    }
+});
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
 // USER LOG IN: This function is run when user login is completed
 function userLoggedInCallback() {
     getCurrentUserProfile().then((currUser) => {
         const loginForm = document.querySelector("#login-form");
-        const logoutBox = document.querySelector("#logged-in");
+        const loggedInBox = document.querySelector("#logged-in");
+        const newUserForm = document.querySelector("#new-user-form");
+        const newMessageButton = document.querySelector("#message-new-wrapper");
+
         const userEmail = document.querySelector("#logged-in-email");
+        const userName = document.querySelector("#logged-in-name");
         const userDate = document.querySelector("#logged-in-last");
 
-        userEmail.innerHTML = `${currUser.displayName} <span>(${currUser.email})</span>`;
+        userName.innerText = currUser.displayName;
+        userEmail.innerHTML = currUser.email;
         userDate.innerText = `last login: ${currUser.lastLogin}`;
+
         loginForm.classList.remove("show");
-        logoutBox.classList.add("show");
+        newUserForm.classList.remove("show");
+
+        loggedInBox.classList.add("show");
+        newMessageButton.classList.add("show");
 
         document.querySelector("#user-menu-button span").innerText = currUser.displayName;
         document.querySelector("#user-menu-button img").src = currUser.picture;
 
-        showLoggedInUserElements(true);
+
     });
 }
 
@@ -287,36 +299,25 @@ function userLoggedInCallback() {
 // USER LOG OFF: This function is run when user logoff is concluded.
 function userLoggedOffCallback() {
     const loginForm = document.querySelector("#login-form");
-    const logoutBox = document.querySelector("#logged-in");
+    const loggedInBox = document.querySelector("#logged-in");
+    const newUserForm = document.querySelector("#new-user-form");
+    const newMessageButton = document.querySelector("#message-new-wrapper");
+
     const userEmail = document.querySelector("#logged-in-email");
+    const userName = document.querySelector("#logged-in-name");
     const userDate = document.querySelector("#logged-in-last");
 
+    userName.innerText = '';
     userEmail.innerText = '';
     userDate.innerText = '';
+
+    loggedInBox.classList.remove("show");
+    newMessageButton.classList.remove("show");
     loginForm.classList.add("show");
-    logoutBox.classList.remove("show");
+    newUserForm.classList.add("show");
 
     document.querySelector("#user-menu-button span").innerText = "Log in";
     document.querySelector("#user-menu-button img").src = './images/profile-test-image.png';
 
-    showLoggedInUserElements(false);
     console.log("ANV. UTLOGG");
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// Toggle visible interface components depending on if a user is logged on or not
-function showLoggedInUserElements(isLoggedOn) {
-    const newMessageButton = document.querySelector("#message-new-wrapper");
-    const newUserForm = document.querySelector("#new-user-form");
-
-    if (isLoggedOn) {
-        newUserForm.classList.remove("show");
-        newMessageButton.classList.add("show");
-    }
-    else {
-        newUserForm.classList.add("show");
-        newMessageButton.classList.remove("show");
-    }
-
 }

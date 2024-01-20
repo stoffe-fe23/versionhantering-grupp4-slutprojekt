@@ -71,9 +71,50 @@
             </form>
             <!-- USER LOGGED IN: User info and logoff button -->
             <div id="logged-in">
-                <h2>Work in Progress</h2>
-                <span>Current user:</span><span><span id="logged-in-email"></span><span id="logged-in-last"></span></span>
-                <button id="logoff-button">Log off</button><div id="update-user-wrapper"><button id="update-user">User profile</button></div>
+                <div id="user-info-wrapper">
+                    <div id="logged-in-name"></div>
+                    <div id="logged-in-email"></div>
+                    <div id="logged-in-last"></div>
+                </div>
+                <div id="user-logoff-wrapper">
+                    <button id="logoff-button">Log off</button>
+                </div>
+                <div id="user-profile-wrapper">
+                    <h2>Profile</h2>
+                    <form id="user-profile-form" autocomplete="off">
+                        <div>
+                            <label for="change-name-input">Your name:</label>
+                            <input type="text" id="change-name-input" value="" minlength="2" maxlength="20" required /></div>
+                        <div>
+                            <label for="change-picture-input">URL to profile picture:</label>
+                            <input type="text" id="change-picture-input" value="" minlength="12" maxlength="128" />
+                        </div>
+                        <button id="change-profile-submit">Save</button>
+                    </form>
+                    <h2>Account</h2>
+                    <form id="user-account-form" autocomplete="off">
+                        <div>
+                            <label for="change-password-input">New password:</label>
+                            <input type="password" id="change-password-input" value="" minlength="6" maxlength="30" />
+                        </div>
+                        <div>
+                            <label for="change-password-input">Repeat new password:</label>
+                            <input type="password" id="change-password-again-input" value="" minlength="6" maxlength="30" />
+                        </div>
+                        <div>
+                            <label for="change-email-input">New email address:</label>
+                            <input type="email" id="change-email-input" value="" minlength="6" maxlength="128" />
+                        </div>
+                        <div>
+                            <label for="change-confirm-input">Current password:</label>
+                            <input type="password" id="change-confirm-input" value="" minlength="6" maxlength="30" />
+                        </div>
+                        <div id="user-account-form-buttons">
+                            <button id="change-account-submit">Update account</button>
+                            <button id="change-account-remove" formnovalidate>Delete account</button>
+                        </div>
+                    </form>
+                </div>
             </div>
             <!-- USER NOT LOGGED IN: Form for creating a new user -->
             <form id="new-user-form">
@@ -88,16 +129,5 @@
     </dialog>
     <!-- Popup dialog for showing the full text of a very long message -->
     <dialog id="message-long-text-dialog"><div id="message-long-text-wrapper"></div></dialog>
-    <!-- Popup dialog for showing/editing the current user's profile -->
-    <dialog id="user-profile-dialog">
-        <div id="user-profile-wrapper">
-            <h2>Profile - Work in Progress</h2>
-            <form id="change-name-form" method="dialog" autocomplete="off">
-                <label for="change-name-input">Your name:</label>
-                <input type="text" id="change-name-input" value="" minlength="2" maxlength="20" required />
-                <button id="change-name-submit">Save</button>
-            </form>
-        </div>
-    </dialog>
 </body>
 </html>

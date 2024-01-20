@@ -119,27 +119,84 @@ form label {
 #logged-in {
     display: none;
     justify-content: flex-end;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
     padding: 0.25rem;
 }
 
-#logged-in span:first-of-type {
-    font-weight: 700;
-}
-
-#logged-in span:first-of-type span {
-    font-weight: 400;
-    font-size: 0.9em;
-}
 
 #logged-in.show {
     display: flex;
 }
 
+#logged-in-name {
+    font-weight: bold;
+    font-size: 1.4em;
+}
+
+#logged-in-email {
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+
 #logged-in-last {
     display: block;
     font-size: 0.7em;
+}
+
+#user-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+#user-profile-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#user-profile-wrapper h2 {
+    margin: 0;
+}
+
+#user-profile-form {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem;
+    gap: 1rem;
+    width: 100%;
+}
+
+#user-profile-form label {
+    display: block;
+    font-size: 0.8em;
+}
+
+#user-profile-form input {
+    width: 100%;
+}
+
+#user-account-form {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem;
+    gap: 1rem;
+    width: 100%;
+}
+
+#user-account-form label, 
+#user-profile-form label {
+    display: block;
+    font-size: 0.8em;
+}
+
+#user-account-form input, 
+#user-profile-form input {
+    width: 100%;
 }
 
 #button-bar {
@@ -148,15 +205,6 @@ form label {
     align-items: center;
     gap: 1rem;
 }
-
-
-#change-name-form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem 2rem;
-}
-
 
 
 /* Main menu placeholder */
@@ -343,7 +391,7 @@ label[for="colormode-toggle-dark"],
 label[for="colormode-toggle-light"] {
     padding: 0.4rem 1rem;
     background-color: black;
-    color: lightgray;
+    color: gray;
 }
 
 label[for="colormode-toggle-dark"] {
@@ -357,5 +405,6 @@ label[for="colormode-toggle-light"] {
 #colormode-toggle-dark:checked + label[for="colormode-toggle-dark"], 
 #colormode-toggle-light:checked + label[for="colormode-toggle-light"] {
     background-color: orange;
-    color: black;
+    color: white;
+    font-weight: 700;
 }
