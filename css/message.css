@@ -97,6 +97,11 @@
     cursor: pointer;
 }
 
+.message-liked {
+    font-weight: 700;
+    color: yellow;
+}
+
 .message-fulltext-button {
     display: block;
     border: 0;

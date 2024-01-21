@@ -134,6 +134,8 @@ function updateMessageCard(messageData, messageId) {
 
         const trimmedText = getTruncatedText(messageData.message, SHORT_MESSAGE_LIMIT);
 
+        const hasLikedMessage = (userIsLoggedIn() && (messageData.likers !== undefined) && (messageData.likers !== null) ? messageData.likers.includes(getCurrentUserId()) : false);
+
         messageCard.setAttribute("card-color", messageData.color);
         setElementBackgroundColor(messageCard, messageData.color);
 
@@ -142,6 +144,12 @@ function updateMessageCard(messageData, messageId) {
 
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
         messageLikes.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes : 0})`;
+        if (hasLikedMessage) {
+            messageLikes.classList.add("message-liked");
+        }
+        else {
+            messageLikes.classList.remove("message-liked");
+        }
 
         setAuthorInfoFromCache(messageCard, messageData.authorid);
 
@@ -211,6 +219,14 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
         messageLikeButton.classList.add("hide");
     }
     else {
+        const hasLikedMessage = (userIsLoggedIn() && (messageData.likers !== undefined) && (messageData.likers !== null) ? messageData.likers.includes(getCurrentUserId()) : false);
+        if (hasLikedMessage) {
+            messageLikeButton.classList.add("message-liked");
+        }
+        else {
+            messageLikeButton.classList.remove("message-liked");
+        }
+
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
         messageText.innerText = (getIsValidText(messageData.message) ? getTruncatedText(messageData.message, SHORT_MESSAGE_LIMIT) : "No message");
         messageEditButton.innerText = "Edit";
@@ -233,7 +249,6 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
         // Like button
         messageLikeButton.addEventListener("click", (event) => {
             likeChatMessage(messageId).then(() => {
-                messageLikeButton.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes + 1 : 1})`;
                 console.log("MESSAGE LIKED", messageId);
             }).catch((error) => {
                 console.error("MESSAGE LIKE ERROR", error);

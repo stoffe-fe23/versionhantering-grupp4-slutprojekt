@@ -196,6 +196,7 @@ async function userUpdateProfile(profileData) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Retrieve the profile data of the currently logged on user
 // Function returns a Promise with the user profile data as callback parameter.
+// TODO: Cache the data locally after first DB-fetch until updated?
 async function getCurrentUserProfile() {
     let userProfile = {};
     if (currentUser !== null) {
