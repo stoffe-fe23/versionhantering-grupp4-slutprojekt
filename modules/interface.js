@@ -5,6 +5,11 @@
     Functionality for building user interface elements.
 */
 
+import {
+    userIsLoggedIn,
+    getCurrentUserProfile,
+} from './api.js';
+
 
 
 
@@ -28,7 +33,7 @@ function showErrorMessage(errorText, clearOldMessages = false, autoCloseAfter = 
     if (autoCloseAfter > 1000) {
         setTimeout((errorMsg, errorBox) => {
             errorMsg.remove();
-            if (errorBox.children.count <= 0) {
+            if (errorBox.children.length <= 0) {
                 errorBox.classList.remove("show");
             }
         }, autoCloseAfter, errorMsg, errorBox);
@@ -66,7 +71,7 @@ function showStatusMessage(statusText, clearOldMessages = false, autoCloseAfter 
     if (autoCloseAfter > 1000) {
         setTimeout((statusMsg, statusBox) => {
             statusMsg.remove();
-            if (statusBox.children.count <= 0) {
+            if (statusBox.children.length <= 0) {
                 statusBox.classList.remove("show");
             }
         }, autoCloseAfter, statusMsg, statusBox);
@@ -98,4 +103,21 @@ function toggleDarkMode(enableDarkMode) {
 }
 
 
-export { showErrorMessage, clearErrorMessages, showStatusMessage, clearStatusMessages, toggleDarkMode }; 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// Load existing profile info into the User Profile forms.
+function loadUserProfile() {
+    if (userIsLoggedIn()) {
+        getCurrentUserProfile().then((userProfile) => {
+            const userName = document.querySelector("#change-name-input");
+            const userPicture = document.querySelector("#change-picture-input");
+            const userEmail = document.querySelector("#change-email-input");
+
+            userName.value = userProfile.displayName.trim();
+            userPicture.value = userProfile.picture.trim();
+            userEmail.value = userProfile.email.trim();
+        });
+    }
+}
+
+
+export { showErrorMessage, clearErrorMessages, showStatusMessage, clearStatusMessages, toggleDarkMode, loadUserProfile }; 

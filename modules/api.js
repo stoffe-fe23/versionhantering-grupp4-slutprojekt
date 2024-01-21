@@ -16,6 +16,7 @@ import {
     onAuthStateChanged,
     updateProfile,
     updatePassword,
+    updateEmail,
     deleteUser,
     sendPasswordResetEmail,
     sendEmailVerification,
@@ -52,6 +53,7 @@ const db = getFirestore(app);
 
 // Global variables used for logging on/off users
 let currentUser = auth.currentUser;
+let currentUserProfile = null;
 let userLoginCallback;
 let userLogoffCallback;
 
@@ -69,6 +71,7 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
         if (typeof userLoginCallback == "function") {
+            getCurrentUserProfile();
             userLoginCallback();
         }
         console.log("CURRENT USER", currentUser);
@@ -77,6 +80,7 @@ onAuthStateChanged(auth, (user) => {
         currentUser = null;
         if (typeof userLogoffCallback == "function") {
             userLogoffCallback();
+            currentUserProfile = null;
         }
         console.log("NO USER", currentUser);
     }
@@ -189,7 +193,13 @@ async function userUpdateProfile(profileData) {
     }
 
     // Update user authentication data
-    return await updateProfile(auth.currentUser, authProfileData);
+    const updatePromise = await updateProfile(auth.currentUser, authProfileData);
+
+    // Clear profile data cache and rebuild... 
+    currentUserProfile = null;
+    getCurrentUserProfile();
+
+    return updatePromise;
 }
 
 
@@ -198,9 +208,12 @@ async function userUpdateProfile(profileData) {
 // Function returns a Promise with the user profile data as callback parameter.
 // TODO: Cache the data locally after first DB-fetch until updated?
 async function getCurrentUserProfile() {
-    let userProfile = {};
-    if (currentUser !== null) {
-        userProfile = {
+    if (currentUser === null) {
+        return {};
+    }
+
+    if ((currentUserProfile === undefined) || (currentUserProfile === null) || (typeof currentUserProfile != "object")) {
+        let userProfile = {
             uid: currentUser.uid,
             displayName: (currentUser.displayName.length > 0 ? currentUser.displayName : "No name"),
             email: currentUser.email,
@@ -221,8 +234,14 @@ async function getCurrentUserProfile() {
                 userProfile.color = docProfileData.color;
             }
         }
+
+        currentUserProfile = userProfile;
+        console.log("User Profile Load from DB...");
     }
-    return userProfile;
+    else {
+        console.log("User Profile Load from cache...");
+    }
+    return currentUserProfile;
 }
 
 
