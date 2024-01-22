@@ -12,6 +12,8 @@ Användare kan även "Gilla" en lapp.
 
 Besökare kan skapa ett användarkonto där de anger e-postadress (används för inloggning), en profilbild och ett namn som syns på meddelande de skapar.
 
+[Besök på Github Pages](https://stoffe-fe23.github.io/versionhantering-grupp4-slutprojekt/)
+
 
 ### Nya features
 Om du vill bidra med features till projektet:

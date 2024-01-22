@@ -53,6 +53,7 @@ const db = getFirestore(app);
 
 // Global variables used for logging on/off users
 let currentUser = auth.currentUser;
+let lastUserId = ((auth.currentUser !== undefined) && (auth.currentUser !== null) ? auth.currentUser.uid : 0);
 let currentUserProfile = null;
 let userLoginCallback;
 let userLogoffCallback;
@@ -70,6 +71,7 @@ let userLogoffCallback;
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
+        lastUserId = currentUser.uid;
         getCurrentUserProfile();
         if (typeof userLoginCallback == "function") {
             userLoginCallback();
@@ -118,9 +120,18 @@ function getIsUserId(userId) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Check if the currently logged in user has the specified userId.
+// Get the UserId of the currently logged on user
 function getCurrentUserId() {
     return (userIsLoggedIn() ? currentUser.uid : 0);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Get the userid most recently logged on as, or 0 if not having logged on. 
+// Note that this differs from getCurrentUserId() in that it will retain the UID after the
+// user has logged off, but not left/refreshed the page. 
+function getLastUserId() {
+    return lastUserId;
 }
 
 
@@ -206,7 +217,6 @@ async function userUpdateProfile(profileData) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Retrieve the profile data of the currently logged on user
 // Function returns a Promise with the user profile data as callback parameter.
-// TODO: Cache the data locally after first DB-fetch until updated?
 async function getCurrentUserProfile() {
     if (currentUser === null) {
         return {};
@@ -251,6 +261,7 @@ async function getCurrentUserProfile() {
 async function createNewUser(userEmail, userPassword, userName) {
     return createUserWithEmailAndPassword(auth, userEmail, userPassword).then((userCredential) => {
         currentUser = userCredential.user;
+        lastUserId = currentUser.uid;
 
         if ((userName !== undefined) && (userName.length > 0)) {
             userUpdateProfile({ displayName: userName }).then(() => {
@@ -633,4 +644,5 @@ export {
     getIsValidText,
     getUserProfiles,
     buildAuthorProfilesCache,
+    getLastUserId,
 };

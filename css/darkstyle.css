@@ -1,0 +1,71 @@
+/*
+    Versionshantering slutprojekt (FE23)
+    Grupp 4
+
+    Stylesheet for Dark Mode overrides.
+*/
+
+/* Base layout */
+body.darkmode {
+    background-color: rgb(13, 20, 29);
+    background: linear-gradient(to right top, rgb(19, 13, 29), rgb(37, 29, 44));
+    color: white;
+}
+
+
+body.darkmode a, body.darkmode a:visited {
+    color: orange;
+}
+
+body.darkmode a:hover {
+    color: yellow;
+}
+
+
+/* Main navigation menu */
+
+body.darkmode #mainmenu {
+    background-color: black;
+}
+
+body.darkmode #mainmenu a,  body.darkmode #mainmenu a:visited {
+    color: white;
+    text-decoration: none;
+}
+
+body.darkmode #mainmenu a:hover {
+    color: yellow;
+}
+
+body.darkmode #mainmenu .menu-option img {
+    filter: invert(100%);
+}
+
+
+
+/* Background colors of message notes */
+
+.background-lightgreen {
+    background-color: rgb(144,238,144);
+    color: black;
+}
+
+.background-lightyellow {
+    background-color: rgb(255,255,224);
+    color: black;
+}
+
+.background-lightblue {
+    background-color: rgb(173,216,230);
+    color: black;
+}
+
+.background-lightpink {
+    background-color: rgb(255,182,193);
+    color: black;
+}
+
+.background-lightgray {
+    background-color: rgb(211,211,211);
+    color: black;
+}
