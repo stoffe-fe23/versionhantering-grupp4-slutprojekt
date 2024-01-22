@@ -47,20 +47,25 @@ body.darkmode #mainmenu .menu-option img {
 
 .background-lightgreen {
     background-color: rgb(144,238,144);
+    color: black;
 }
 
 .background-lightyellow {
     background-color: rgb(255,255,224);
+    color: black;
 }
 
 .background-lightblue {
     background-color: rgb(173,216,230);
+    color: black;
 }
 
 .background-lightpink {
     background-color: rgb(255,182,193);
+    color: black;
 }
 
 .background-lightgray {
     background-color: rgb(211,211,211);
+    color: black;
 }
