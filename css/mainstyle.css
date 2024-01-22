@@ -470,6 +470,7 @@ label[for="colormode-toggle-light"] {
     #mainmenu-button {
         order: 1;
         visibility: hidden;
+        margin-right: 50px;
     }
     
     #user-menu-button {
