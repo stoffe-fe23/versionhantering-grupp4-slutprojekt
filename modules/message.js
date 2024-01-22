@@ -145,7 +145,7 @@ function updateMessageCard(messageData, messageId) {
         setElementBackgroundColor(messageEditor, messageData.color);
 
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
-        messageLikes.innerHTML = `<img src="../images/smallicon-like.png" alt="Like"><span>(${messageData.likes !== undefined ? messageData.likes : 0})</span>`;
+        messageLikes.innerHTML = `<img src="./images/smallicon-like.png" alt="Like"><span>(${messageData.likes !== undefined ? messageData.likes : 0})</span>`;
         if (hasLikedMessage) {
             messageLikes.classList.add("message-liked");
         }
@@ -280,8 +280,8 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
         messageText.innerText = (getIsValidText(messageData.message) ? getTruncatedText(messageData.message, SHORT_MESSAGE_LIMIT) : "No message");
-        messageEditButton.innerHTML = `<img class="smallicon" src="../images/smallicon-edit.png" alt="Edit message">`;
-        messageLikeButton.innerHTML = `<img class="smallicon" src="../images/smallicon-like.png" alt="Like"><span>(${messageData.likes !== undefined ? messageData.likes : 0})</span>`;
+        messageEditButton.innerHTML = `<img class="smallicon" src="./images/smallicon-edit.png" alt="Edit message">`;
+        messageLikeButton.innerHTML = `<img class="smallicon" src="./images/smallicon-like.png" alt="Like"><span>(${messageData.likes !== undefined ? messageData.likes : 0})</span>`;
         messageEditButton.setAttribute("title", "Edit message");
         messageLikeButton.setAttribute("title", (hasLikedMessage ? "Liked message" : "Like message"));
     }
@@ -376,7 +376,7 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
         const messageFullTextButton = document.createElement("button");
 
         messageFullTextBox.innerText = (getIsValidText(messageData.message) ? messageData.message : "");
-        messageFullTextButton.innerHTML = `<img class="smallicon" src="../images/smallicon-expand.png" alt="View full message">`;
+        messageFullTextButton.innerHTML = `<img class="smallicon" src="./images/smallicon-expand.png" alt="View full message">`;
         messageFullTextButton.setAttribute("title", "View full message text");
 
         messageFullTextDialog.classList.add("message-fulltext-dialog");
