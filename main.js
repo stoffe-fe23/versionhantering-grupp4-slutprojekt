@@ -17,10 +17,11 @@ import {
     setUserLogoffCallback,
     userDelete,
     userSetPassword,
+    userSetEmail,
     userSendEmailVerification
 } from './modules/api.js';
 
-import { showErrorMessage, clearErrorMessages, toggleDarkMode } from './modules/interface.js';
+import { showErrorMessage, clearErrorMessages, toggleDarkMode, loadUserProfile, showStatusMessage } from './modules/interface.js';
 import { createMessageCard } from './modules/message.js';
 
 
@@ -32,7 +33,6 @@ setUserLogoffCallback(userLoggedOffCallback);
 
 // Set default darkmode setting depending on visitor's system setting. 
 toggleDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -73,6 +73,8 @@ document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {
             case "menu-contact": contactSection.classList.remove("hide"); break;
         }
 
+        // Put this back when mobile-first design is properly implemented
+        // Hides the main menu after picking a menu option. 
         // document.querySelector("#mainmenu-toggle").checked = false;
     });
 });
@@ -108,20 +110,19 @@ document.querySelector("#message-new-button").addEventListener("click", (event) 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // User button events
 
-// Open the login/new user dialog box
+// Open the User popup dialog with the login/new user dialog box and user profile editor
 document.querySelector("#user-menu-button").addEventListener("click", (event) => {
     const loginDialog = document.querySelector("#user-login-dialog");
+    loadUserProfile();
     loginDialog.showModal();
 });
 
-// Close the login dialog when clicking outside it
-document.querySelector("#user-login-dialog").addEventListener("click", (event) => {
-    if (event.target.id == event.currentTarget.id) {
-        event.currentTarget.close();
-    }
+// Close the dialog when clicking the close button
+document.querySelector("#user-login-close").addEventListener("click", (event) => {
+    document.querySelector("#user-login-dialog").close();
 });
 
-// Close the login dialog when pressing the ESC key
+// Close the dialog when pressing the ESC key
 document.querySelector("#user-login-dialog").addEventListener("keyup", (event) => {
     if (event.key == "Escape") {
         event.currentTarget.close();
@@ -213,50 +214,102 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// User Profile button
-document.querySelector("#update-user").addEventListener("click", (event) => {
+// Profile data form, change name and profile picture
+document.querySelector("#user-profile-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+
     if (userIsLoggedIn()) {
-        const inputField = document.querySelector("#change-name-input");
-        inputField.value = getCurrentUserName();
+        const inputName = document.querySelector("#change-name-input").value.trim();
+        const inputPicture = document.querySelector("#change-picture-input").value.trim();
+        const profileData = {};
 
-        document.querySelector("#user-login-dialog").close();
-        document.querySelector("#user-profile-dialog").showModal();
-    }
-});
+        getCurrentUserProfile().then((currentProfile) => {
 
-// Close the user profile dialog when clicking outside it
-document.querySelector("#user-profile-dialog").addEventListener("click", (event) => {
-    if (event.target.id == event.currentTarget.id) {
-        event.currentTarget.close();
-    }
-});
+            if (currentProfile.displayName != inputName) {
+                profileData.displayName = inputName;
+            }
+            if (currentProfile.picture != inputPicture) {
+                profileData.picture = inputPicture;
+            }
 
-// Close the user profile  dialog when pressing the ESC key
-document.querySelector("#user-profile-dialog").addEventListener("keyup", (event) => {
-    if (event.key == "Escape") {
-        event.currentTarget.close();
+            if (Object.keys(profileData).length > 0) {
+                userUpdateProfile(profileData).then((param) => {
+                    getCurrentUserProfile().then((currUser) => {
+                        document.querySelector("#logged-in-name").innerHTML = currUser.displayName;
+                        document.querySelector("#logged-in-email").innerHTML = currUser.email;
+                        document.querySelector("#user-menu-button span").innerText = currUser.displayName;
+                        console.log("PROFILE UPDATED", currUser, param);
+                    });
+                    showStatusMessage("Your user profile has been updated", false, 10000);
+                }).catch((error) => {
+                    showErrorMessage(`Error saving your profile: ${error.message}`);
+                });
+            }
+        });
     }
 });
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// EXAMPLE: Change user name form - TODO: Change to or include in User Profile form
-document.querySelector("#change-name-form").addEventListener("submit", (event) => {
+// Account info form, change email address, password or remove account
+document.querySelector("#user-account-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    if (userIsLoggedIn()) {
-        const inputValue = document.querySelector("#change-name-input").value.trim();
-        const profileData = { displayName: inputValue };
 
-        userUpdateProfile(profileData).then((param) => {
-            getCurrentUserProfile().then((currUser) => {
-                const userName = getCurrentUserName();
-                document.querySelector("#logged-in-email").innerHTML = `${userName} <span>(${currUser.email})</span>`;
-                document.querySelector("#user-menu-button span").innerText = userName;
+    const oldPasswordBox = document.querySelector("#change-confirm-input");
+    const oldPassword = oldPasswordBox.value.trim();
 
-                document.querySelector("#user-profile-dialog").close();
-                console.log("PROFILE UPDATED", currUser, param);
-            });
+    // User pressed the save-submit button
+    if (event.submitter.id == "change-account-submit") {
+        const newPassword = document.querySelector("#change-password-input");
+        const confirmPassword = document.querySelector("#change-password-again-input");
+        const newEmail = document.querySelector("#change-email-input");
+
+
+        getCurrentUserProfile().then((userProfile) => {
+            const newEmailValue = newEmail.value.trim();
+            const newPassValue = newPassword.value.trim();
+            const newPassConfirmValue = confirmPassword.value.trim();
+
+            // Change Email
+            if (userProfile.email != newEmailValue) {
+                userSetEmail(oldPassword, newEmailValue).then(() => {
+                    showStatusMessage("Your e-mail address has been changed.", false, 10000);
+                }).catch((error) => {
+                    showErrorMessage(`Error changing e-mail address: ${error.message}`);
+                });
+            }
+
+            // Change Password
+            if ((newPassValue.length > 0) || (newPassConfirmValue.length > 0)) {
+                if (newPassValue !== newPassConfirmValue) {
+                    showErrorMessage("Your new password does not match.");
+                }
+                else {
+                    userSetPassword(oldPassword, newPassValue).then(() => {
+                        showStatusMessage("Your password has been changed", false, 10000);
+                    }).catch((error) => {
+                        showErrorMessage(`Error changing password: ${error.message}`);
+                    });
+                }
+            }
+
+            // Clear password fields.
+            oldPasswordBox.value = '';
+            newPassword.value = '';
+            confirmPassword.value = '';
         });
+    }
+    // User pressed the delete button
+    else if (event.submitter.id == "change-account-remove") {
+        if (confirm("Are you sure you wish to completely remove your user account? This action cannot be undone!")) {
+            userDelete(oldPassword).then(() => {
+                // TODO: Delete all messages belonging to this user? 
+                showStatusMessage("Your account has been removed.", false, 10000);
+            }).catch((error) => {
+                showErrorMessage(`Error removing user account: ${error.message}`);
+            });
+            console.log("TODO", "Delete account button pressed!");
+        }
     }
 });
 
@@ -266,19 +319,28 @@ document.querySelector("#change-name-form").addEventListener("submit", (event) =
 function userLoggedInCallback() {
     getCurrentUserProfile().then((currUser) => {
         const loginForm = document.querySelector("#login-form");
-        const logoutBox = document.querySelector("#logged-in");
+        const loggedInBox = document.querySelector("#logged-in");
+        const newUserForm = document.querySelector("#new-user-form");
+        const newMessageButton = document.querySelector("#message-new-wrapper");
+
         const userEmail = document.querySelector("#logged-in-email");
+        const userName = document.querySelector("#logged-in-name");
         const userDate = document.querySelector("#logged-in-last");
 
-        userEmail.innerHTML = `${currUser.displayName} <span>(${currUser.email})</span>`;
+        userName.innerText = currUser.displayName;
+        userEmail.innerHTML = currUser.email;
         userDate.innerText = `last login: ${currUser.lastLogin}`;
+
         loginForm.classList.remove("show");
-        logoutBox.classList.add("show");
+        newUserForm.classList.remove("show");
+
+        loggedInBox.classList.add("show");
+        newMessageButton.classList.add("show");
 
         document.querySelector("#user-menu-button span").innerText = currUser.displayName;
         document.querySelector("#user-menu-button img").src = currUser.picture;
 
-        showLoggedInUserElements(true);
+
     });
 }
 
@@ -287,36 +349,25 @@ function userLoggedInCallback() {
 // USER LOG OFF: This function is run when user logoff is concluded.
 function userLoggedOffCallback() {
     const loginForm = document.querySelector("#login-form");
-    const logoutBox = document.querySelector("#logged-in");
+    const loggedInBox = document.querySelector("#logged-in");
+    const newUserForm = document.querySelector("#new-user-form");
+    const newMessageButton = document.querySelector("#message-new-wrapper");
+
     const userEmail = document.querySelector("#logged-in-email");
+    const userName = document.querySelector("#logged-in-name");
     const userDate = document.querySelector("#logged-in-last");
 
+    userName.innerText = '';
     userEmail.innerText = '';
     userDate.innerText = '';
+
+    loggedInBox.classList.remove("show");
+    newMessageButton.classList.remove("show");
     loginForm.classList.add("show");
-    logoutBox.classList.remove("show");
+    newUserForm.classList.add("show");
 
     document.querySelector("#user-menu-button span").innerText = "Log in";
     document.querySelector("#user-menu-button img").src = './images/profile-test-image.png';
 
-    showLoggedInUserElements(false);
     console.log("ANV. UTLOGG");
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// Toggle visible interface components depending on if a user is logged on or not
-function showLoggedInUserElements(isLoggedOn) {
-    const newMessageButton = document.querySelector("#message-new-wrapper");
-    const newUserForm = document.querySelector("#new-user-form");
-
-    if (isLoggedOn) {
-        newUserForm.classList.remove("show");
-        newMessageButton.classList.add("show");
-    }
-    else {
-        newUserForm.classList.add("show");
-        newMessageButton.classList.remove("show");
-    }
-
 }
