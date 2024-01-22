@@ -184,6 +184,24 @@ function updateMessageCardsAuthor(authorId) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+// Enable the Edit button for all displayed messages created by the current user. 
+function updateMessageCardsOwned(authorId, showEditButton) {
+    const messageCards = document.querySelectorAll(`article[authorid="${authorId}"].message-card`);
+
+    if ((messageCards !== undefined) && (messageCards !== null) && (messageCards.length > 0)) {
+        for (const messageCard of messageCards) {
+            if (showEditButton) {
+                messageCard.querySelector(".message-edit-button").classList.add("show");
+            }
+            else {
+                messageCard.querySelector(".message-edit-button").classList.remove("show");
+            }
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
 // Remove an existing message from the board
 function deleteMessageCard(messageId) {
     const messageCard = document.querySelector(`article[messageid="${messageId}"].message-card`);
@@ -591,4 +609,4 @@ function timestampToDateTime(timestamp, isMilliSeconds = true) {
 }
 
 
-export { createMessageCard, createColorPicker };
+export { createMessageCard, createColorPicker, updateMessageCardsOwned };

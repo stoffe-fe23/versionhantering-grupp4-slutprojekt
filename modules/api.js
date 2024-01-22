@@ -53,6 +53,7 @@ const db = getFirestore(app);
 
 // Global variables used for logging on/off users
 let currentUser = auth.currentUser;
+let lastUserId = ((auth.currentUser !== undefined) && (auth.currentUser !== null) ? auth.currentUser.uid : 0);
 let currentUserProfile = null;
 let userLoginCallback;
 let userLogoffCallback;
@@ -70,6 +71,7 @@ let userLogoffCallback;
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
+        lastUserId = currentUser.uid;
         getCurrentUserProfile();
         if (typeof userLoginCallback == "function") {
             userLoginCallback();
@@ -121,6 +123,13 @@ function getIsUserId(userId) {
 // Check if the currently logged in user has the specified userId.
 function getCurrentUserId() {
     return (userIsLoggedIn() ? currentUser.uid : 0);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Get the userid most recently logged on as, or 0 if not having logged on. 
+function getLastUserId() {
+    return lastUserId;
 }
 
 
@@ -251,6 +260,7 @@ async function getCurrentUserProfile() {
 async function createNewUser(userEmail, userPassword, userName) {
     return createUserWithEmailAndPassword(auth, userEmail, userPassword).then((userCredential) => {
         currentUser = userCredential.user;
+        lastUserId = currentUser.uid;
 
         if ((userName !== undefined) && (userName.length > 0)) {
             userUpdateProfile({ displayName: userName }).then(() => {
@@ -633,4 +643,5 @@ export {
     getIsValidText,
     getUserProfiles,
     buildAuthorProfilesCache,
+    getLastUserId,
 };

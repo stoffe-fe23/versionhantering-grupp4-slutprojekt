@@ -18,11 +18,12 @@ import {
     userDelete,
     userSetPassword,
     userSetEmail,
-    userSendEmailVerification
+    userSendEmailVerification,
+    getLastUserId
 } from './modules/api.js';
 
 import { showErrorMessage, clearErrorMessages, toggleDarkMode, loadUserProfile, showStatusMessage } from './modules/interface.js';
-import { createMessageCard } from './modules/message.js';
+import { createMessageCard, updateMessageCardsOwned } from './modules/message.js';
 
 
 // Configure function to run when a user has logged in
@@ -340,7 +341,9 @@ function userLoggedInCallback() {
         document.querySelector("#user-menu-button span").innerText = currUser.displayName;
         document.querySelector("#user-menu-button img").src = currUser.picture;
 
-        // TODO: Uppdatera meddelanden av denna användare så Edit / Like-knappen syns och funkar. 
+        updateMessageCardsOwned(currUser.uid, true);
+
+        // TODO: Update all shown messages to indicate if the logged-on user has liked that message. 
     });
 }
 
@@ -368,6 +371,8 @@ function userLoggedOffCallback() {
 
     document.querySelector("#user-menu-button span").innerText = "Log in";
     document.querySelector("#user-menu-button img").src = './images/profile-test-image.png';
+
+    updateMessageCardsOwned(getLastUserId(), false);
 
     console.log("ANV. UTLOGG");
 }
