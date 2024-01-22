@@ -119,6 +119,7 @@ button.message-like-button span {
     color: #ffa200;
 }
 
+/*  Calculator: https://codepen.io/sosuke/pen/Pjoqqp   */
 .message-liked img {
     filter: invert(69%) sepia(17%) saturate(6994%) hue-rotate(359deg) brightness(104%) contrast(101%);
 }
