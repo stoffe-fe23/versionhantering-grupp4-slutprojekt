@@ -1,0 +1,15 @@
+/*
+    Versionshantering slutprojekt (FE23)
+    Grupp 4
+
+    Stylesheet for the About page layout.
+*/
+
+.content {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    padding: 2 rem;
+
+
+}
