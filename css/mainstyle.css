@@ -468,6 +468,7 @@ label[for="colormode-toggle-light"] {
 
     #mainmenu-button {
         order: 1;
+        visibility: hidden;
     }
     
     #user-menu-button {
@@ -478,7 +479,7 @@ label[for="colormode-toggle-light"] {
     #mainmenu {
         order: 2;
         position: relative;
-        top: -150px;
+        top: 0px;
         left: 0px;
         margin-top: 0px;
         padding: 1rem 2rem;
