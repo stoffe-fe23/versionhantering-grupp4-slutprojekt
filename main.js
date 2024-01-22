@@ -80,9 +80,8 @@ document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {
             case "menu-contact": contactSection.classList.remove("hide"); break;
         }
 
-        // Put this back when mobile-first design is properly implemented
-        // Hides the main menu after picking a menu option. 
-        // document.querySelector("#mainmenu-toggle").checked = false;
+        // Hides the main menu in burger menu mode after picking a menu option. 
+        document.querySelector("#mainmenu-toggle").checked = false;
     });
 });
 
