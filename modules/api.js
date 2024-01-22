@@ -41,6 +41,7 @@ import {
     where,
     increment,
     arrayUnion,
+    arrayRemove,
     onSnapshot,
     writeBatch,
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
@@ -534,6 +535,34 @@ async function likeChatMessage(messageId) {
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Remove a like previously left by the current user on the specified message.
+async function likeChatMessageUndo(messageId) {
+    if (!userIsLoggedIn()) {
+        throw new Error("You must be logged in to undo the like of a message.");
+    }
+
+    const docMessage = await getDoc(doc(db, "chatmeddelande", messageId));
+    if (docMessage.exists()) {
+        const docMessageData = docMessage.data();
+
+        // A user may only unlike a message they have previously liked
+        if ((docMessageData !== undefined) && (docMessageData.likers !== undefined) && Array.isArray(docMessageData.likers)) {
+            if (!docMessageData.likers.includes(currentUser.uid)) {
+                throw new Error("Cannot undo like, you have not liked this message before.");
+            }
+        }
+        else if ((docMessageData !== undefined) && ((docMessageData.likers === undefined) || !Array.isArray(docMessageData.likers))) {
+            throw new Error("Cannot undo like, this message has no likes.");
+        }
+
+        return await updateDoc(doc(db, "chatmeddelande", messageId), { likes: increment(-1), likers: arrayRemove(currentUser.uid) });
+    }
+    else {
+        throw new Error("Could not find the message to unlike.");
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Retrieve an array of the message-IDs of all messages the specified user has Liked. 
@@ -672,6 +701,7 @@ export {
     deleteChatMessage,
     editChatMessage,
     likeChatMessage,
+    likeChatMessageUndo,
     userLogin,
     userLogoff,
     userIsLoggedIn,

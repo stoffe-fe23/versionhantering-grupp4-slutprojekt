@@ -14,6 +14,7 @@ import {
     editChatMessage,
     addChatMessage,
     likeChatMessage,
+    likeChatMessageUndo,
     getIsValidText,
     getCurrentUserId,
     buildAuthorProfilesCache,
@@ -259,6 +260,8 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 
     let messageAuthor;
 
+    const hasLikedMessage = (!isNewMessage && userIsLoggedIn() && (messageData.likers !== undefined) && (messageData.likers !== null) ? messageData.likers.includes(getCurrentUserId()) : false);
+
     if (isNewMessage) {
         messageDate.innerText = 'New Message';
         messageText.innerText = '';
@@ -266,7 +269,6 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
         messageLikeButton.classList.add("hide");
     }
     else {
-        const hasLikedMessage = (userIsLoggedIn() && (messageData.likers !== undefined) && (messageData.likers !== null) ? messageData.likers.includes(getCurrentUserId()) : false);
         if (hasLikedMessage) {
             messageLikeButton.classList.add("message-liked");
         }
@@ -295,12 +297,22 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 
         // Like button
         messageLikeButton.addEventListener("click", (event) => {
-            likeChatMessage(messageId).then(() => {
-                console.log("MESSAGE LIKED", messageId);
-            }).catch((error) => {
-                console.error("MESSAGE LIKE ERROR", error);
-                showErrorMessage(error, true);
-            });
+            if (hasLikedMessage) {
+                likeChatMessageUndo(messageId).then(() => {
+                    console.log("MESSAGE UN-LIKED", messageId);
+                }).catch((error) => {
+                    console.error("MESSAGE UN-LIKE ERROR", error);
+                    showErrorMessage(error, true);
+                });
+            }
+            else {
+                likeChatMessage(messageId).then(() => {
+                    console.log("MESSAGE LIKED", messageId);
+                }).catch((error) => {
+                    console.error("MESSAGE LIKE ERROR", error);
+                    showErrorMessage(error, true);
+                });
+            }
         });
 
 
