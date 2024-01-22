@@ -42,6 +42,7 @@ import {
     increment,
     arrayUnion,
     onSnapshot,
+    writeBatch,
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 import { firebaseConfig } from './apiconfig.js';
@@ -226,7 +227,7 @@ async function getCurrentUserProfile() {
     if ((currentUserProfile === undefined) || (currentUserProfile === null) || (typeof currentUserProfile != "object")) {
         let userProfile = {
             uid: currentUser.uid,
-            displayName: (currentUser.displayName.length > 0 ? currentUser.displayName : "No name"),
+            displayName: (getIsValidText(currentUser.displayName) ? currentUser.displayName : "No name"),
             email: currentUser.email,
             verified: currentUser.emailVerified,
             phone: currentUser.phoneNumber,
@@ -462,6 +463,30 @@ async function deleteChatMessage(messageid) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+// Retrieve an array of the message-IDs of all messages the specified user has Liked. 
+async function deleteChatMessagesByAuthor(userId) {
+    try {
+        const collectionName = 'chatmeddelande';
+        let fetchQuery = query(collection(db, collectionName), where("authorid", "==", userId));
+        const dbDocuments = await getDocs(fetchQuery);
+        const deleteBatch = writeBatch(db);
+
+        let documentCount = 0;
+        dbDocuments.forEach((messageDoc) => {
+            documentCount++;
+            deleteBatch.delete(doc(db, collectionName, messageDoc.id));
+        });
+
+        await deleteBatch.commit();
+        return documentCount;
+    }
+    catch (error) {
+        console.error("Error deleting messages from databse: ", error);
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
 // Edit an existing message in the database. 
 async function editChatMessage(messageId, newMessage, newColor = '') {
     const docMessage = await getDoc(doc(db, "chatmeddelande", messageId));
@@ -624,6 +649,7 @@ async function dbStoreDocument(db, collectionName, collectionData, documentName 
 }
 
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Remove a document from the database
 async function dbDeleteDocument(db, collectionName, documentName) {
@@ -666,4 +692,5 @@ export {
     buildAuthorProfilesCache,
     getLastUserId,
     getLikedMessages,
+    deleteChatMessagesByAuthor,
 };

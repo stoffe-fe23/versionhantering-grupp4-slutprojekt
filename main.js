@@ -19,7 +19,9 @@ import {
     userSetPassword,
     userSetEmail,
     userSendEmailVerification,
-    getLastUserId
+    getLastUserId,
+    deleteChatMessagesByAuthor,
+    getCurrentUserId
 } from './modules/api.js';
 
 import { showErrorMessage, clearErrorMessages, toggleDarkMode, loadUserProfile, showStatusMessage } from './modules/interface.js';
@@ -37,6 +39,7 @@ setUserLogoffCallback(userLoggedOffCallback);
 
 // Set default darkmode setting depending on visitor's system setting. 
 toggleDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////
