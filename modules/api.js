@@ -70,8 +70,8 @@ let userLogoffCallback;
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
+        getCurrentUserProfile();
         if (typeof userLoginCallback == "function") {
-            getCurrentUserProfile();
             userLoginCallback();
         }
         console.log("CURRENT USER", currentUser);
@@ -80,8 +80,8 @@ onAuthStateChanged(auth, (user) => {
         currentUser = null;
         if (typeof userLogoffCallback == "function") {
             userLogoffCallback();
-            currentUserProfile = null;
         }
+        currentUserProfile = null;
         console.log("NO USER", currentUser);
     }
 });
@@ -271,7 +271,6 @@ async function userDelete(userPassword) {
         // Require reauthentication before deletion for safety.
         const authCredential = EmailAuthProvider.credential(auth.currentUser.email, userPassword);
         return reauthenticateWithCredential(auth.currentUser, authCredential).then(() => {
-            // User reauthenticated, delete the account.
             return deleteUser(auth.currentUser).then(() => {
                 currentUser = null;
             });
@@ -291,7 +290,6 @@ async function userSetPassword(oldPassword, newPassword) {
         // Require reauthentication before password change for safety.
         const authCredential = EmailAuthProvider.credential(auth.currentUser.email, oldPassword);
         return reauthenticateWithCredential(auth.currentUser, authCredential).then(() => {
-            // User reauthenticated, update the password.
             return updatePassword(auth.currentUser, newPassword).then(() => {
                 console.log("USER PASSWORD UPDATED");
             });
@@ -311,7 +309,6 @@ async function userSetEmail(userPassword, newEmail) {
         // Require reauthentication before password change for safety.
         const authCredential = EmailAuthProvider.credential(auth.currentUser.email, userPassword);
         return reauthenticateWithCredential(auth.currentUser, authCredential).then(() => {
-            // User reauthenticated, update the e-mail address.
             return updateEmail(auth.currentUser, newEmail).then(() => {
                 console.log("USER E-MAIL UPDATED");
                 userSendEmailVerification();
@@ -599,7 +596,7 @@ async function dbStoreDocument(db, collectionName, collectionData, documentName 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Remove a document from the database
 async function dbDeleteDocument(db, collectionName, documentName) {
-    // TODO: Delete any sub-collections associated with this as well
+    // TODO: Delete any sub-collections associated with this as well, not really needed right now though.
     return await deleteDoc(doc(db, collectionName, documentName));
 }
 
