@@ -17,6 +17,7 @@ import {
     getIsValidText,
     getCurrentUserId,
     buildAuthorProfilesCache,
+    getLikedMessages,
 } from './api.js';
 
 import { showErrorMessage, clearErrorMessages } from './interface.js';
@@ -197,6 +198,34 @@ function updateMessageCardsOwned(authorId, showEditButton) {
                 messageCard.querySelector(".message-edit-button").classList.remove("show");
             }
         }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Indicate which messages were liked by the specified user, or remove all Liked markers
+// if authorId is not set to a User-ID. 
+function updateMessageCardsLiked(authorId) {
+    if ((authorId == 0) || (authorId == false) || (authorId === null) || (authorId === undefined)) {
+        console.log("Removing liked message markers");
+        const likeButtons = document.querySelectorAll(`.message-card .message-like-button`);
+        if ((likeButtons !== undefined) && (likeButtons !== null) && (likeButtons.length > 0)) {
+            for (const likeButton of likeButtons) {
+                likeButton.classList.remove("message-liked");
+            }
+        }
+    }
+    else {
+        getLikedMessages(authorId).then((messageIds) => {
+            console.log("Updating liked messages: ", authorId);
+            for (const messageId of messageIds) {
+                const messageCard = document.querySelector(`article[messageid="${messageId}"].message-card`);
+                if ((messageCard !== undefined) && (messageCard !== null)) {
+                    const messageLikeButton = messageCard.querySelector(".message-like-button");
+                    messageLikeButton.classList.add("message-liked");
+                }
+            }
+        });
     }
 }
 
@@ -609,4 +638,4 @@ function timestampToDateTime(timestamp, isMilliSeconds = true) {
 }
 
 
-export { createMessageCard, createColorPicker, updateMessageCardsOwned };
+export { createMessageCard, createColorPicker, updateMessageCardsOwned, updateMessageCardsLiked };

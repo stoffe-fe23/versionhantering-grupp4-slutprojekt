@@ -23,7 +23,10 @@ import {
 } from './modules/api.js';
 
 import { showErrorMessage, clearErrorMessages, toggleDarkMode, loadUserProfile, showStatusMessage } from './modules/interface.js';
-import { createMessageCard, updateMessageCardsOwned } from './modules/message.js';
+import { createMessageCard, updateMessageCardsOwned, updateMessageCardsLiked } from './modules/message.js';
+
+
+let likedMarkersInit = false;
 
 
 // Configure function to run when a user has logged in
@@ -343,7 +346,11 @@ function userLoggedInCallback() {
 
         updateMessageCardsOwned(currUser.uid, true);
 
-        // TODO: Update all shown messages to indicate if the logged-on user has liked that message. 
+        // Skip this on initial page load since the messages already should be in the correct state. 
+        if (likedMarkersInit) {
+            updateMessageCardsLiked(currUser.uid);
+        }
+        likedMarkersInit = true;
     });
 }
 
@@ -360,6 +367,8 @@ function userLoggedOffCallback() {
     const userName = document.querySelector("#logged-in-name");
     const userDate = document.querySelector("#logged-in-last");
 
+    const lastUser = getLastUserId();
+
     userName.innerText = '';
     userEmail.innerText = '';
     userDate.innerText = '';
@@ -372,7 +381,8 @@ function userLoggedOffCallback() {
     document.querySelector("#user-menu-button span").innerText = "Log in";
     document.querySelector("#user-menu-button img").src = './images/profile-test-image.png';
 
-    updateMessageCardsOwned(getLastUserId(), false);
+    updateMessageCardsOwned(lastUser, false);
+    updateMessageCardsLiked(false);
 
     console.log("ANV. UTLOGG");
 }

@@ -38,6 +38,7 @@ import {
     query,
     orderBy,
     limit,
+    where,
     increment,
     arrayUnion,
     onSnapshot,
@@ -509,6 +510,25 @@ async function likeChatMessage(messageId) {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Retrieve an array of the message-IDs of all messages the specified user has Liked. 
+async function getLikedMessages(userId) {
+    try {
+        let fetchQuery = query(collection(db, 'chatmeddelande'), where("likers", "array-contains", userId));
+        const dbDocuments = await getDocs(fetchQuery);
+
+        const resultArray = [];
+        dbDocuments.forEach((doc) => {
+            resultArray.push(doc.id);
+        });
+        return resultArray;
+    }
+    catch (error) {
+        console.error("Error reading likes from databse: ", error);
+    }
+}
+
+
 
 /****************************************************************************************
  * GENERIC FUNCTIONS
@@ -645,4 +665,5 @@ export {
     getUserProfiles,
     buildAuthorProfilesCache,
     getLastUserId,
+    getLikedMessages,
 };
