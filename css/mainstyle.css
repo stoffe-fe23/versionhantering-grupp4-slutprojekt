@@ -21,9 +21,17 @@ body {
     margin: 0px;
     font-family: var(--defaultFont);
     background-color: rgb(27, 43, 63);
-    background: linear-gradient(to right top, rgb(27, 43, 63), rgb(60, 73, 92));
+    background: linear-gradient(to right top, rgb(38, 62, 90), rgb(73, 89, 112));
     color: white;
     min-height: 100vh;
+}
+
+a, a:visited {
+    color: orange;
+}
+
+a:hover {
+    color: yellow;
 }
 
 header {
@@ -218,6 +226,15 @@ form label {
     transition: top 300ms ease-out;
 }
 
+#mainmenu a,  #mainmenu a:visited {
+    color: black;
+    text-decoration: none;
+}
+
+#mainmenu a:hover {
+    color: blue;
+}
+
 #mainmenu ul {
     display: flex;
     justify-content: space-between;
@@ -391,6 +408,7 @@ label[for="colormode-toggle-light"] {
     padding: 0.4rem 1rem;
     background-color: black;
     color: gray;
+    cursor: pointer;
 }
 
 label[for="colormode-toggle-dark"] {

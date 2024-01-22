@@ -340,7 +340,7 @@ function userLoggedInCallback() {
         document.querySelector("#user-menu-button span").innerText = currUser.displayName;
         document.querySelector("#user-menu-button img").src = currUser.picture;
 
-
+        // TODO: Uppdatera meddelanden av denna användare så Edit / Like-knappen syns och funkar. 
     });
 }
 
