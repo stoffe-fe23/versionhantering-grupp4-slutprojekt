@@ -150,12 +150,12 @@ document.querySelector("#login-form").addEventListener("submit", (event) => {
         }).catch((error) => {
             if (error.code !== undefined) {
                 switch (error.code) {
-                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid."); break;
-                    case "auth/user-disabled": showErrorMessage("Your user account has been suspended. Unable to log in."); break;
-                    case "auth/user-not-found": showErrorMessage("The specified user account does not exist."); break;
-                    case "auth/wrong-password": showErrorMessage("Incorrect username or password."); break;
-                    case "auth/invalid-credential": showErrorMessage("Incorrect username or password."); break;
-                    default: showErrorMessage(`Login error: ${error.message} (${error.code})`); break;
+                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid.", false, 10000); break;
+                    case "auth/user-disabled": showErrorMessage("Your user account has been suspended. Unable to log in.", false, 10000); break;
+                    case "auth/user-not-found": showErrorMessage("The specified user account does not exist.", false, 10000); break;
+                    case "auth/wrong-password": showErrorMessage("Incorrect username or password.", false, 10000); break;
+                    case "auth/invalid-credential": showErrorMessage("Incorrect username or password.", false, 10000); break;
+                    default: showErrorMessage(`Login error: ${error.message} (${error.code})`, false, 10000); break;
                 }
             }
             else {
@@ -198,15 +198,15 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
         }).catch((error) => {
             if (error.code !== undefined) {
                 switch (error.code) {
-                    case "auth/email-already-in-use": showErrorMessage("Unable to create new account. You already have an account."); break;
-                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid."); break;
-                    case "auth/operation-not-allowed": showErrorMessage("You cannot create an account at this time. Try again later?"); break;
-                    case "auth/weak-password": showErrorMessage("The specified password is too weak. Use something less easy to guess."); break;
-                    default: showErrorMessage(`New user error: ${error.message} (${error.code})`); break;
+                    case "auth/email-already-in-use": showErrorMessage("Unable to create new account. You already have an account.", false, 10000); break;
+                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid.", false, 10000); break;
+                    case "auth/operation-not-allowed": showErrorMessage("You cannot create an account at this time. Try again later?", false, 10000); break;
+                    case "auth/weak-password": showErrorMessage("The specified password is too weak. Use something less easy to guess.", false, 10000); break;
+                    default: showErrorMessage(`New user error: ${error.message} (${error.code})`, false, 10000); break;
                 }
             }
             else {
-                showErrorMessage(`New user error: ${error}`);
+                showErrorMessage(`New user error: ${error}`, false, 10000);
             }
             console.log("USER CREATE ERROR", error);
         });

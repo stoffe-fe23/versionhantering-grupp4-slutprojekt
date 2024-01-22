@@ -301,6 +301,11 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 
         // Like button
         messageLikeButton.addEventListener("click", (event) => {
+            if (!userIsLoggedIn()) {
+                showErrorMessage("You must be logged on to Like messages.", false, 5000);
+                return;
+            }
+
             if (hasLikedMessage) {
                 likeChatMessageUndo(messageId).then(() => {
                     console.log("MESSAGE UN-LIKED", messageId);
