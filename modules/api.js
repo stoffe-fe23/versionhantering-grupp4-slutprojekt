@@ -463,7 +463,7 @@ async function deleteChatMessage(messageid) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Retrieve an array of the message-IDs of all messages the specified user has Liked. 
+// Delete all messages by the author specified by userId.
 async function deleteChatMessagesByAuthor(userId) {
     try {
         const collectionName = 'chatmeddelande';
