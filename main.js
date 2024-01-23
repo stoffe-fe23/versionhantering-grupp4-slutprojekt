@@ -245,7 +245,7 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
             if (currentProfile.picture != inputPicture) {
                 // Clear current profile image if set to empty string
                 if (inputPicture.length == 0) {
-                    profileData.picture = './images/profile-test-image.png';
+                    profileData.picture = './images/user-icon.png';
                     updateProfileDataFromObject(profileData);
                     profileDialog.close();
                 }
@@ -424,7 +424,7 @@ function userLoggedOffCallback() {
     newUserForm.classList.add("show");
 
     document.querySelector("#user-menu-button span").innerText = "Log in";
-    document.querySelector("#user-menu-button img").src = './images/profile-test-image.png';
+    document.querySelector("#user-menu-button img").src = './images/user-icon.png';
 
     updateMessageCardsOwned(lastUser, false);
     updateMessageCardsLiked(false);

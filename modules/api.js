@@ -232,7 +232,7 @@ async function getCurrentUserProfile() {
             email: currentUser.email,
             verified: currentUser.emailVerified,
             phone: currentUser.phoneNumber,
-            picture: (getIsValidText(currentUser.photoURL) ? currentUser.photoURL : './images/profile-test-image.png'),
+            picture: (getIsValidText(currentUser.photoURL) ? currentUser.photoURL : './images/user-icon.png'),
             color: '',
             lastLogin: currentUser.metadata.lastSignInTime,
         }
@@ -366,7 +366,7 @@ async function getUserProfiles() {
             for (const dataItem of dbData) {
                 const userId = dataItem.data.userid;
                 const userName = (getIsValidText(dataItem.data.username) ? dataItem.data.username : "No name");
-                const userPicture = (getIsValidText(dataItem.data.picture) ? dataItem.data.picture : './images/profile-test-image.png');
+                const userPicture = (getIsValidText(dataItem.data.picture) ? dataItem.data.picture : './images/user-icon.png');
 
                 userProfileCache[userId] = {
                     userid: dataItem.data.userid,

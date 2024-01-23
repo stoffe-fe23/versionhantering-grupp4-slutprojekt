@@ -62,7 +62,7 @@ function initializeDatabaseListeners() {
                 const profileData = change.doc.data();
                 const userId = profileData.userid;
                 const userName = (getIsValidText(profileData.username) ? profileData.username : "No name");
-                const userPicture = (getIsValidText(profileData.picture) ? profileData.picture : './images/profile-test-image.png');
+                const userPicture = (getIsValidText(profileData.picture) ? profileData.picture : './images/user-icon.png');
 
                 userProfileCache[userId] = {
                     userid: userId,
@@ -699,7 +699,7 @@ function getUserProfileData(userId, dataField) {
     else {
         switch (dataField) {
             case "name": return "No name";
-            case "picture": return './images/profile-test-image.png';
+            case "picture": return './images/user-icon.png';
             default: return "";
         }
     }
