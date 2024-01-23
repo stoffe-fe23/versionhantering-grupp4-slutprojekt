@@ -40,6 +40,7 @@ p {
     display: flex;
     position: relative;
     justify-content: left;
+    resize: vertical;
     width: 80vw;
     font-size: 1em;
     border: 2px solid #000000;
