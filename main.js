@@ -119,7 +119,6 @@ document.querySelector("#message-new-button").addEventListener("click", (event) 
 // Open the User popup dialog with the login/new user dialog box and user profile editor
 document.querySelector("#user-menu-button").addEventListener("click", (event) => {
     const loginDialog = document.querySelector("#user-login-dialog");
-    setIsBusy(true);
     loadUserProfile();
     loginDialog.showModal();
 });
