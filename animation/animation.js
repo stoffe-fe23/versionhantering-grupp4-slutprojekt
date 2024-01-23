@@ -23,7 +23,7 @@ function animateBlocks() {
 async function animateBackground() {
     const containerAnime = document.querySelector(".container-anime");
 
-    for (let i = 0; i <= 75; i++) {
+    for (let i = 0; i <= 50; i++) {
         const blocksAnime = document.createElement("div");
         blocksAnime.classList.add("block-anime");
         containerAnime.appendChild(blocksAnime);
