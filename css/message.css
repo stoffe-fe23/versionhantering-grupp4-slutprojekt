@@ -173,11 +173,13 @@ button.message-like-button span {
     cursor: pointer;
     box-shadow: 3px 3px 10px rgba(0,0,0, 0.3);
     background-color: orange;
+    transition: box-shadow 250ms ease-out;
 }
 
 #message-new-button:hover {
     background-color: yellow;
     box-shadow: 0 0 20px yellow, 0 0 40px orange;
+    transition: box-shadow 250ms ease-in;
 }
 
 
@@ -231,12 +233,31 @@ button.message-like-button span {
     gap: 0.5rem;
 }
 
+.message-edit-buttons button {
+    border: 2px solid darkslategrey;
+    border-radius: 0.75rem;
+    background-color: white;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    transition: background-color 350ms ease-out;
+}
+
+.message-edit-buttons button:hover {
+    background-color: yellow;
+    transition: background-color 350ms ease-in;
+}
+
 .message-edit-color {
+    display: flex;
+    justify-content: center;
     width: 100%;
 }
 
 .message-edit-color select {
-    width: 100%;
+    border-radius: 0.75rem;
+    padding: 0.25rem;
+    margin: 0 0.3rem;
+    min-width: 70%;
 }
 
 .background-lightgreen {
