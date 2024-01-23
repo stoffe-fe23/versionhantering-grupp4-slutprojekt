@@ -7,6 +7,7 @@
 
 .content {
     text-align: center;
+    font-family: 'Lexend Exa', sans-serif;
 }
 
 #designPic {
@@ -15,7 +16,6 @@
     width: 85vw;
     height: 50vh;
     margin: 1rem;
-
 }
 
 @media only screen and (min-width: 550px) {
