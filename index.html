@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="./css/about.css">
     <link rel="stylesheet" href="./css/contact.css">
     <link rel="stylesheet" href="./css/darkstyle.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -50,9 +53,34 @@
         <section id="contact" class="hide">
             <!-- Contact Us page -->
             <div class="content">
-                <h2>Contact us</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum quasi excepturi deleniti tempora repudiandae odit deserunt quas quae nesciunt!</p> 
-                <p>Facilis, repudiandae reiciendis similique, temporibus mollitia praesentium necessitatibus corporis aut natus sed ipsam adipisci fugit suscipit architecto id illo aspernatur dolor cupiditate facere explicabo sequi, nesciunt nemo? Nesciunt sed libero ut?</p>
+                <h2>For any concern?</h2>
+                <p>We’ll get back to you as soon as possible.</p>
+                <form id="contactform" class="contactusForm">
+                    <label for="name" id="contacformlabel1"></label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      class="name-query"
+                      placeholder="Name.."
+                    />
+                    <label
+                      for="message"
+                      style="display: block"
+                      id="contactformlabel2"
+                    ></label>
+                    <div class="contactSubmitContainer">
+                      <textarea
+                        name="message"
+                        id="message"
+                        class="contactus-query"
+                        cols="30"
+                        rows="7"
+                        placeholder="Your enquiry.."
+                      ></textarea>
+                      <button id="contactformbutton" class="submit-button">CONTACT</button>
+                    </div>
+                  </form>                       
             </div>
         </section>
     </main>
