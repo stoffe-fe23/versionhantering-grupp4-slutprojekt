@@ -70,7 +70,7 @@ input, button, textarea {
 
 #user-menu-button {
     position: relative;
-    left: 30px;
+    left: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -81,6 +81,12 @@ input, button, textarea {
     padding: 1rem;
     outline: 0;
     font-family: var(--defaultFont);
+    transition: left 300ms ease-out;
+}
+
+#mainmenu-toggle:checked ~ #user-menu-button {
+    left: 30px;
+    transition: left 300ms ease-in;
 }
 
 #user-menu-button img {
