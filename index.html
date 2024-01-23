@@ -1,165 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--
+  <!--
     Versionshantering slutprojekt (FE23)
     Grupp 4
 
     Main page of the site.
 -->
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gritsquare - Grupp 4</title>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
     <link rel="icon" type="image/png" href="./images/favicon.png" />
     <script type="module" src="./main.js" type="module"></script>
-    <link rel="stylesheet" href="./css/mainstyle.css">
-    <link rel="stylesheet" href="./css/message.css">
-    <link rel="stylesheet" href="./css/about.css">
-    <link rel="stylesheet" href="./css/contact.css">
-    <link rel="stylesheet" href="./css/darkstyle.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@500&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link rel="stylesheet" href="./css/mainstyle.css" />
+    <link rel="stylesheet" href="./css/message.css" />
+    <link rel="stylesheet" href="./css/about.css" />
+    <link rel="stylesheet" href="./css/contact.css" />
+    <link rel="stylesheet" href="./css/darkstyle.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Luna - Här länkar jag animation.js -->
+    <link rel="stylesheet" href="css/anime.css" />
+    <script src="animation/anime.min.js"></script>
+    <script src="animation/animation.js" defer></script>
+
+  </head>
+  <body>
+    <!-- Luna - Här jag har lagt en div  -->
+    <div class="container-anime"></div>
     <header>
-        <input id="mainmenu-toggle" type="checkbox" />
-        <label id="mainmenu-button" for="mainmenu-toggle" tabindex="0"><span>Menu</span></label>
-        <nav id="mainmenu">
-            <ul>
-                <li><a class="menu-option" id="menu-messages" href=""><img src="./images/icon-messages-placeholder.png"><span>GritSquare</span></a></li>
-                <li><a class="menu-option" id="menu-about" href=""><img src="./images/icon-about-placeholder.png"><span>About</span></a></li>
-                <li><a class="menu-option" id="menu-contact" href=""><img src="./images/icon-contact-placeholder.png"><span>Contact us</span></a></li>
-            </ul>
-        </nav>
-        <button id="user-menu-button"><img src="./images/profile-test-image.png"><span>User Menu</span></button>
+      <input id="mainmenu-toggle" type="checkbox" />
+      <label id="mainmenu-button" for="mainmenu-toggle" tabindex="0"
+        ><span>Menu</span></label
+      >
+      <nav id="mainmenu">
+        <ul>
+          <li>
+            <a class="menu-option" id="menu-messages" href=""
+              ><img src="./images/icon-messages-placeholder.png" /><span
+                >GritSquare</span
+              ></a
+            >
+          </li>
+          <li>
+            <a class="menu-option" id="menu-about" href=""
+              ><img src="./images/icon-about-placeholder.png" /><span
+                >About</span
+              ></a
+            >
+          </li>
+          <li>
+            <a class="menu-option" id="menu-contact" href=""
+              ><img src="./images/icon-contact-placeholder.png" /><span
+                >Contact us</span
+              ></a
+            >
+          </li>
+        </ul>
+      </nav>
+      <button id="user-menu-button">
+        <img src="./images/profile-test-image.png" /><span>User Menu</span>
+      </button>
     </header>
     <main>
-        <div id="errors"></div>
-        <div id="status"></div>
-        <section id="messages">
-            <!-- Box displaying messages -->
-            <div id="message-new-wrapper"><button id="message-new-button"><img src="./images/smallicon-add.png" alt="Add new message"><span>Add Message</span></button></div>
-            <div id="messageboard"></div>
-        </section>    
-        <section id="about" class="hide">
-            <!-- About Page -->
-            <div class="content">
-                <h3 class="aboutBlock1">Our platform provides you<br>with a <b>clean canvas</b>,<br> free from distractions.</h3> 
-                <h3 class="aboutBlock2">A <b>dynamic space</b><br>designed for teams<br> to seamlessly collaborate<br> and share ideas.</h3>
-                <h3 class="aboutBlock3">Allowing your team<br>to focus on<br>what matters most<br> - <b>innovation</b>.</h3>    
+      <div id="errors"></div>
+      <div id="status"></div>
+      <section id="messages">
+        <!-- Box displaying messages -->
+        <div id="message-new-wrapper">
+          <button id="message-new-button">
+            <img src="./images/smallicon-add.png" alt="Add new message" /><span
+              >Add Message</span
+            >
+          </button>
+        </div>
+        <div id="messageboard"></div>
+      </section>
+      <section id="about" class="hide">
+        <!-- About Page -->
+        <div class="content">
+          <h3 class="aboutBlock1">
+            Our platform provides you<br />with a <b>clean canvas</b>,<br />
+            free from distractions.
+          </h3>
+          <h3 class="aboutBlock2">
+            A <b>dynamic space</b><br />designed for teams<br />
+            to seamlessly collaborate<br />
+            and share ideas.
+          </h3>
+          <h3 class="aboutBlock3">
+            Allowing your team<br />to focus on<br />what matters most<br />
+            - <b>innovation</b>.
+          </h3>
+        </div>
+        <img
+          id="designPic"
+          src="./images/About-bild.jpg"
+          alt="Picture at a designed juble"
+        />
+      </section>
+      <section id="contact" class="hide">
+        <!-- Contact Us page -->
+        <div class="content">
+          <h2>For any concern?</h2>
+          <p>We’ll get back to you as soon as possible.</p>
+          <form id="contactform" class="contactusForm">
+            <label for="name" id="contacformlabel1"></label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="name-query"
+              placeholder="Name.."
+            />
+            <label
+              for="message"
+              style="display: block"
+              id="contactformlabel2"
+            ></label>
+            <div class="contactSubmitContainer">
+              <textarea
+                name="message"
+                id="message"
+                class="contactus-query"
+                cols="30"
+                rows="7"
+                placeholder="Your enquiry.."
+              ></textarea>
+              <button id="contactformbutton" class="submit-button">
+                CONTACT
+              </button>
             </div>
-            <img id="designPic" src="./images/About-bild.jpg" alt="Picture at a designed juble" />
-        </section>
-        <section id="contact" class="hide">
-            <!-- Contact Us page -->
-            <div class="content">
-                <h2>For any concern?</h2>
-                <p>We’ll get back to you as soon as possible.</p>
-                <form id="contactform" class="contactusForm">
-                    <label for="name" id="contacformlabel1"></label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      class="name-query"
-                      placeholder="Name.."
-                    />
-                    <label
-                      for="message"
-                      style="display: block"
-                      id="contactformlabel2"
-                    ></label>
-                    <div class="contactSubmitContainer">
-                      <textarea
-                        name="message"
-                        id="message"
-                        class="contactus-query"
-                        cols="30"
-                        rows="7"
-                        placeholder="Your enquiry.."
-                      ></textarea>
-                      <button id="contactformbutton" class="submit-button">CONTACT</button>
-                    </div>
-                  </form>                       
-            </div>
-        </section>
+          </form>
+        </div>
+      </section>
     </main>
     <footer>
-        <!-- Sidfot! -->
-        <div id="colormode-toggle-wrapper">
-            <input type="radio" name="colormode-toggle" id ="colormode-toggle-dark" value="dark"><label for="colormode-toggle-dark">Dark</label>
-            <input type="radio" name="colormode-toggle" id ="colormode-toggle-light" value="light"><label for="colormode-toggle-light">Light</label>
-        </div>
+      <!-- Sidfot! -->
+      <div id="colormode-toggle-wrapper">
+        <input
+          type="radio"
+          name="colormode-toggle"
+          id="colormode-toggle-dark"
+          value="dark"
+        /><label for="colormode-toggle-dark">Dark</label>
+        <input
+          type="radio"
+          name="colormode-toggle"
+          id="colormode-toggle-light"
+          value="light"
+        /><label for="colormode-toggle-light">Light</label>
+      </div>
     </footer>
     <!-- Popup dialog for logging in or creating a new user account -->
     <dialog id="user-login-dialog">
-        <div id="user-dialog-wrapper">
-            <button id="user-login-close">X</button>
-            <!-- USER NOT LOGGED IN: Login form -->
-            <form id="login-form">
-                <div id="login-title-box"><h2>Log in</h2></div>
-                <div id="login-email-box"><label for="login-email">E-mail address:</label><input type="email" id="login-email" name="login-email" placeholder="your@email.address" required></div>
-                <div id="login-password-box"><label for="login-password">Password:</label><input type="password" id="login-password" name="login-password" required></div>
-                <div id="login-button-box"><button id="login-button">Log in</button></div>
+      <div id="user-dialog-wrapper">
+        <button id="user-login-close">X</button>
+        <!-- USER NOT LOGGED IN: Login form -->
+        <form id="login-form">
+          <div id="login-title-box"><h2>Log in</h2></div>
+          <div id="login-email-box">
+            <label for="login-email">E-mail address:</label
+            ><input
+              type="email"
+              id="login-email"
+              name="login-email"
+              placeholder="your@email.address"
+              required
+            />
+          </div>
+          <div id="login-password-box">
+            <label for="login-password">Password:</label
+            ><input
+              type="password"
+              id="login-password"
+              name="login-password"
+              required
+            />
+          </div>
+          <div id="login-button-box">
+            <button id="login-button">Log in</button>
+          </div>
+        </form>
+        <!-- USER LOGGED IN: User info and logoff button -->
+        <div id="logged-in">
+          <div id="user-info-wrapper">
+            <div id="logged-in-name"></div>
+            <div id="logged-in-email"></div>
+            <div id="logged-in-last"></div>
+          </div>
+          <div id="user-logoff-wrapper">
+            <button id="logoff-button">Log off</button>
+          </div>
+          <div id="user-profile-wrapper">
+            <h2>Profile</h2>
+            <form id="user-profile-form" autocomplete="off">
+              <div>
+                <label for="change-name-input">Your name:</label>
+                <input
+                  type="text"
+                  id="change-name-input"
+                  value=""
+                  minlength="2"
+                  maxlength="20"
+                  required
+                />
+              </div>
+              <div>
+                <label for="change-picture-input"
+                  >URL to profile picture:</label
+                >
+                <input
+                  type="text"
+                  id="change-picture-input"
+                  value=""
+                  minlength="12"
+                  maxlength="128"
+                />
+              </div>
+              <button id="change-profile-submit">Save</button>
             </form>
-            <!-- USER LOGGED IN: User info and logoff button -->
-            <div id="logged-in">
-                <div id="user-info-wrapper">
-                    <div id="logged-in-name"></div>
-                    <div id="logged-in-email"></div>
-                    <div id="logged-in-last"></div>
-                </div>
-                <div id="user-logoff-wrapper">
-                    <button id="logoff-button">Log off</button>
-                </div>
-                <div id="user-profile-wrapper">
-                    <h2>Profile</h2>
-                    <form id="user-profile-form" autocomplete="off">
-                        <div>
-                            <label for="change-name-input">Your name:</label>
-                            <input type="text" id="change-name-input" value="" minlength="2" maxlength="20" required /></div>
-                        <div>
-                            <label for="change-picture-input">URL to profile picture:</label>
-                            <input type="text" id="change-picture-input" value="" minlength="12" maxlength="128" />
-                        </div>
-                        <button id="change-profile-submit">Save</button>
-                    </form>
-                    <h2>Account</h2>
-                    <form id="user-account-form" autocomplete="off">
-                        <div>
-                            <label for="change-password-input">New password:</label>
-                            <input type="password" id="change-password-input" value="" minlength="6" maxlength="30" />
-                        </div>
-                        <div>
-                            <label for="change-password-input">Repeat new password:</label>
-                            <input type="password" id="change-password-again-input" value="" minlength="6" maxlength="30" />
-                        </div>
-                        <div>
-                            <label for="change-email-input">New email address:</label>
-                            <input type="email" id="change-email-input" value="" minlength="6" maxlength="128" />
-                        </div>
-                        <div>
-                            <label for="change-confirm-input">Current password:</label>
-                            <input type="password" id="change-confirm-input" value="" minlength="6" maxlength="30" />
-                        </div>
-                        <div id="user-account-form-buttons">
-                            <button id="change-account-submit">Update account</button>
-                            <button id="change-account-remove" formnovalidate>Delete account</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <!-- USER NOT LOGGED IN: Form for creating a new user -->
-            <form id="new-user-form">
-                <div id="newuser-title-box"><h2>Sign up</h2></div>
-                <div id="newuser-name-box"><label for="new-user-name">Display name:</label><input type="text" id="new-user-name" name="new-user-name" placeholder="Your name" maxlength="20" required></div>
-                <div id="newuser-email-box"><label for="new-user-email">E-mail address:</label><input type="email" id="new-user-email" name="new-user-email" placeholder="your@email.address" required></div>
-                <div id="newuser-password-box"><label for="new-user-password">Password:</label><input type="password" id="new-user-password" name="new-user-password" required></div>
-                <div id="newuser-password-confirm-box"><label for="new-user-password-again">Confirm password:</label><input type="password" id="new-user-password-again" name="new-user-password-again" required></div>
-                <div id="newuser-button-box"><button id="new-user-button">Create account</button></div>
+            <h2>Account</h2>
+            <form id="user-account-form" autocomplete="off">
+              <div>
+                <label for="change-password-input">New password:</label>
+                <input
+                  type="password"
+                  id="change-password-input"
+                  value=""
+                  minlength="6"
+                  maxlength="30"
+                />
+              </div>
+              <div>
+                <label for="change-password-input">Repeat new password:</label>
+                <input
+                  type="password"
+                  id="change-password-again-input"
+                  value=""
+                  minlength="6"
+                  maxlength="30"
+                />
+              </div>
+              <div>
+                <label for="change-email-input">New email address:</label>
+                <input
+                  type="email"
+                  id="change-email-input"
+                  value=""
+                  minlength="6"
+                  maxlength="128"
+                />
+              </div>
+              <div>
+                <label for="change-confirm-input">Current password:</label>
+                <input
+                  type="password"
+                  id="change-confirm-input"
+                  value=""
+                  minlength="6"
+                  maxlength="30"
+                />
+              </div>
+              <div id="user-account-form-buttons">
+                <button id="change-account-submit">Update account</button>
+                <button id="change-account-remove" formnovalidate>
+                  Delete account
+                </button>
+              </div>
             </form>
+          </div>
         </div>
+        <!-- USER NOT LOGGED IN: Form for creating a new user -->
+        <form id="new-user-form">
+          <div id="newuser-title-box"><h2>Sign up</h2></div>
+          <div id="newuser-name-box">
+            <label for="new-user-name">Display name:</label
+            ><input
+              type="text"
+              id="new-user-name"
+              name="new-user-name"
+              placeholder="Your name"
+              maxlength="20"
+              required
+            />
+          </div>
+          <div id="newuser-email-box">
+            <label for="new-user-email">E-mail address:</label
+            ><input
+              type="email"
+              id="new-user-email"
+              name="new-user-email"
+              placeholder="your@email.address"
+              required
+            />
+          </div>
+          <div id="newuser-password-box">
+            <label for="new-user-password">Password:</label
+            ><input
+              type="password"
+              id="new-user-password"
+              name="new-user-password"
+              required
+            />
+          </div>
+          <div id="newuser-password-confirm-box">
+            <label for="new-user-password-again">Confirm password:</label
+            ><input
+              type="password"
+              id="new-user-password-again"
+              name="new-user-password-again"
+              required
+            />
+          </div>
+          <div id="newuser-button-box">
+            <button id="new-user-button">Create account</button>
+          </div>
+        </form>
+      </div>
     </dialog>
-</body>
+  </body>
 </html>
