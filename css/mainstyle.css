@@ -46,10 +46,12 @@ header {
 
 body > footer {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     padding: 2rem;
     margin-top: 2rem;
-    gap: 4rem;
+    gap: 1rem;
 }
 
 input, button, textarea {
@@ -452,8 +454,13 @@ form label {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    border: 1px solid black;
-    border-radius: 15px;
+    font-size: 0.8em;
+}
+
+#colormode-toggle-wrapper > span {
+    position: relative;
+    top: 3px;
+    margin-right: 0.7rem;
 }
 
 #colormode-toggle-dark,
@@ -491,6 +498,7 @@ label[for="colormode-toggle-light"] {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    font-size: 0.8em;
 }
 
 #animation-toggle-wrapper > span {
@@ -580,6 +588,14 @@ label[for="animation-toggle-off"] {
 /* Desktop view overrides */
 
 @media all and (min-width: 650px) {
+
+    body > footer {
+        flex-direction: row;
+        justify-content: center;
+        padding: 2rem;
+        margin-top: 5rem;
+        gap: 4rem;
+    }
 
     #user-menu-button span {
         color: white;
