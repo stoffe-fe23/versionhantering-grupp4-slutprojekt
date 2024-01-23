@@ -8,6 +8,7 @@
   justify-content: center;
   align-items: center;
   z-index: -999;
+  opacity: 0.25;
 }
 
 .block-anime {
@@ -15,5 +16,14 @@
   width: 50px;
   height: 100px;
   background: linear-gradient(to right top, rgb(38, 62, 90), rgb(73, 89, 112));
+  box-shadow: 10px 10px 50px rgba(0, 0, 0, 0.2);
+}
+
+body.darkmnode .container-anime {
+  opacity: 0.6;
+}
+
+body.darkmode .block-anime {
+  background: linear-gradient(to right top, rgb(19, 13, 29), rgb(37, 29, 44));
   box-shadow: 10px 10px 50px rgba(0, 0, 0, 0.2);
 }
