@@ -119,40 +119,44 @@
                     <button id="logoff-button">Log off</button>
                 </div>
                 <div id="user-profile-wrapper">
-                    <h2>Profile</h2>
-                    <form id="user-profile-form" autocomplete="off">
-                        <div>
-                            <label for="change-name-input">Your name:</label>
-                            <input type="text" id="change-name-input" value="" minlength="2" maxlength="20" required /></div>
-                        <div>
-                            <label for="change-picture-input">URL to profile picture:</label>
-                            <input type="text" id="change-picture-input" value="" minlength="12" maxlength="128" />
-                        </div>
-                        <button id="change-profile-submit">Save</button>
-                    </form>
-                    <h2>Account</h2>
-                    <form id="user-account-form" autocomplete="off">
-                        <div>
-                            <label for="change-password-input">New password:</label>
-                            <input type="password" id="change-password-input" value="" minlength="6" maxlength="30" />
-                        </div>
-                        <div>
-                            <label for="change-password-input">Repeat new password:</label>
-                            <input type="password" id="change-password-again-input" value="" minlength="6" maxlength="30" />
-                        </div>
-                        <div>
-                            <label for="change-email-input">New email address:</label>
-                            <input type="email" id="change-email-input" value="" minlength="6" maxlength="128" />
-                        </div>
-                        <div>
-                            <label for="change-confirm-input">Current password:</label>
-                            <input type="password" id="change-confirm-input" value="" minlength="6" maxlength="30" />
-                        </div>
-                        <div id="user-account-form-buttons">
-                            <button id="change-account-submit">Update account</button>
-                            <button id="change-account-remove" formnovalidate>Delete account</button>
-                        </div>
-                    </form>
+                    <div id="user-profile-form-wrapper">
+                        <h2>Profile</h2>
+                        <form id="user-profile-form" autocomplete="off">
+                            <div>
+                                <label for="change-name-input">Your name:</label>
+                                <input type="text" id="change-name-input" value="" minlength="2" maxlength="20" required /></div>
+                            <div>
+                                <label for="change-picture-input">URL to profile picture:</label>
+                                <input type="text" id="change-picture-input" value="" minlength="12" maxlength="128" />
+                            </div>
+                            <button id="change-profile-submit">Save</button>
+                        </form>
+                    </div>
+                    <div id="user-account-form-wrapper">
+                        <h2>Account</h2>
+                        <form id="user-account-form" autocomplete="off">
+                            <div>
+                                <label for="change-password-input">New password:</label>
+                                <input type="password" id="change-password-input" value="" minlength="6" maxlength="30" />
+                            </div>
+                            <div>
+                                <label for="change-password-input">Repeat new password:</label>
+                                <input type="password" id="change-password-again-input" value="" minlength="6" maxlength="30" />
+                            </div>
+                            <div>
+                                <label for="change-email-input">New email address:</label>
+                                <input type="email" id="change-email-input" value="" minlength="6" maxlength="128" />
+                            </div>
+                            <div>
+                                <label for="change-confirm-input">Current password:</label>
+                                <input type="password" id="change-confirm-input" value="" minlength="6" maxlength="30" />
+                            </div>
+                            <div id="user-account-form-buttons">
+                                <button id="change-account-submit">Update account</button>
+                                <button id="change-account-remove" formnovalidate>Delete account</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
             <!-- USER NOT LOGGED IN: Form for creating a new user -->

@@ -135,6 +135,12 @@ form label {
 }
 
 
+#user-dialog-wrapper {
+    min-width: 300px;
+    max-height: 80vh;
+}
+
+
 #logged-in {
     display: none;
     justify-content: flex-end;
@@ -178,16 +184,25 @@ form label {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-width: 280px;
 }
 
 #user-profile-wrapper h2 {
     margin: 0;
+    text-align: center;
+    margin-bottom: 0.9rem;
+}
+
+#user-profile-form-wrapper {
+    background-color: lightgray;
+    padding: 1rem;
+    width: 100%;
+    margin: 0.5rem 0;
 }
 
 #user-profile-form {
     display: flex;
     flex-direction: column;
-    margin: 0.5rem;
     gap: 1rem;
     width: 100%;
 }
@@ -201,10 +216,16 @@ form label {
     width: 100%;
 }
 
+#user-account-form-wrapper {
+    background-color: lightgray;
+    padding: 1rem;
+    width: 100%;
+    margin: 0.5rem 0;
+}
+
 #user-account-form {
     display: flex;
     flex-direction: column;
-    margin: 0.5rem;
     gap: 1rem;
     width: 100%;
 }
@@ -218,6 +239,11 @@ form label {
 #user-account-form input, 
 #user-profile-form input {
     width: 100%;
+}
+
+#user-account-form-buttons {
+    display: flex;
+    justify-content: space-between;
 }
 
 #button-bar {
@@ -470,13 +496,13 @@ label[for="colormode-toggle-light"] {
     justify-content: center;
     align-items: center;
     z-index: 10;
-  }
+}
   
-  #busy.show {
+#busy.show {
     display: flex;
-  }
+}
   
-  #busy-spinner {
+#busy-spinner {
     grid-area: busy-spinner;
     display: block;
     content: " ";
@@ -487,25 +513,26 @@ label[for="colormode-toggle-light"] {
     border-style: solid;
     border-color: yellow transparent orange transparent;
     animation: busy-indicator-anim 1.75s linear infinite;
-  }
+}
   
-  #busy-backdrop {
+#busy-backdrop {
     background-color: rgba(0, 0, 0, 0.4);
     padding: 0.5rem;
     border-radius: 50%;
     box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.5);
-  }
+}
 
-  @keyframes busy-indicator-anim {
+@keyframes busy-indicator-anim {
     0% {
       transform: rotate(0deg);
     }
     100% {
       transform: rotate(360deg);
     }
-  }
+}
   
 
+/* Desktop view overrides */
 
 @media all and (min-width: 650px) {
 
