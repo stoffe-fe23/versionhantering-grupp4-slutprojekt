@@ -21,7 +21,7 @@ import {
     userSendEmailVerification,
     getLastUserId,
     deleteChatMessagesByAuthor,
-    getCurrentUserId
+    getIsValidImageUrl,
 } from './modules/api.js';
 
 import { showErrorMessage, clearErrorMessages, toggleDarkMode, loadUserProfile, showStatusMessage } from './modules/interface.js';
@@ -230,26 +230,38 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
         const profileData = {};
 
         getCurrentUserProfile().then((currentProfile) => {
-
             if (currentProfile.displayName != inputName) {
-                profileData.displayName = inputName;
-            }
-            if (currentProfile.picture != inputPicture) {
-                profileData.picture = inputPicture;
+                if (inputName.length > 2) {
+                    profileData.displayName = inputName;
+                }
+                else {
+                    showErrorMessage("Your display name must be at least 3 characters long.", false, 10000);
+                }
             }
 
-            if (Object.keys(profileData).length > 0) {
-                userUpdateProfile(profileData).then((param) => {
-                    getCurrentUserProfile().then((currUser) => {
-                        document.querySelector("#logged-in-name").innerHTML = currUser.displayName;
-                        document.querySelector("#logged-in-email").innerHTML = currUser.email;
-                        document.querySelector("#user-menu-button span").innerText = currUser.displayName;
-                        console.log("PROFILE UPDATED", currUser, param);
+            // Profile image value has been changed
+            if (currentProfile.picture != inputPicture) {
+                // Clear current profile image if set to empty string
+                if (inputPicture.length == 0) {
+                    profileData.picture = './images/profile-test-image.png';
+                    updateProfileDataFromObject(profileData);
+                }
+                else {
+                    // If an image URL is set, attempt to validate it
+                    getIsValidImageUrl(inputPicture).then((isValid) => {
+                        // Delayed profile update since check may take time
+                        if (isValid) {
+                            profileData.picture = inputPicture;
+                            updateProfileDataFromObject(profileData);
+                        }
+                        else {
+                            showErrorMessage("The specified portrait URL does not seem to be an image?", false, 10000);
+                        }
                     });
-                    showStatusMessage("Your user profile has been updated", false, 10000);
-                }).catch((error) => {
-                    showErrorMessage(`Error saving your profile: ${error.message}`);
-                });
+                }
+            }
+            else {
+                updateProfileDataFromObject(profileData);
             }
         });
     }
@@ -319,6 +331,27 @@ document.querySelector("#user-account-form").addEventListener("submit", (event) 
         }
     }
 });
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Update the current user profile with the specified values
+function updateProfileDataFromObject(profileData) {
+    if (Object.keys(profileData).length > 0) {
+        userUpdateProfile(profileData).then((param) => {
+            getCurrentUserProfile().then((currUser) => {
+                document.querySelector("#logged-in-name").innerHTML = currUser.displayName;
+                document.querySelector("#logged-in-email").innerHTML = currUser.email;
+                document.querySelector("#user-menu-button span").innerText = currUser.displayName;
+                document.querySelector("#user-menu-button img").src = currUser.picture;
+                console.log("PROFILE UPDATED", currUser, param);
+            });
+            showStatusMessage("Your user profile has been updated", false, 10000);
+        }).catch((error) => {
+            showErrorMessage(`Error saving your profile: ${error.message}`);
+        });
+    }
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
