@@ -419,6 +419,11 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 function newMessageEditorSubmitCallback(event) {
     event.preventDefault();
 
+    // Ton Group 3 "Start"//
+    const clickSound = new Audio('./audio/click-124467.mp3');
+    clickSound.play();
+    // Ton Group 3 "End"//
+    
     const formElement = event.currentTarget;
     const parentElement = document.querySelector("#new-message-card");
 
