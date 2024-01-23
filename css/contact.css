@@ -12,6 +12,12 @@ p {
     font-family: 'Lexend Exa', sans-serif;
 }
 
+#contact .content {
+    display: block;
+    margin: 0 2.5rem;
+    margin: 1px solid orange;
+}
+
 .contactusForm {
     display: flex;
     justify-content: center;
