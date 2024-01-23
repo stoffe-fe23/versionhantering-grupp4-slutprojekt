@@ -100,6 +100,10 @@ function initializeMessageBoard(displayMax) {
                 // Insert new messages first, but not when initially building the board
                 if (boardInitialized) {
                     messageBoard.prepend(createMessageCard(change.doc.data(), change.doc.id));
+                    // Ton Group 3 "Start"//
+                    const clickSound = new Audio('./audio/click-124467.mp3');
+                    clickSound.play();
+                    // Ton Group 3 "End"//
                 }
                 else {
                     messageBoard.append(createMessageCard(change.doc.data(), change.doc.id));
@@ -326,9 +330,7 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
         });
 
         // Author name and picture
-        // messageAuthor = createAuthorSignature(userProfileCache[messageData.authorid].name, userProfileCache[messageData.authorid].picture);
         messageAuthor = createAuthorSignature(getUserProfileData(messageData.authorid, "name"), getUserProfileData(messageData.authorid, "picture"));
-        // getUserProfileData
 
         // Edit button if current user is the creator of this message
         if ((messageId !== null) && getIsUserId(messageData.authorid)) {
@@ -352,7 +354,6 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
     else {
         // New Message
         const currUserId = getCurrentUserId();
-        // messageAuthor = createAuthorSignature(userProfileCache[currUserId].name, userProfileCache[currUserId].picture);
         messageAuthor = createAuthorSignature(getUserProfileData(currUserId, "name"), getUserProfileData(currUserId, "picture"));
 
         messageEditor.classList.add("show");
@@ -420,10 +421,10 @@ function newMessageEditorSubmitCallback(event) {
     event.preventDefault();
 
     // Ton Group 3 "Start"//
-    const clickSound = new Audio('./audio/click-124467.mp3');
-    clickSound.play();
+    // const clickSound = new Audio('./audio/click-124467.mp3');
+    // clickSound.play();
     // Ton Group 3 "End"//
-    
+
     const formElement = event.currentTarget;
     const parentElement = document.querySelector("#new-message-card");
 
@@ -585,9 +586,6 @@ function setAuthorInfoFromCache(messageCard, authorId) {
     const messageAuthorName = messageCard.querySelector(".message-author span");
     const messageAuthorPic = messageCard.querySelector(".message-author img");
 
-    // getUserProfileData
-    // messageAuthorName.innerText = (getIsValidText(userProfileCache[authorId].name) ? userProfileCache[authorId].name : "No name");
-    // messageAuthorPic.src = (getIsValidText(userProfileCache[authorId].picture) ? userProfileCache[authorId].picture : './images/profile-test-image.png');
     messageAuthorName.innerText = getUserProfileData(authorId, "name");
     messageAuthorPic.src = getUserProfileData(authorId, "picture");
 }

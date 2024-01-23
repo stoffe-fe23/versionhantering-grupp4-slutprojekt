@@ -309,7 +309,7 @@ document.querySelector("#user-account-form").addEventListener("submit", (event) 
     else if (event.submitter.id == "change-account-remove") {
         if (confirm("Are you sure you wish to completely remove your user account? This action cannot be undone!")) {
             userDelete(oldPassword).then(() => {
-                // Ton: Also delete all messages belonging to this user
+                // Ton (group 3): Also delete all messages belonging to this user
                 deleteChatMessagesByAuthor(getLastUserId());
                 showStatusMessage("Your account has been removed.", false, 10000);
             }).catch((error) => {
