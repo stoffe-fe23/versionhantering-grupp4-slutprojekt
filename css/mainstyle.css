@@ -64,41 +64,6 @@ input, button, textarea {
     margin: 0 auto;
 }
 
-#user-menu-button {
-    position: relative;
-    left: 0px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    cursor: pointer;
-    background-color: transparent;
-    border: 0;
-    padding: 1rem;
-    outline: 0;
-    font-family: var(--defaultFont);
-    transition: left 300ms ease-out;
-}
-
-#mainmenu-toggle:checked ~ #user-menu-button {
-    left: 30px;
-    transition: left 300ms ease-in;
-}
-
-#user-menu-button img {
-    max-width: 80px;
-    max-height: 80px;
-    border-radius: 50%;
-}
-
-#user-menu-button span {
-    color: white;
-}
-
-#mainmenu-toggle:checked ~ #user-menu-button span {
-    color: black;
-}
-
 main {
     margin: 0 auto;
 }
@@ -137,12 +102,67 @@ form label {
     margin-right: 0.5rem;
 }
 
+/* User menu button */
 
-#user-dialog-wrapper {
-    min-width: 300px;
-    max-height: 80vh;
+#user-menu-button {
+    position: relative;
+    left: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    padding: 1rem;
+    outline: 0;
+    font-family: var(--defaultFont);
+    transition: left 300ms ease-out;
 }
 
+#mainmenu-toggle:checked ~ #user-menu-button {
+    left: 30px;
+    transition: left 300ms ease-in;
+}
+
+#user-menu-button img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 50%;
+}
+
+#user-menu-button span {
+    color: white;
+}
+
+#mainmenu-toggle:checked ~ #user-menu-button span {
+    color: black;
+}
+
+/* User Profile, Login and New account box */
+
+#user-dialog-wrapper {
+    display: relative;
+    min-width: 300px;
+    max-height: 90vh;
+}
+
+#user-login-close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: inline-flex;
+    justify-content: center; 
+    align-items: center;
+    border: 0;
+    border-radius: 50%;
+    background-color: black;
+    color: red;
+    font-weight: 700;
+    width: 2.2rem;
+    height: 2.2rem;
+    cursor: pointer;
+}
 
 #logged-in {
     display: none;
@@ -268,7 +288,8 @@ form label {
 }
 
 
-/* Main menu placeholder */
+/* Main menu  */
+
 #mainmenu {
     order: 2;
     position: absolute;
@@ -364,7 +385,8 @@ form label {
 }
 
 
-/* Burger menu button placeholder */
+/* Burger menu button  */
+
 #mainmenu-toggle {
     position: absolute;
     left: -100px !important;

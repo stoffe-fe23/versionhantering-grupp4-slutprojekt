@@ -1,6 +1,7 @@
 
 let backgroundAnimation;
 
+// Luna contribution
 function animateBlocks() {
     backgroundAnimation = anime({
         targets: ".block-anime",
@@ -21,6 +22,7 @@ function animateBlocks() {
     });
 }
 
+// Added extra to be able to toggle on/off the background anim with a user setting
 function playBackgroundAnimation(playAnim) {
     const animationContainer = document.querySelector(".container-anime");
     if (playAnim) {
@@ -34,6 +36,7 @@ function playBackgroundAnimation(playAnim) {
 
 }
 
+// Luna contribution
 async function animateBackground() {
     const containerAnime = document.querySelector(".container-anime");
 
