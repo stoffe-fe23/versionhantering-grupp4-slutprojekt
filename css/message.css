@@ -281,11 +281,50 @@ button.message-like-button span {
 }
 
 .message-fulltext-dialog {
-    max-width: 800px;
-    max-height: 60vh;
+    max-width: 700px;
+    /* max-height: 50vh; */
+    border: 0;
+    padding: 0;
+    box-shadow: 4px 4px 15px rgba(0,0,0, 0.4);
+}
+
+.message-fulltext-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.message-fulltext-wrapper h3 {
+    color: darkblue;
+    margin: 0 0 0.5rem 0;
+    padding: 0.5rem;
+}
+
+.message-fulltext-close {
+    display: inline-flex;
+    justify-content: center; 
+    align-items: center;
+    margin-left: 1rem;
+    border: 0;
+    border-radius: 50%;
+    background-color: black;
+    color: red;
+    width: 2.2rem;
+    height: 2.2rem;
+    cursor: pointer;
+}
+
+.message-fulltext-close:hover {
+    color: yellow;
+    font-weight: 700;
 }
 
 .message-fulltext-box {
     width: 100%;
+    max-height: 50vh;
+    padding: 1rem;
     overflow-y: auto;
+    font-family: var(--messageFont);
+    background-color: white;
+    color: black;
 }

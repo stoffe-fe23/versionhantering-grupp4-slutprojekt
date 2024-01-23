@@ -69,3 +69,20 @@ body.darkmode #mainmenu .menu-option img {
     background-color: rgb(211,211,211);
     color: black;
 }
+
+/* Long message text view popup */
+body.darkmode .message-fulltext-dialog, 
+body.darkmode .message-fulltext-wrapper, 
+body.darkmode .message-fulltext-box {
+    background-color: black;
+    color: white;
+}
+
+body.darkmode .message-fulltext-wrapper h3 {
+    color: orange;
+}
+
+body.darkmode .message-fulltext-close {
+    background-color: darkgrey;
+    color: red;
+}

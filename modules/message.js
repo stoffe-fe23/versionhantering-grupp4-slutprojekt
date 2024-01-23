@@ -379,22 +379,33 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
     // Full message view popup on long messages.
     if (!isNewMessage) {
         const messageFullTextDialog = document.createElement("dialog");
+        const messageFullTexWrapper = document.createElement("div");
+        const messageFullTextTitle = document.createElement("h3");
         const messageFullTextBox = document.createElement("div");
         const messageFullTextButton = document.createElement("button");
+        const messageFullTextClose = document.createElement("button");
 
         messageFullTextBox.innerText = (getIsValidText(messageData.message) ? messageData.message : "");
         messageFullTextButton.innerHTML = `<img class="smallicon" src="./images/smallicon-expand.png" alt="View full message">`;
         messageFullTextButton.setAttribute("title", "View full message text");
+        messageFullTextClose.innerText = 'X';
+        messageFullTextTitle.innerText = 'View full message text';
 
         messageFullTextDialog.classList.add("message-fulltext-dialog");
+        messageFullTexWrapper.classList.add("message-fulltext-wrapper");
         messageFullTextBox.classList.add("message-fulltext-box");
         messageFullTextButton.classList.add("message-fulltext-button");
+        messageFullTextClose.classList.add("message-fulltext-close");
 
         messageFullTextDialog.id = `dialog-${messageId}`;
         messageFullTextBox.id = `longtext-${messageId}`;
+        messageFullTextClose.id = `longtext-close-${messageId}`
 
         messageFooter.appendChild(messageFullTextButton);
-        messageFullTextDialog.appendChild(messageFullTextBox);
+        messageFullTexWrapper.appendChild(messageFullTextTitle);
+        messageFullTextTitle.appendChild(messageFullTextClose);
+        messageFullTexWrapper.appendChild(messageFullTextBox);
+        messageFullTextDialog.appendChild(messageFullTexWrapper);
         messageCard.appendChild(messageFullTextDialog);
 
         if (messageData.message.length <= SHORT_MESSAGE_LIMIT) {
@@ -405,6 +416,10 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
             if (event.target.id == event.currentTarget.id) {
                 event.currentTarget.close();
             }
+        });
+
+        messageFullTextClose.addEventListener("click", (event) => {
+            messageFullTextDialog.close();
         });
 
         messageFullTextButton.addEventListener("click", (event) => {
@@ -420,6 +435,7 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 function newMessageEditorSubmitCallback(event) {
     event.preventDefault();
 
+    // Moved to occur whenever any new message pops up, see initializeMessageBoard().
     // Ton Group 3 "Start"//
     // const clickSound = new Audio('./audio/click-124467.mp3');
     // clickSound.play();
