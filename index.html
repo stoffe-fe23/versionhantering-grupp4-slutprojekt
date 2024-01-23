@@ -92,10 +92,16 @@
     </main>
     <footer>
         <!-- Sidfot! -->
+        <div id="animation-toggle-wrapper">
+            <span>Animation: </span>
+            <input type="radio" name="animation-toggle" id ="animation-toggle-on" value="on" checked><label for="animation-toggle-on">On</label>
+            <input type="radio" name="animation-toggle" id ="animation-toggle-off" value="off"><label for="animation-toggle-off">Off</label>
+        </div>
         <div id="colormode-toggle-wrapper">
             <input type="radio" name="colormode-toggle" id ="colormode-toggle-dark" value="dark"><label for="colormode-toggle-dark">Dark</label>
             <input type="radio" name="colormode-toggle" id ="colormode-toggle-light" value="light"><label for="colormode-toggle-light">Light</label>
         </div>
+
     </footer>
     <!-- Popup dialog for logging in or creating a new user account -->
     <dialog id="user-login-dialog">

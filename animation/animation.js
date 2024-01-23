@@ -1,7 +1,8 @@
 
+let backgroundAnimation;
 
 function animateBlocks() {
-    anime({
+    backgroundAnimation = anime({
         targets: ".block-anime",
         translateX: function () {
             return anime.random(-700, 700);
@@ -18,6 +19,19 @@ function animateBlocks() {
         delay: anime.stagger(10),
         complete: animateBlocks,
     });
+}
+
+function playBackgroundAnimation(playAnim) {
+    const animationContainer = document.querySelector(".container-anime");
+    if (playAnim) {
+        backgroundAnimation.play();
+        animationContainer.classList.remove("hide");
+    }
+    else {
+        backgroundAnimation.pause();
+        animationContainer.classList.add("hide");
+    }
+
 }
 
 async function animateBackground() {

@@ -58,6 +58,15 @@ document.querySelectorAll(`#colormode-toggle-wrapper input[name="colormode-toggl
 });
 
 
+///////////////////////////////////////////////////////////////////////////////////
+// Radio-group to toggle background animation on and off
+document.querySelectorAll(`#animation-toggle-wrapper input[name="animation-toggle"]`).forEach((modeRadio) => {
+    modeRadio.addEventListener("change", (event) => {
+        playBackgroundAnimation(event.currentTarget.value == "on");
+    })
+});
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Main navigation menu
 document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {

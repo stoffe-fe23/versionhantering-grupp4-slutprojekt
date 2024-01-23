@@ -49,6 +49,7 @@ body > footer {
     justify-content: center;
     padding: 2rem;
     margin-top: 2rem;
+    gap: 4rem;
 }
 
 input, button, textarea {
@@ -479,6 +480,50 @@ label[for="colormode-toggle-light"] {
 
 #colormode-toggle-dark:checked + label[for="colormode-toggle-dark"], 
 #colormode-toggle-light:checked + label[for="colormode-toggle-light"] {
+    background-color: orange;
+    color: white;
+    font-weight: 700;
+}
+
+/* BG Animation switch */
+
+#animation-toggle-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#animation-toggle-wrapper > span {
+    position: relative;
+    top: 3px;
+    margin-right: 0.7rem;
+}
+
+
+#animation-toggle-on,
+#animation-toggle-off {
+    position: absolute;
+    left: -100px !important;
+}
+
+label[for="animation-toggle-on"], 
+label[for="animation-toggle-off"] {
+    padding: 0.4rem 1rem;
+    background-color: black;
+    color: gray;
+    cursor: pointer;
+}
+
+label[for="animation-toggle-on"] {
+    border-radius: 15px 0px 0px 15px;
+}
+
+label[for="animation-toggle-off"] {
+    border-radius: 0px 15px 15px 0px;
+}
+
+#animation-toggle-on:checked + label[for="animation-toggle-on"], 
+#animation-toggle-off:checked + label[for="animation-toggle-off"] {
     background-color: orange;
     color: white;
     font-weight: 700;
