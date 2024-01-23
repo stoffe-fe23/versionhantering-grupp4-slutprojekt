@@ -24,7 +24,7 @@ import {
     getIsValidImageUrl,
 } from './modules/api.js';
 
-import { showErrorMessage, clearErrorMessages, toggleDarkMode, loadUserProfile, showStatusMessage } from './modules/interface.js';
+import { showErrorMessage, clearErrorMessages, toggleDarkMode, loadUserProfile, showStatusMessage, setIsBusy } from './modules/interface.js';
 import { createMessageCard, updateMessageCardsOwned, updateMessageCardsLiked } from './modules/message.js';
 
 
@@ -119,6 +119,7 @@ document.querySelector("#message-new-button").addEventListener("click", (event) 
 // Open the User popup dialog with the login/new user dialog box and user profile editor
 document.querySelector("#user-menu-button").addEventListener("click", (event) => {
     const loginDialog = document.querySelector("#user-login-dialog");
+    setIsBusy(true);
     loadUserProfile();
     loginDialog.showModal();
 });
@@ -225,6 +226,7 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
     event.preventDefault();
 
     if (userIsLoggedIn()) {
+        const profileDialog = document.querySelector("#user-login-dialog");
         const inputName = document.querySelector("#change-name-input").value.trim();
         const inputPicture = document.querySelector("#change-picture-input").value.trim();
         const profileData = {};
@@ -245,6 +247,7 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
                 if (inputPicture.length == 0) {
                     profileData.picture = './images/profile-test-image.png';
                     updateProfileDataFromObject(profileData);
+                    profileDialog.close();
                 }
                 else {
                     // If an image URL is set, attempt to validate it
@@ -253,6 +256,7 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
                         if (isValid) {
                             profileData.picture = inputPicture;
                             updateProfileDataFromObject(profileData);
+                            profileDialog.close();
                         }
                         else {
                             showErrorMessage("The specified portrait URL does not seem to be an image?", false, 10000);
@@ -262,6 +266,7 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
             }
             else {
                 updateProfileDataFromObject(profileData);
+                profileDialog.close();
             }
         });
     }
@@ -357,6 +362,7 @@ function updateProfileDataFromObject(profileData) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // USER LOG IN: This function is run when user login is completed
 function userLoggedInCallback() {
+    setIsBusy(true);
     getCurrentUserProfile().then((currUser) => {
         const loginForm = document.querySelector("#login-form");
         const loggedInBox = document.querySelector("#logged-in");
@@ -387,6 +393,9 @@ function userLoggedInCallback() {
             updateMessageCardsLiked(currUser.uid);
         }
         likedMarkersInit = true;
+        setIsBusy(false);
+    }).catch((error) => {
+        setIsBusy(false);
     });
 }
 

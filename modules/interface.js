@@ -16,7 +16,7 @@ import {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Show an error message to the user. If the autoCloseAfter parameter is set to a number
 // of milliseconds the error message will automatically close after that amount of time.
-function showErrorMessage(errorText, clearOldMessages = false, autoCloseAfter = 0) {
+function showErrorMessage(errorText, clearOldMessages = false, autoCloseAfter = 15000) {
     const errorBox = document.querySelector("#errors");
 
     if (clearOldMessages) {
@@ -54,7 +54,7 @@ function clearErrorMessages() {
 // Show a feedback message that is not an error to the user. If the autoCloseAfter parameter 
 // is set to a number of milliseconds the status message will automatically close after that 
 // amount of time.
-function showStatusMessage(statusText, clearOldMessages = false, autoCloseAfter = 0) {
+function showStatusMessage(statusText, clearOldMessages = false, autoCloseAfter = 15000) {
     const statusBox = document.querySelector("#status");
 
     if (clearOldMessages) {
@@ -115,9 +115,25 @@ function loadUserProfile() {
             userName.value = userProfile.displayName.trim();
             userPicture.value = userProfile.picture.trim();
             userEmail.value = userProfile.email.trim();
+            setIsBusy(false);
+        }).catch((error) => {
+            setIsBusy(false);
         });
     }
 }
 
 
-export { showErrorMessage, clearErrorMessages, showStatusMessage, clearStatusMessages, toggleDarkMode, loadUserProfile }; 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// Show the user an indicator that the page is busy doing something. 
+function setIsBusy(isBusy) {
+    const busySpinner = document.querySelector("#busy");
+    if (isBusy) {
+        busySpinner.classList.add("show");
+    }
+    else {
+        busySpinner.classList.remove("show");
+    }
+}
+
+
+export { showErrorMessage, clearErrorMessages, showStatusMessage, clearStatusMessages, toggleDarkMode, loadUserProfile, setIsBusy }; 

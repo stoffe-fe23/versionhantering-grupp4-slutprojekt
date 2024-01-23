@@ -21,7 +21,7 @@ import {
     getLikedMessages,
 } from './api.js';
 
-import { showErrorMessage, clearErrorMessages } from './interface.js';
+import { showErrorMessage, clearErrorMessages, setIsBusy } from './interface.js';
 
 
 const SHOW_MAX_MESSAGES = 32;
@@ -54,6 +54,7 @@ initializeDatabaseListeners();
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Build and update author cache and start listening for messages from the DB
 function initializeDatabaseListeners() {
+    setIsBusy(true);
     // First fetch and cache a list of author names and pictures
     authorsSnapshot = buildAuthorProfilesCache((updatedData) => {
         updatedData.docChanges().forEach((change) => {
@@ -118,6 +119,7 @@ function initializeMessageBoard(displayMax) {
         });
 
         boardInitialized = true;
+        setIsBusy(false);
     });
 
 }
