@@ -664,6 +664,8 @@ function timestampToDateTime(timestamp, isMilliSeconds = true) {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Get a field of profile data for the specified user (i.e. "name" or "picture")
 function getUserProfileData(userId, dataField) {
     if ((typeof userProfileCache == "object")
         && (Object.keys(userProfileCache).length > 0)

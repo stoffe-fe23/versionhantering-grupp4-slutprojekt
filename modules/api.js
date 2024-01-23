@@ -355,7 +355,9 @@ async function userSendEmailVerification() {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Get a current snapshot of the Name and Picture of all users as parameter to the Promise
-// callback function. 
+// callback function.  --- Removed, use data built by buildAuthorProfilesCache instead
+// in message.js 
+/*
 async function getUserProfiles() {
     return dbGetCollectionDocuments(db, 'userprofiles', ['userid', 'asc'], -1).then((dbData) => {
         const userProfileCache = {};
@@ -376,6 +378,7 @@ async function getUserProfiles() {
         return userProfileCache;
     });
 }
+*/
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -720,7 +723,7 @@ export {
     getIsUserId,
     getCurrentUserId,
     getIsValidText,
-    getUserProfiles,
+    //    getUserProfiles,
     buildAuthorProfilesCache,
     getLastUserId,
     getLikedMessages,

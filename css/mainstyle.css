@@ -237,7 +237,7 @@ form label {
     order: 2;
     position: absolute;
     top: 0px;
-    left: -150px;
+    left: -200px;
     margin-top: 0px;
     background-color: lightgray;
     padding: 1rem 2rem;
@@ -452,7 +452,7 @@ label[for="colormode-toggle-light"] {
 }
 
 
-@media all and (min-width: 550px) {
+@media all and (min-width: 650px) {
 
     #user-menu-button span {
         color: white;
