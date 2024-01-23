@@ -699,6 +699,20 @@ function getIsValidText(text) {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Attempt to determine if the specified URL points toward an image
+async function getIsValidImageUrl(imageUrl) {
+    const response = await fetch(imageUrl);
+
+    if (!response.ok) {
+        return false;
+    }
+
+    const result = await response.blob();
+    return result.type.startsWith('image/');
+}
+
+
 export {
     addChatMessage,
     getChatMessages,
@@ -723,7 +737,7 @@ export {
     getIsUserId,
     getCurrentUserId,
     getIsValidText,
-    //    getUserProfiles,
+    getIsValidImageUrl,
     buildAuthorProfilesCache,
     getLastUserId,
     getLikedMessages,

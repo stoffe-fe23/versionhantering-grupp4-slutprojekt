@@ -5,48 +5,70 @@
     Stylesheet for the About page layout.
 */
 
-.content {
+#about {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#about .content {
     text-align: center;
     font-family: 'Lexend Exa', sans-serif;
+    padding: 1rem 1rem 0 1rem;
 }
 
 #designPic {
+    max-height: 100%;
     max-width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    width: auto;
+    height: 100%;
     border-radius: 15%;
-    width: 85vw;
-    height: 50vh;
-    margin: 1rem;
+    margin-top: 2.5rem;
 }
 
-@media only screen and (min-width: 550px) {
+#about-picture {
+    padding: 0 1rem;
+}
+
+@media only screen and (min-width: 650px) {
 
     #about {
-        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        align-items: center;
     }
 
-    .content {
-        padding-top: 1rem;
+    #about .content {
+        flex-basis: 50%;
+        padding: 1rem 1rem 0 1rem;
     }
 
-    .aboutBlock1 {
+    #about-picture { 
+        flex-basis: 50%;
+    }
+
+    #about .aboutBlock1 {
         text-align: center;
         margin-left: 2rem;
     }
 
-    .aboutBlock2 {
+    #about .aboutBlock2 {
         text-align: center;
         margin-right: 10rem;
     }
 
-    .aboutBlock3 {
+    #about .aboutBlock3 {
         text-align: center;
        
     }
 
     #designPic {
-        max-width: 100%;
-        width: 30vw;
-        border-radius: 15%;
+        margin-top: 0;
     }
+
 
 }
