@@ -6,10 +6,47 @@
 */
 
 .content {
-    display: flex;
-    justify-content: center;
     text-align: center;
-    padding: 2 rem;
+}
 
+#designPic {
+    max-width: 100%;
+    border-radius: 15%;
+    width: 85vw;
+    height: 50vh;
+    margin: 1rem;
+
+}
+
+@media only screen and (min-width: 550px) {
+
+    #about {
+        display: flex;
+    }
+
+    .content {
+        padding-top: 1rem;
+    }
+
+    .aboutBlock1 {
+        text-align: center;
+        margin-left: 2rem;
+    }
+
+    .aboutBlock2 {
+        text-align: center;
+        margin-right: 10rem;
+    }
+
+    .aboutBlock3 {
+        text-align: center;
+       
+    }
+
+    #designPic {
+        max-width: 100%;
+        width: 30vw;
+        border-radius: 15%;
+    }
 
 }
