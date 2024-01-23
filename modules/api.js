@@ -41,7 +41,9 @@ import {
     where,
     increment,
     arrayUnion,
+    arrayRemove,
     onSnapshot,
+    writeBatch,
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 import { firebaseConfig } from './apiconfig.js';
@@ -226,7 +228,7 @@ async function getCurrentUserProfile() {
     if ((currentUserProfile === undefined) || (currentUserProfile === null) || (typeof currentUserProfile != "object")) {
         let userProfile = {
             uid: currentUser.uid,
-            displayName: (currentUser.displayName.length > 0 ? currentUser.displayName : "No name"),
+            displayName: (getIsValidText(currentUser.displayName) ? currentUser.displayName : "No name"),
             email: currentUser.email,
             verified: currentUser.emailVerified,
             phone: currentUser.phoneNumber,
@@ -285,6 +287,8 @@ async function userDelete(userPassword) {
         return reauthenticateWithCredential(auth.currentUser, authCredential).then(() => {
             return deleteUser(auth.currentUser).then(() => {
                 currentUser = null;
+                // Remove the extra user profile data as well
+                dbDeleteDocument(db, 'userprofiles', getLastUserId());
             });
         });
     }
@@ -462,6 +466,30 @@ async function deleteChatMessage(messageid) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+// Delete all messages by the author specified by userId.
+async function deleteChatMessagesByAuthor(userId) {
+    try {
+        const collectionName = 'chatmeddelande';
+        let fetchQuery = query(collection(db, collectionName), where("authorid", "==", userId));
+        const dbDocuments = await getDocs(fetchQuery);
+        const deleteBatch = writeBatch(db);
+
+        let documentCount = 0;
+        dbDocuments.forEach((messageDoc) => {
+            documentCount++;
+            deleteBatch.delete(doc(db, collectionName, messageDoc.id));
+        });
+
+        await deleteBatch.commit();
+        return documentCount;
+    }
+    catch (error) {
+        console.error("Error deleting messages from databse: ", error);
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
 // Edit an existing message in the database. 
 async function editChatMessage(messageId, newMessage, newColor = '') {
     const docMessage = await getDoc(doc(db, "chatmeddelande", messageId));
@@ -506,6 +534,34 @@ async function likeChatMessage(messageId) {
     }
     else {
         throw new Error("Could not find the message to edit.");
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Remove a like previously left by the current user on the specified message.
+async function likeChatMessageUndo(messageId) {
+    if (!userIsLoggedIn()) {
+        throw new Error("You must be logged in to undo the like of a message.");
+    }
+
+    const docMessage = await getDoc(doc(db, "chatmeddelande", messageId));
+    if (docMessage.exists()) {
+        const docMessageData = docMessage.data();
+
+        // A user may only unlike a message they have previously liked
+        if ((docMessageData !== undefined) && (docMessageData.likers !== undefined) && Array.isArray(docMessageData.likers)) {
+            if (!docMessageData.likers.includes(currentUser.uid)) {
+                throw new Error("Cannot undo like, you have not liked this message before.");
+            }
+        }
+        else if ((docMessageData !== undefined) && ((docMessageData.likers === undefined) || !Array.isArray(docMessageData.likers))) {
+            throw new Error("Cannot undo like, this message has no likes.");
+        }
+
+        return await updateDoc(doc(db, "chatmeddelande", messageId), { likes: increment(-1), likers: arrayRemove(currentUser.uid) });
+    }
+    else {
+        throw new Error("Could not find the message to unlike.");
     }
 }
 
@@ -624,6 +680,7 @@ async function dbStoreDocument(db, collectionName, collectionData, documentName 
 }
 
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Remove a document from the database
 async function dbDeleteDocument(db, collectionName, documentName) {
@@ -646,6 +703,7 @@ export {
     deleteChatMessage,
     editChatMessage,
     likeChatMessage,
+    likeChatMessageUndo,
     userLogin,
     userLogoff,
     userIsLoggedIn,
@@ -666,4 +724,5 @@ export {
     buildAuthorProfilesCache,
     getLastUserId,
     getLikedMessages,
+    deleteChatMessagesByAuthor,
 };

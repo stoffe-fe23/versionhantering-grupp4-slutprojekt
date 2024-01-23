@@ -19,7 +19,9 @@ import {
     userSetPassword,
     userSetEmail,
     userSendEmailVerification,
-    getLastUserId
+    getLastUserId,
+    deleteChatMessagesByAuthor,
+    getCurrentUserId
 } from './modules/api.js';
 
 import { showErrorMessage, clearErrorMessages, toggleDarkMode, loadUserProfile, showStatusMessage } from './modules/interface.js';
@@ -37,6 +39,7 @@ setUserLogoffCallback(userLoggedOffCallback);
 
 // Set default darkmode setting depending on visitor's system setting. 
 toggleDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -77,9 +80,8 @@ document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {
             case "menu-contact": contactSection.classList.remove("hide"); break;
         }
 
-        // Put this back when mobile-first design is properly implemented
-        // Hides the main menu after picking a menu option. 
-        // document.querySelector("#mainmenu-toggle").checked = false;
+        // Hides the main menu in burger menu mode after picking a menu option. 
+        document.querySelector("#mainmenu-toggle").checked = false;
     });
 });
 
@@ -148,12 +150,12 @@ document.querySelector("#login-form").addEventListener("submit", (event) => {
         }).catch((error) => {
             if (error.code !== undefined) {
                 switch (error.code) {
-                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid."); break;
-                    case "auth/user-disabled": showErrorMessage("Your user account has been suspended. Unable to log in."); break;
-                    case "auth/user-not-found": showErrorMessage("The specified user account does not exist."); break;
-                    case "auth/wrong-password": showErrorMessage("Incorrect username or password."); break;
-                    case "auth/invalid-credential": showErrorMessage("Incorrect username or password."); break;
-                    default: showErrorMessage(`Login error: ${error.message} (${error.code})`); break;
+                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid.", false, 10000); break;
+                    case "auth/user-disabled": showErrorMessage("Your user account has been suspended. Unable to log in.", false, 10000); break;
+                    case "auth/user-not-found": showErrorMessage("The specified user account does not exist.", false, 10000); break;
+                    case "auth/wrong-password": showErrorMessage("Incorrect username or password.", false, 10000); break;
+                    case "auth/invalid-credential": showErrorMessage("Incorrect username or password.", false, 10000); break;
+                    default: showErrorMessage(`Login error: ${error.message} (${error.code})`, false, 10000); break;
                 }
             }
             else {
@@ -196,15 +198,15 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
         }).catch((error) => {
             if (error.code !== undefined) {
                 switch (error.code) {
-                    case "auth/email-already-in-use": showErrorMessage("Unable to create new account. You already have an account."); break;
-                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid."); break;
-                    case "auth/operation-not-allowed": showErrorMessage("You cannot create an account at this time. Try again later?"); break;
-                    case "auth/weak-password": showErrorMessage("The specified password is too weak. Use something less easy to guess."); break;
-                    default: showErrorMessage(`New user error: ${error.message} (${error.code})`); break;
+                    case "auth/email-already-in-use": showErrorMessage("Unable to create new account. You already have an account.", false, 10000); break;
+                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid.", false, 10000); break;
+                    case "auth/operation-not-allowed": showErrorMessage("You cannot create an account at this time. Try again later?", false, 10000); break;
+                    case "auth/weak-password": showErrorMessage("The specified password is too weak. Use something less easy to guess.", false, 10000); break;
+                    default: showErrorMessage(`New user error: ${error.message} (${error.code})`, false, 10000); break;
                 }
             }
             else {
-                showErrorMessage(`New user error: ${error}`);
+                showErrorMessage(`New user error: ${error}`, false, 10000);
             }
             console.log("USER CREATE ERROR", error);
         });
@@ -307,7 +309,8 @@ document.querySelector("#user-account-form").addEventListener("submit", (event) 
     else if (event.submitter.id == "change-account-remove") {
         if (confirm("Are you sure you wish to completely remove your user account? This action cannot be undone!")) {
             userDelete(oldPassword).then(() => {
-                // TODO: Delete all messages belonging to this user? 
+                // Ton: Also delete all messages belonging to this user
+                deleteChatMessagesByAuthor(getLastUserId());
                 showStatusMessage("Your account has been removed.", false, 10000);
             }).catch((error) => {
                 showErrorMessage(`Error removing user account: ${error.message}`);

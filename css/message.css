@@ -89,6 +89,16 @@
     color: yellow;
 }
 
+.smallicon {
+    height: 24px;
+    filter: invert(100%);
+    display: inline-block;
+}
+
+.smallicon:hover {
+    filter: invert(88%) sepia(61%) saturate(1040%) hue-rotate(359deg) brightness(107%) contrast(104%);
+}
+
 .message-like-button {
     display: block;
     border: 0;
@@ -97,9 +107,21 @@
     cursor: pointer;
 }
 
+button.message-like-button span {
+    position: relative;
+    top: -6px;
+    margin-left: 0.15rem;
+}
+
+
 .message-liked {
     font-weight: 700;
-    color: yellow;
+    color: #ffa200;
+}
+
+/*  Calculator: https://codepen.io/sosuke/pen/Pjoqqp   */
+.message-liked img {
+    filter: invert(69%) sepia(17%) saturate(6994%) hue-rotate(359deg) brightness(104%) contrast(101%);
 }
 
 .message-fulltext-button {
@@ -131,6 +153,8 @@
 #message-new-wrapper {
     display: none;
     width: 100%;
+    justify-content: center;
+    margin-bottom: 1rem;
 }
 
 #message-new-wrapper.show {
@@ -138,12 +162,15 @@
 }
 
 #message-new-button {
-    height: 70px;
-    width: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90px;
+    width: 90px;
     border: 0px;
     border-radius: 50%;
     cursor: pointer;
-    margin-left: 2rem;
     box-shadow: 3px 3px 10px rgba(0,0,0, 0.3);
     background-color: orange;
 }
@@ -231,7 +258,6 @@
 .background-lightgray {
     background-color: rgb(211,211,211);
 }
-
 
 .message-fulltext-dialog {
     max-width: 800px;

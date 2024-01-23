@@ -14,6 +14,7 @@ import {
     editChatMessage,
     addChatMessage,
     likeChatMessage,
+    likeChatMessageUndo,
     getIsValidText,
     getCurrentUserId,
     buildAuthorProfilesCache,
@@ -144,7 +145,8 @@ function updateMessageCard(messageData, messageId) {
         setElementBackgroundColor(messageEditor, messageData.color);
 
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
-        messageLikes.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes : 0})`;
+        messageLikes.innerHTML = `<img class="smallicon" src="./images/smallicon-like.png" alt="Like"><span>(${messageData.likes !== undefined ? messageData.likes : 0})</span>`;
+        messageLikes.setAttribute("title", (hasLikedMessage ? "Liked message" : "Like message"));
         if (hasLikedMessage) {
             messageLikes.classList.add("message-liked");
         }
@@ -212,6 +214,7 @@ function updateMessageCardsLiked(authorId) {
         if ((likeButtons !== undefined) && (likeButtons !== null) && (likeButtons.length > 0)) {
             for (const likeButton of likeButtons) {
                 likeButton.classList.remove("message-liked");
+                likeButton.setAttribute("title", "Like message");
             }
         }
     }
@@ -223,6 +226,7 @@ function updateMessageCardsLiked(authorId) {
                 if ((messageCard !== undefined) && (messageCard !== null)) {
                     const messageLikeButton = messageCard.querySelector(".message-like-button");
                     messageLikeButton.classList.add("message-liked");
+                    messageLikeButton.setAttribute("title", "Liked message");
                 }
             }
         });
@@ -259,6 +263,8 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 
     let messageAuthor;
 
+    const hasLikedMessage = (!isNewMessage && userIsLoggedIn() && (messageData.likers !== undefined) && (messageData.likers !== null) ? messageData.likers.includes(getCurrentUserId()) : false);
+
     if (isNewMessage) {
         messageDate.innerText = 'New Message';
         messageText.innerText = '';
@@ -266,7 +272,6 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
         messageLikeButton.classList.add("hide");
     }
     else {
-        const hasLikedMessage = (userIsLoggedIn() && (messageData.likers !== undefined) && (messageData.likers !== null) ? messageData.likers.includes(getCurrentUserId()) : false);
         if (hasLikedMessage) {
             messageLikeButton.classList.add("message-liked");
         }
@@ -276,8 +281,10 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
         messageText.innerText = (getIsValidText(messageData.message) ? getTruncatedText(messageData.message, SHORT_MESSAGE_LIMIT) : "No message");
-        messageEditButton.innerText = "Edit";
-        messageLikeButton.innerText = ` Like (${messageData.likes !== undefined ? messageData.likes : 0})`;
+        messageEditButton.innerHTML = `<img class="smallicon" src="./images/smallicon-edit.png" alt="Edit message">`;
+        messageLikeButton.innerHTML = `<img class="smallicon" src="./images/smallicon-like.png" alt="Like"><span>(${messageData.likes !== undefined ? messageData.likes : 0})</span>`;
+        messageEditButton.setAttribute("title", "Edit message");
+        messageLikeButton.setAttribute("title", (hasLikedMessage ? "Liked message" : "Like message"));
     }
 
     messageCard.classList.add("message-card");
@@ -295,19 +302,33 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 
         // Like button
         messageLikeButton.addEventListener("click", (event) => {
-            likeChatMessage(messageId).then(() => {
-                console.log("MESSAGE LIKED", messageId);
-            }).catch((error) => {
-                console.error("MESSAGE LIKE ERROR", error);
-                showErrorMessage(error, true);
-            });
+            if (!userIsLoggedIn()) {
+                showErrorMessage("You must be logged on to Like messages.", false, 5000);
+                return;
+            }
+
+            if (hasLikedMessage) {
+                likeChatMessageUndo(messageId).then(() => {
+                    console.log("MESSAGE UN-LIKED", messageId);
+                }).catch((error) => {
+                    console.error("MESSAGE UN-LIKE ERROR", error);
+                    showErrorMessage(error, true);
+                });
+            }
+            else {
+                likeChatMessage(messageId).then(() => {
+                    console.log("MESSAGE LIKED", messageId);
+                }).catch((error) => {
+                    console.error("MESSAGE LIKE ERROR", error);
+                    showErrorMessage(error, true);
+                });
+            }
         });
 
-
-        userProfileCache[messageData.authorid].name
-
         // Author name and picture
-        messageAuthor = createAuthorSignature(userProfileCache[messageData.authorid].name, userProfileCache[messageData.authorid].picture);
+        // messageAuthor = createAuthorSignature(userProfileCache[messageData.authorid].name, userProfileCache[messageData.authorid].picture);
+        messageAuthor = createAuthorSignature(getUserProfileData(messageData.authorid, "name"), getUserProfileData(messageData.authorid, "picture"));
+        // getUserProfileData
 
         // Edit button if current user is the creator of this message
         if ((messageId !== null) && getIsUserId(messageData.authorid)) {
@@ -331,7 +352,8 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
     else {
         // New Message
         const currUserId = getCurrentUserId();
-        messageAuthor = createAuthorSignature(userProfileCache[currUserId].name, userProfileCache[currUserId].picture);
+        // messageAuthor = createAuthorSignature(userProfileCache[currUserId].name, userProfileCache[currUserId].picture);
+        messageAuthor = createAuthorSignature(getUserProfileData(currUserId, "name"), getUserProfileData(currUserId, "picture"));
 
         messageEditor.classList.add("show");
         messageEditor.id = "new-message-editor";
@@ -360,7 +382,8 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
         const messageFullTextButton = document.createElement("button");
 
         messageFullTextBox.innerText = (getIsValidText(messageData.message) ? messageData.message : "");
-        messageFullTextButton.innerText = "View full";
+        messageFullTextButton.innerHTML = `<img class="smallicon" src="./images/smallicon-expand.png" alt="View full message">`;
+        messageFullTextButton.setAttribute("title", "View full message text");
 
         messageFullTextDialog.classList.add("message-fulltext-dialog");
         messageFullTextBox.classList.add("message-fulltext-box");
@@ -557,8 +580,11 @@ function setAuthorInfoFromCache(messageCard, authorId) {
     const messageAuthorName = messageCard.querySelector(".message-author span");
     const messageAuthorPic = messageCard.querySelector(".message-author img");
 
-    messageAuthorName.innerText = (getIsValidText(userProfileCache[authorId].name) ? userProfileCache[authorId].name : "No name");
-    messageAuthorPic.src = (getIsValidText(userProfileCache[authorId].picture) ? userProfileCache[authorId].picture : './images/profile-test-image.png');
+    // getUserProfileData
+    // messageAuthorName.innerText = (getIsValidText(userProfileCache[authorId].name) ? userProfileCache[authorId].name : "No name");
+    // messageAuthorPic.src = (getIsValidText(userProfileCache[authorId].picture) ? userProfileCache[authorId].picture : './images/profile-test-image.png');
+    messageAuthorName.innerText = getUserProfileData(authorId, "name");
+    messageAuthorPic.src = getUserProfileData(authorId, "picture");
 }
 
 
@@ -635,6 +661,26 @@ export function getTruncatedText(truncText, maxLength) {
 function timestampToDateTime(timestamp, isMilliSeconds = true) {
     const dateObj = new Date(isMilliSeconds ? timestamp : timestamp * 1000);
     return `${dateObj.toLocaleDateString('sv-SE')} ${dateObj.toLocaleTimeString('sv-SE')}`;
+}
+
+
+function getUserProfileData(userId, dataField) {
+    if ((typeof userProfileCache == "object")
+        && (Object.keys(userProfileCache).length > 0)
+        && (userProfileCache[userId] !== undefined)
+        && (userProfileCache[userId] !== null)
+        && (userProfileCache[userId][dataField] !== undefined)
+        && (userProfileCache[userId][dataField] !== null)) {
+        return userProfileCache[userId][dataField];
+    }
+    else {
+        switch (dataField) {
+            case "name": return "No name";
+            case "picture": return './images/profile-test-image.png';
+            default: return "";
+        }
+    }
+    return "";
 }
 
 

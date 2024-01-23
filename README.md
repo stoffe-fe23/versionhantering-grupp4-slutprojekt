@@ -14,6 +14,8 @@ Besökare kan skapa ett användarkonto där de anger e-postadress (används för
 
 [Besök på Github Pages](https://stoffe-fe23.github.io/versionhantering-grupp4-slutprojekt/)
 
+[Mer info på projektets Wiki-sidor](https://github.com/stoffe-fe23/versionhantering-grupp4-slutprojekt/wiki)
+
 
 ### Nya features
 Om du vill bidra med features till projektet:
