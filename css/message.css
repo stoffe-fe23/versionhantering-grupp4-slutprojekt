@@ -51,11 +51,11 @@
     grid-area: message-text;
     padding: 0.5rem 1.5rem;
     font-size: var(--messageTextSize);
+    font-family: var(--messageFont);
 }
 
 .message-author {
     grid-area: message-author;
-    font-style: italic;
     font-size: 0.8em;
     width: 100%;
     display: flex;

@@ -14,7 +14,8 @@
 }
 
 :root {
-    --defaultFont: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+    --defaultFont: "Lexend Exa", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+    --contentFont: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
 }
 
 body {
@@ -50,6 +51,10 @@ body > footer {
     margin-top: 2rem;
 }
 
+input, button, textarea {
+    font-family: var(--contentFont);
+}
+
 #about, 
 #contact {
     max-width: 1024px;
@@ -65,7 +70,7 @@ body > footer {
 
 #user-menu-button {
     position: relative;
-    left: 12px;
+    left: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -75,6 +80,7 @@ body > footer {
     border: 0;
     padding: 1rem;
     outline: 0;
+    font-family: var(--defaultFont);
 }
 
 #user-menu-button img {
@@ -152,12 +158,14 @@ form label {
 #logged-in-email {
     font-style: italic;
     font-size: 0.9em;
+    font-family: var(--contentFont);
 }
 
 
 #logged-in-last {
     display: block;
     font-size: 0.7em;
+    font-family: var(--contentFont);
 }
 
 #user-info-wrapper {
