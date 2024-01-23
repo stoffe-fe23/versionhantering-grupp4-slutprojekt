@@ -287,6 +287,8 @@ async function userDelete(userPassword) {
         return reauthenticateWithCredential(auth.currentUser, authCredential).then(() => {
             return deleteUser(auth.currentUser).then(() => {
                 currentUser = null;
+                // Remove the extra user profile data as well
+                dbDeleteDocument(db, 'userprofiles', getLastUserId());
             });
         });
     }

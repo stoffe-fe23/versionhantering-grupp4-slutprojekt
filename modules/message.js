@@ -145,7 +145,8 @@ function updateMessageCard(messageData, messageId) {
         setElementBackgroundColor(messageEditor, messageData.color);
 
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
-        messageLikes.innerHTML = `<img src="./images/smallicon-like.png" alt="Like"><span>(${messageData.likes !== undefined ? messageData.likes : 0})</span>`;
+        messageLikes.innerHTML = `<img class="smallicon" src="./images/smallicon-like.png" alt="Like"><span>(${messageData.likes !== undefined ? messageData.likes : 0})</span>`;
+        messageLikes.setAttribute("title", (hasLikedMessage ? "Liked message" : "Like message"));
         if (hasLikedMessage) {
             messageLikes.classList.add("message-liked");
         }
@@ -324,11 +325,10 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
             }
         });
 
-
-        userProfileCache[messageData.authorid].name
-
         // Author name and picture
-        messageAuthor = createAuthorSignature(userProfileCache[messageData.authorid].name, userProfileCache[messageData.authorid].picture);
+        // messageAuthor = createAuthorSignature(userProfileCache[messageData.authorid].name, userProfileCache[messageData.authorid].picture);
+        messageAuthor = createAuthorSignature(getUserProfileData(messageData.authorid, "name"), getUserProfileData(messageData.authorid, "picture"));
+        // getUserProfileData
 
         // Edit button if current user is the creator of this message
         if ((messageId !== null) && getIsUserId(messageData.authorid)) {
@@ -352,7 +352,8 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
     else {
         // New Message
         const currUserId = getCurrentUserId();
-        messageAuthor = createAuthorSignature(userProfileCache[currUserId].name, userProfileCache[currUserId].picture);
+        // messageAuthor = createAuthorSignature(userProfileCache[currUserId].name, userProfileCache[currUserId].picture);
+        messageAuthor = createAuthorSignature(getUserProfileData(currUserId, "name"), getUserProfileData(currUserId, "picture"));
 
         messageEditor.classList.add("show");
         messageEditor.id = "new-message-editor";
@@ -579,8 +580,11 @@ function setAuthorInfoFromCache(messageCard, authorId) {
     const messageAuthorName = messageCard.querySelector(".message-author span");
     const messageAuthorPic = messageCard.querySelector(".message-author img");
 
-    messageAuthorName.innerText = (getIsValidText(userProfileCache[authorId].name) ? userProfileCache[authorId].name : "No name");
-    messageAuthorPic.src = (getIsValidText(userProfileCache[authorId].picture) ? userProfileCache[authorId].picture : './images/profile-test-image.png');
+    // getUserProfileData
+    // messageAuthorName.innerText = (getIsValidText(userProfileCache[authorId].name) ? userProfileCache[authorId].name : "No name");
+    // messageAuthorPic.src = (getIsValidText(userProfileCache[authorId].picture) ? userProfileCache[authorId].picture : './images/profile-test-image.png');
+    messageAuthorName.innerText = getUserProfileData(authorId, "name");
+    messageAuthorPic.src = getUserProfileData(authorId, "picture");
 }
 
 
@@ -657,6 +661,26 @@ export function getTruncatedText(truncText, maxLength) {
 function timestampToDateTime(timestamp, isMilliSeconds = true) {
     const dateObj = new Date(isMilliSeconds ? timestamp : timestamp * 1000);
     return `${dateObj.toLocaleDateString('sv-SE')} ${dateObj.toLocaleTimeString('sv-SE')}`;
+}
+
+
+function getUserProfileData(userId, dataField) {
+    if ((typeof userProfileCache == "object")
+        && (Object.keys(userProfileCache).length > 0)
+        && (userProfileCache[userId] !== undefined)
+        && (userProfileCache[userId] !== null)
+        && (userProfileCache[userId][dataField] !== undefined)
+        && (userProfileCache[userId][dataField] !== null)) {
+        return userProfileCache[userId][dataField];
+    }
+    else {
+        switch (dataField) {
+            case "name": return "No name";
+            case "picture": return './images/profile-test-image.png';
+            default: return "";
+        }
+    }
+    return "";
 }
 
 
