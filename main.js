@@ -208,7 +208,7 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
     if (newPassword == newPasswordConfirm) {
         createNewUser(newEmail, newPassword, newName).then((data) => {
             userSendEmailVerification().then(() => {
-                console.log("Verification mail sent.");
+                showStatusMessage("A verification link has been sent by e-mail to the address you specified. (Check your spam-box too).");
             });
         }).catch((error) => {
             if (error.code !== undefined) {
@@ -223,12 +223,11 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
             else {
                 showErrorMessage(`New user error: ${error}`, true, 10000);
             }
-            console.log("USER CREATE ERROR", error);
         });
         event.currentTarget.reset();
     }
     else {
-        console.log("Passwords do not match!");
+        showErrorMessage("You did not enter the same desired password twice. Try again.", true, 10000);
     }
 
 });
@@ -362,7 +361,6 @@ document.querySelector("#user-account-form").addEventListener("submit", (event) 
             }).catch((error) => {
                 showErrorMessage(`Error removing user account: ${error.message}`, true);
             });
-            console.log("TODO", "Delete account button pressed!");
         }
     }
 });
@@ -378,7 +376,6 @@ function updateProfileDataFromObject(profileData) {
                 document.querySelector("#logged-in-email").innerHTML = currUser.email;
                 document.querySelector("#user-menu-button span").innerText = currUser.displayName;
                 document.querySelector("#user-menu-button img").src = currUser.picture;
-                console.log("PROFILE UPDATED", currUser, param);
             });
             showStatusMessage("Your user profile has been updated", false, 10000);
         }).catch((error) => {
@@ -418,7 +415,8 @@ function userLoggedInCallback() {
 
         updateMessageCardsOwned(currUser.uid, true);
 
-        // Skip this on initial page load since the messages already should be in the correct state. 
+        // Skip this on initial page load for a previously logged on user, 
+        // since the messages already should be in the correct state. 
         if (likedMarkersInit) {
             updateMessageCardsLiked(currUser.uid);
         }
@@ -458,6 +456,4 @@ function userLoggedOffCallback() {
 
     updateMessageCardsOwned(lastUser, false);
     updateMessageCardsLiked(false);
-
-    console.log("ANV. UTLOGG");
 }

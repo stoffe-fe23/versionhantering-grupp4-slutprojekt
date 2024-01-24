@@ -16,10 +16,10 @@ import {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Show an error message to the user. If the autoCloseAfter parameter is set to a number
 // of milliseconds the error message will automatically close after that amount of time.
+// If showInPopup is set to true the error will also be shown in an alert box. 
 function showErrorMessage(errorText, showInPopup = false, autoCloseAfter = 15000) {
     const errorBox = document.querySelector("#errors");
 
-    console.log("ShowError", errorText);
     errorBox.classList.add("show");
     const errorMsg = document.createElement("div");
     errorMsg.innerText = errorText;
@@ -42,7 +42,7 @@ function showErrorMessage(errorText, showInPopup = false, autoCloseAfter = 15000
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Remove any error messages displayed to the user.
+// Remove any error messages currently displayed to the user.
 function clearErrorMessages() {
     const errorBox = document.querySelector("#errors");
     errorBox.innerHTML = '';
@@ -61,7 +61,6 @@ function showStatusMessage(statusText, clearOldMessages = false, autoCloseAfter 
         statusBox.innerHTML = '';
     }
 
-    console.log("Show status", statusText);
     statusBox.classList.add("show");
     const statusMsg = document.createElement("div");
     statusMsg.innerText = statusText;
@@ -91,7 +90,6 @@ function clearStatusMessages() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // Toggle Dark Mode on and off
 function toggleDarkMode(enableDarkMode) {
-    console.log("DARK MODE", enableDarkMode);
     if (enableDarkMode) {
         document.body.classList.add("darkmode");
         document.querySelector("#colormode-toggle-dark").checked = true;
