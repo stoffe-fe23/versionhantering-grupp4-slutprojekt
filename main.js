@@ -174,7 +174,7 @@ document.querySelector("#login-form").addEventListener("submit", (event) => {
                 }
             }
             else {
-                showErrorMessage(`Login error: ${error}`);
+                showErrorMessage(`Login error: ${error}`, true);
             }
             console.error("LOGIN ERROR", error);
         });
@@ -251,7 +251,7 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
                     profileData.displayName = inputName;
                 }
                 else {
-                    showErrorMessage("Your display name must be at least 3 characters long.", false, 10000);
+                    showErrorMessage("Your display name must be at least 3 characters long.", true, 10000);
                 }
             }
 
@@ -273,7 +273,7 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
                             profileDialog.close();
                         }
                         else {
-                            showErrorMessage("The specified portrait URL does not seem to be an image?", false, 10000);
+                            showErrorMessage("The specified portrait URL does not seem to be an image?", true, 10000);
                         }
                     });
                 }
@@ -329,20 +329,20 @@ document.querySelector("#user-account-form").addEventListener("submit", (event) 
                 userSetEmail(oldPassword, newEmailValue).then(() => {
                     showStatusMessage("Your e-mail address has been changed.", false, 10000);
                 }).catch((error) => {
-                    showErrorMessage(`Error changing e-mail address: ${error.message}`);
+                    showErrorMessage(`Error changing e-mail address: ${error.message}`, true);
                 });
             }
 
             // Change Password
             if ((newPassValue.length > 0) || (newPassConfirmValue.length > 0)) {
                 if (newPassValue !== newPassConfirmValue) {
-                    showErrorMessage("Your new password does not match.");
+                    showErrorMessage("Your new password does not match.", true);
                 }
                 else {
                     userSetPassword(oldPassword, newPassValue).then(() => {
                         showStatusMessage("Your password has been changed", false, 10000);
                     }).catch((error) => {
-                        showErrorMessage(`Error changing password: ${error.message}`);
+                        showErrorMessage(`Error changing password: ${error.message}`, true);
                     });
                 }
             }
@@ -360,7 +360,7 @@ document.querySelector("#user-account-form").addEventListener("submit", (event) 
                 deleteChatMessagesByAuthor(getLastUserId());
                 showStatusMessage("Your account has been removed.", false, 10000);
             }).catch((error) => {
-                showErrorMessage(`Error removing user account: ${error.message}`);
+                showErrorMessage(`Error removing user account: ${error.message}`, true);
             });
             console.log("TODO", "Delete account button pressed!");
         }
@@ -382,7 +382,7 @@ function updateProfileDataFromObject(profileData) {
             });
             showStatusMessage("Your user profile has been updated", false, 10000);
         }).catch((error) => {
-            showErrorMessage(`Error saving your profile: ${error.message}`);
+            showErrorMessage(`Error saving your profile: ${error.message}`, true);
         });
     }
 }
