@@ -5,6 +5,31 @@
     Main stylesheet for the basic page layout.
 */
 
+/*Elvira*/
+#to-the-top-button {
+    position: fixed;
+    right: 1rem;
+    display: none;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    border: none;
+    z-index: 1;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.fa-arrow-up {
+    font-size: 2rem;
+    color: #47576f;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+/* /Elvira */
+
 * {
     box-sizing: border-box;
 }
@@ -665,5 +690,11 @@ label[for="animation-toggle-off"] {
         gap: 2rem;
         margin: 0;
         padding: 0;
+    }
+
+    /* Elvira */
+    #to-the-top-button {
+        width: 80px;
+        height: 80px;
     }
 }
