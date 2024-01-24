@@ -287,6 +287,23 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
 });
 
 
+document.querySelector("#user-show-signup").addEventListener("click", (event) => {
+    const loginForm = document.querySelector("#login-form");
+    const newUserForm = document.querySelector("#new-user-form");
+
+    loginForm.classList.add("hide");
+    newUserForm.classList.remove("hide");
+});
+
+document.querySelector("#user-show-login").addEventListener("click", (event) => {
+    const loginForm = document.querySelector("#login-form");
+    const newUserForm = document.querySelector("#new-user-form");
+
+    loginForm.classList.remove("hide");
+    newUserForm.classList.add("hide");
+});
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Account info form, change email address, password or remove account
 document.querySelector("#user-account-form").addEventListener("submit", (event) => {
@@ -340,7 +357,6 @@ document.querySelector("#user-account-form").addEventListener("submit", (event) 
     else if (event.submitter.id == "change-account-remove") {
         if (confirm("Are you sure you wish to completely remove your user account? This action cannot be undone!")) {
             userDelete(oldPassword).then(() => {
-                // Ton (group 3): Also delete all messages belonging to this user
                 deleteChatMessagesByAuthor(getLastUserId());
                 showStatusMessage("Your account has been removed.", false, 10000);
             }).catch((error) => {
