@@ -1,0 +1,17 @@
+canvas {
+    background-color: #ffffff;
+}
+#display-confetti {
+    font-size: 1em;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    padding: 1.5rem 3em;
+    border-radius: 3em;
+    background-color: blue;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    font-family: "poppins", sans-serif;
+}
