@@ -35,17 +35,13 @@ label{
     border: none;
     background-color: lightgray;
     position: relative;
-    transition: .8s ease-in-out;
-    transform: scale(1);
 }
 
 #new-user-form {
     border-radius: 80% / 10%;
     border: none;
     background-color: lightgray;
-    transform: translateY(-180px);
-	transition: .8s ease-in-out;
-    transform: scale(0.5);
+
 }
 
 #chk{
@@ -53,11 +49,8 @@ label{
 }
 
 #chk:checked ~ #new-user-form{
-    transform: scale(1);
-    transition: .8s ease-in-out;
-	transform: translateY(-50px);
+
 }
 #chk:checked ~ #login-form {
-	transform: scale(0.5);	
-    transition: .8s ease-in-out;
+
 }
