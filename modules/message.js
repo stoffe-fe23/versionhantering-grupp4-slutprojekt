@@ -553,6 +553,7 @@ function createMessageEditor(messageData, messageId) {
 
     // Disallow empty messages
     messageEditText.setAttribute("minlength", 3);
+    messageEditText.setAttribute("maxlength", 5000);
     messageEditText.setAttribute("required", true);
     messageEditCancel.setAttribute("formnovalidate", true);
     messageEditDelete.setAttribute("formnovalidate", true);
