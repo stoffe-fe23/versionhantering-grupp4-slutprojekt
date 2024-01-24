@@ -4,16 +4,18 @@
 }
 
 #user-login-dialog {
-    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
 	padding: 0;
-	display: flex;
+	display: hide;
 	justify-content: center;
 	align-items: center;
     box-sizing: border-box;
     background-color: rgb(27, 43, 63);
     color: white;
-    border-radius: 0.5rem;
+    border-radius: 2rem;
     border: none;
+    transition: 1 ease-in;
 }
 
 label{
@@ -34,7 +36,7 @@ label{
     background-color: lightgray;
     position: relative;
     transition: .8s ease-in-out;
-
+    transform: scale(1);
 }
 
 #new-user-form {
@@ -43,7 +45,7 @@ label{
     background-color: lightgray;
     transform: translateY(-180px);
 	transition: .8s ease-in-out;
-    transform: scale(0.6);
+    transform: scale(0.5);
 }
 
 #chk{
@@ -56,9 +58,6 @@ label{
 	transform: translateY(-50px);
 }
 #chk:checked ~ #login-form {
-	transform: scale(0.6);	
+	transform: scale(0.5);	
     transition: .8s ease-in-out;
-}
-#chk:checked ~ #newuser-title-box {
-
 }
