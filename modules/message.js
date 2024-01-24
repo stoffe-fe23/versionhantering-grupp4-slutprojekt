@@ -46,7 +46,7 @@ let boardInitialized = false;
 let userProfileCache = {};
 
 
-// Start watching the userprofiles and chatmessages databases for initial load and updates
+// Initialize: Start watching the userprofiles and chatmessages databases for initial load and updates
 initializeDatabaseListeners();
 
 

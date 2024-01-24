@@ -10,7 +10,6 @@ import {
     userLogoff,
     userIsLoggedIn,
     createNewUser,
-    getCurrentUserName,
     getCurrentUserProfile,
     userUpdateProfile,
     setUserLoginCallback,
@@ -28,16 +27,14 @@ import { showErrorMessage, clearErrorMessages, toggleDarkMode, loadUserProfile, 
 import { createMessageCard, updateMessageCardsOwned, updateMessageCardsLiked } from './modules/message.js';
 
 
-let likedMarkersInit = false;
 
-
-// Configure function to run when a user has logged in
+// Initialize: Configure function to run when a user has logged in
 setUserLoginCallback(userLoggedInCallback);
 
-// Configure function to run when the user has logged off
+// Initialize: Init: Configure function to run when the user has logged off
 setUserLogoffCallback(userLoggedOffCallback);
 
-// Set default darkmode setting depending on visitor's system setting. 
+// Initialize: Set default darkmode setting depending on visitor's system setting. 
 toggleDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
 
@@ -286,6 +283,8 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
 });
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Button to hide the Signup form and show the Login form
 document.querySelector("#user-show-signup").addEventListener("click", (event) => {
     const loginForm = document.querySelector("#login-form");
     const newUserForm = document.querySelector("#new-user-form");
@@ -294,6 +293,9 @@ document.querySelector("#user-show-signup").addEventListener("click", (event) =>
     newUserForm.classList.remove("hide");
 });
 
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Button to hide the Login form and show the Signup form 
 document.querySelector("#user-show-login").addEventListener("click", (event) => {
     const loginForm = document.querySelector("#login-form");
     const newUserForm = document.querySelector("#new-user-form");
@@ -366,6 +368,38 @@ document.querySelector("#user-account-form").addEventListener("submit", (event) 
 });
 
 
+// Yasir grupp 1 - popup on form submit
+document.querySelector("#contactform").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const formName = document.querySelector("#contactform #name");
+
+    document.querySelector("#popUp h3").innerText = `${formName.value}, thank you for your message!`;
+    document.querySelector("#popUp").showModal();
+
+    /*
+    const popUp = document.querySelector("#popUp");
+    popUp.style.display = "flex";
+    const backgroundShade = document.querySelector(".backgroundShade");
+    backgroundShade.style.display = "block";
+    */
+});
+
+// Yasir grupp 1 - popup close  button
+const contactClose = document.querySelector("#contactClose").addEventListener("click", (event) => {
+    event.preventDefault();
+
+    document.querySelector("#contactform #message").value = '';
+    document.querySelector("#contactform #name").value = '';
+    document.querySelector("#popUp").close();
+
+    /*
+    let popUp = document.querySelector("#popUp").style.display = "none";
+    const backgroundShade = document.querySelector(".backgroundShade").style.display = "none";
+    */
+});
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Update the current user profile with the specified values
 function updateProfileDataFromObject(profileData) {
@@ -414,13 +448,8 @@ function userLoggedInCallback() {
         document.querySelector("#user-menu-button img").src = currUser.picture;
 
         updateMessageCardsOwned(currUser.uid, true);
+        updateMessageCardsLiked(currUser.uid);
 
-        // Skip this on initial page load for a previously logged on user, 
-        // since the messages already should be in the correct state. 
-        if (likedMarkersInit) {
-            updateMessageCardsLiked(currUser.uid);
-        }
-        likedMarkersInit = true;
         setIsBusy(false);
     }).catch((error) => {
         setIsBusy(false);
@@ -457,23 +486,3 @@ function userLoggedOffCallback() {
     updateMessageCardsOwned(lastUser, false);
     updateMessageCardsLiked(false);
 }
-
-// Yasir grupp 1 popup
-
-const contactForm = document.querySelector("#contactformbutton");
-
-if (contactForm !== undefined && contactForm !== null) {
-    contactForm.addEventListener("click", (event) => {
-        event.preventDefault();
-        const popUp = document.querySelector("#popUp");
-        popUp.style.display = "flex";
-        const backgroundShade = document.querySelector(".backgroundShade");
-        backgroundShade.style.display = "block";
-    });
-};
-
-const contactClose = document.querySelector("#contactClose").addEventListener("click", (event) => {
-    event.preventDefault();
-    let popUp = document.querySelector("#popUp").style.display = "none";
-    const backgroundShade = document.querySelector(".backgroundShade").style.display = "none";
-});
