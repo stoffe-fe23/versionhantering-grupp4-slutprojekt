@@ -79,7 +79,6 @@ onAuthStateChanged(auth, (user) => {
         if (typeof userLoginCallback == "function") {
             userLoginCallback();
         }
-        console.log("CURRENT USER", currentUser);
     }
     else {
         currentUser = null;
@@ -87,7 +86,6 @@ onAuthStateChanged(auth, (user) => {
             userLogoffCallback();
         }
         currentUserProfile = null;
-        console.log("NO USER", currentUser);
     }
 });
 
@@ -144,7 +142,6 @@ function getLastUserId() {
 async function userLogin(loginName, loginPassword) {
     return signInWithEmailAndPassword(auth, loginName, loginPassword).then((userCredential) => {
         currentUser = userCredential.user;
-        console.log("SIGNED IN", userCredential);
     });
 }
 
@@ -155,7 +152,6 @@ async function userLogin(loginName, loginPassword) {
 async function userLogoff() {
     return signOut(auth).then(() => {
         currentUser = null;
-        console.log("LOG OFF SUCCESSFUL");
     }).catch((error) => {
         console.error("LOG OFF FAILED", error);
     });
@@ -249,10 +245,6 @@ async function getCurrentUserProfile() {
         }
 
         currentUserProfile = userProfile;
-        console.log("User Profile Load from DB...");
-    }
-    else {
-        console.log("User Profile Load from cache...");
     }
     return currentUserProfile;
 }
@@ -272,7 +264,6 @@ async function createNewUser(userEmail, userPassword, userName) {
             });
 
         }
-        console.log("USER CREATED", userCredential);
     });
 }
 
@@ -355,8 +346,8 @@ async function userSendEmailVerification() {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Get a current snapshot of the Name and Picture of all users as parameter to the Promise
-// callback function.  --- Removed, use data built by buildAuthorProfilesCache instead
-// in message.js 
+// callback function.  --- Removed, use data built by buildAuthorProfilesCache callback
+// instead.
 /*
 async function getUserProfiles() {
     return dbGetCollectionDocuments(db, 'userprofiles', ['userid', 'asc'], -1).then((dbData) => {
