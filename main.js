@@ -89,6 +89,15 @@ document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {
             case "menu-contact": contactSection.classList.remove("hide"); break;
         }
 
+        ////////////////////////////////
+//////Johanna Ostling kod//////
+//////////////////////////////      
+let mySound = new Audio('./audio/snare-112754.mp3')
+mySound.play()
+////////////////////////////////
+//////Johanna Ostling kod//////
+//////////////////////////////
+
         // Hides the main menu in burger menu mode after picking a menu option. 
         document.querySelector("#mainmenu-toggle").checked = false;
     });
