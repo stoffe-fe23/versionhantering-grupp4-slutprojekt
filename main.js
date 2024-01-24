@@ -89,6 +89,12 @@ document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {
             case "menu-contact": contactSection.classList.remove("hide"); break;
         }
 
+
+        // Johanna Ostling kod
+        let mySound = new Audio('./audio/snare-112754.mp3')
+        mySound.play()
+        // Johanna end
+
         // Hides the main menu in burger menu mode after picking a menu option. 
         document.querySelector("#mainmenu-toggle").checked = false;
     });
@@ -159,16 +165,16 @@ document.querySelector("#login-form").addEventListener("submit", (event) => {
         }).catch((error) => {
             if (error.code !== undefined) {
                 switch (error.code) {
-                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid.", false, 10000); break;
-                    case "auth/user-disabled": showErrorMessage("Your user account has been suspended. Unable to log in.", false, 10000); break;
-                    case "auth/user-not-found": showErrorMessage("The specified user account does not exist.", false, 10000); break;
-                    case "auth/wrong-password": showErrorMessage("Incorrect username or password.", false, 10000); break;
-                    case "auth/invalid-credential": showErrorMessage("Incorrect username or password.", false, 10000); break;
-                    default: showErrorMessage(`Login error: ${error.message} (${error.code})`, false, 10000); break;
+                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid.", true, 10000); break;
+                    case "auth/user-disabled": showErrorMessage("Your user account has been suspended. Unable to log in.", true, 10000); break;
+                    case "auth/user-not-found": showErrorMessage("The specified user account does not exist.", true, 10000); break;
+                    case "auth/wrong-password": showErrorMessage("Incorrect username or password.", true, 10000); break;
+                    case "auth/invalid-credential": showErrorMessage("Incorrect username or password.", true, 10000); break;
+                    default: showErrorMessage(`Login error: ${error.message} (${error.code})`, true, 10000); break;
                 }
             }
             else {
-                showErrorMessage(`Login error: ${error}`);
+                showErrorMessage(`Login error: ${error}`, true);
             }
             console.error("LOGIN ERROR", error);
         });
@@ -207,15 +213,15 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
         }).catch((error) => {
             if (error.code !== undefined) {
                 switch (error.code) {
-                    case "auth/email-already-in-use": showErrorMessage("Unable to create new account. You already have an account.", false, 10000); break;
-                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid.", false, 10000); break;
-                    case "auth/operation-not-allowed": showErrorMessage("You cannot create an account at this time. Try again later?", false, 10000); break;
-                    case "auth/weak-password": showErrorMessage("The specified password is too weak. Use something less easy to guess.", false, 10000); break;
-                    default: showErrorMessage(`New user error: ${error.message} (${error.code})`, false, 10000); break;
+                    case "auth/email-already-in-use": showErrorMessage("Unable to create new account. You already have an account.", true, 10000); break;
+                    case "auth/invalid-email": showErrorMessage("The specified email address is invalid.", true, 10000); break;
+                    case "auth/operation-not-allowed": showErrorMessage("You cannot create an account at this time. Try again later?", true, 10000); break;
+                    case "auth/weak-password": showErrorMessage("The specified password is too weak. Use something less easy to guess.", true, 10000); break;
+                    default: showErrorMessage(`New user error: ${error.message} (${error.code})`, true, 10000); break;
                 }
             }
             else {
-                showErrorMessage(`New user error: ${error}`, false, 10000);
+                showErrorMessage(`New user error: ${error}`, true, 10000);
             }
             console.log("USER CREATE ERROR", error);
         });
@@ -245,7 +251,7 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
                     profileData.displayName = inputName;
                 }
                 else {
-                    showErrorMessage("Your display name must be at least 3 characters long.", false, 10000);
+                    showErrorMessage("Your display name must be at least 3 characters long.", true, 10000);
                 }
             }
 
@@ -267,7 +273,7 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
                             profileDialog.close();
                         }
                         else {
-                            showErrorMessage("The specified portrait URL does not seem to be an image?", false, 10000);
+                            showErrorMessage("The specified portrait URL does not seem to be an image?", true, 10000);
                         }
                     });
                 }
@@ -278,6 +284,23 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
             }
         });
     }
+});
+
+
+document.querySelector("#user-show-signup").addEventListener("click", (event) => {
+    const loginForm = document.querySelector("#login-form");
+    const newUserForm = document.querySelector("#new-user-form");
+
+    loginForm.classList.add("hide");
+    newUserForm.classList.remove("hide");
+});
+
+document.querySelector("#user-show-login").addEventListener("click", (event) => {
+    const loginForm = document.querySelector("#login-form");
+    const newUserForm = document.querySelector("#new-user-form");
+
+    loginForm.classList.remove("hide");
+    newUserForm.classList.add("hide");
 });
 
 
@@ -306,20 +329,20 @@ document.querySelector("#user-account-form").addEventListener("submit", (event) 
                 userSetEmail(oldPassword, newEmailValue).then(() => {
                     showStatusMessage("Your e-mail address has been changed.", false, 10000);
                 }).catch((error) => {
-                    showErrorMessage(`Error changing e-mail address: ${error.message}`);
+                    showErrorMessage(`Error changing e-mail address: ${error.message}`, true);
                 });
             }
 
             // Change Password
             if ((newPassValue.length > 0) || (newPassConfirmValue.length > 0)) {
                 if (newPassValue !== newPassConfirmValue) {
-                    showErrorMessage("Your new password does not match.");
+                    showErrorMessage("Your new password does not match.", true);
                 }
                 else {
                     userSetPassword(oldPassword, newPassValue).then(() => {
                         showStatusMessage("Your password has been changed", false, 10000);
                     }).catch((error) => {
-                        showErrorMessage(`Error changing password: ${error.message}`);
+                        showErrorMessage(`Error changing password: ${error.message}`, true);
                     });
                 }
             }
@@ -334,11 +357,10 @@ document.querySelector("#user-account-form").addEventListener("submit", (event) 
     else if (event.submitter.id == "change-account-remove") {
         if (confirm("Are you sure you wish to completely remove your user account? This action cannot be undone!")) {
             userDelete(oldPassword).then(() => {
-                // Ton (group 3): Also delete all messages belonging to this user
                 deleteChatMessagesByAuthor(getLastUserId());
                 showStatusMessage("Your account has been removed.", false, 10000);
             }).catch((error) => {
-                showErrorMessage(`Error removing user account: ${error.message}`);
+                showErrorMessage(`Error removing user account: ${error.message}`, true);
             });
             console.log("TODO", "Delete account button pressed!");
         }
@@ -360,7 +382,7 @@ function updateProfileDataFromObject(profileData) {
             });
             showStatusMessage("Your user profile has been updated", false, 10000);
         }).catch((error) => {
-            showErrorMessage(`Error saving your profile: ${error.message}`);
+            showErrorMessage(`Error saving your profile: ${error.message}`, true);
         });
     }
 }
