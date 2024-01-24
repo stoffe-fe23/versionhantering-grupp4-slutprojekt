@@ -457,3 +457,23 @@ function userLoggedOffCallback() {
     updateMessageCardsOwned(lastUser, false);
     updateMessageCardsLiked(false);
 }
+
+// Yasir grupp 1 popup
+
+const contactForm = document.querySelector("#contactformbutton");
+
+if (contactForm !== undefined && contactForm !== null) {
+    contactForm.addEventListener("click", (event) => {
+        event.preventDefault();
+        const popUp = document.querySelector("#popUp");
+        popUp.style.display = "flex";
+        const backgroundShade = document.querySelector(".backgroundShade");
+        backgroundShade.style.display = "block";
+    });
+};
+
+const contactClose = document.querySelector("#contactClose").addEventListener("click", (event) => {
+    event.preventDefault();
+    let popUp = document.querySelector("#popUp").style.display = "none";
+    const backgroundShade = document.querySelector(".backgroundShade").style.display = "none";
+});
