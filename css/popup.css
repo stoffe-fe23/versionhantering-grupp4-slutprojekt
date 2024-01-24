@@ -15,6 +15,10 @@
   translate: -50%;  
 }
 
+#popUp.show {
+  display: flex;
+}
+
 #popUp h3{
   text-align: center;
   margin-top: 30%;
