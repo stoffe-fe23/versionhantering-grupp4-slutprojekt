@@ -26,7 +26,8 @@ import {
 
 import { showErrorMessage, clearErrorMessages, toggleDarkMode, loadUserProfile, showStatusMessage, setIsBusy } from './modules/interface.js';
 import { createMessageCard, updateMessageCardsOwned, updateMessageCardsLiked } from './modules/message.js';
-
+// Elvira Ericsson, feel free att ta bort denna kommentar, ville vara tydlig.
+import { scroll, scrollToTopFunction } from './modules/scrollToTop.js';
 
 let likedMarkersInit = false;
 
@@ -47,6 +48,13 @@ toggleDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
     toggleDarkMode(event.matches);
 });
+
+///////////////////////////////////////////////////////////////////////////////////
+// Scroll to top when user presses button.
+// Elvira Ericsson 
+window.addEventListener('scroll', scroll);
+document.getElementById('to-the-top-button').addEventListener('click', scrollToTopFunction);
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////
