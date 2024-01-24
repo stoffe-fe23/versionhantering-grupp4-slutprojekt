@@ -1,7 +1,9 @@
-
+/*
+    Contribution by Luna (group 6)
+*/
 let backgroundAnimation;
 
-// Luna contribution
+// Luna: animate background elements
 function animateBlocks() {
     backgroundAnimation = anime({
         targets: ".block-anime",
@@ -14,7 +16,6 @@ function animateBlocks() {
         scale: function () {
             return anime.random(1, 5);
         },
-
         easing: "linear",
         duration: 8000,
         delay: anime.stagger(10),
@@ -22,7 +23,7 @@ function animateBlocks() {
     });
 }
 
-// Added extra to be able to toggle on/off the background anim with a user setting
+// Stoffe: Added extra to be able to toggle on/off the background anim with a user setting
 function playBackgroundAnimation(playAnim) {
     const animationContainer = document.querySelector(".container-anime");
     if (playAnim) {
@@ -36,17 +37,19 @@ function playBackgroundAnimation(playAnim) {
 
 }
 
-// Luna contribution
+// Luna: Create background elements and start animating
 async function animateBackground() {
     const containerAnime = document.querySelector(".container-anime");
 
-    for (let i = 0; i <= 50; i++) {
+    for (let i = 0; i <= 75; i++) {
         const blocksAnime = document.createElement("div");
         blocksAnime.classList.add("block-anime");
         containerAnime.appendChild(blocksAnime);
     }
 
     animateBlocks();
+    backgroundAnimation.pause();
+    document.querySelector(".container-anime").classList.add("hide");
 }
 
 animateBackground();

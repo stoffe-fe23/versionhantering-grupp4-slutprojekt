@@ -313,7 +313,7 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
                 return;
             }
 
-            if (hasLikedMessage) {
+            if (event.currentTarget.classList.contains("message-liked")) {
                 likeChatMessageUndo(messageId).then(() => {
                     console.log("MESSAGE UN-LIKED", messageId);
                 }).catch((error) => {
