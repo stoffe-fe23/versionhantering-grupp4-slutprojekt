@@ -1,0 +1,64 @@
+:root {
+    --defaultFont: "Lexend Exa", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+    --contentFont: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+}
+
+#user-login-dialog {
+    margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+    box-sizing: border-box;
+    background-color: rgb(27, 43, 63);
+    color: white;
+    border-radius: 0.5rem;
+    border: none;
+}
+
+label{
+	color: rgb(27, 43, 63);;
+	justify-content: center;
+	display: flex;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+#login-form label {
+    transform: scale(1);
+}
+
+#login-form {
+    border-radius: 80% / 10%;
+    border: none;
+    background-color: lightgray;
+    position: relative;
+    transition: .8s ease-in-out;
+
+}
+
+#new-user-form {
+    border-radius: 80% / 10%;
+    border: none;
+    background-color: lightgray;
+    transform: translateY(-180px);
+	transition: .8s ease-in-out;
+    transform: scale(0.6);
+}
+
+#chk{
+	display: none;
+}
+
+#chk:checked ~ #new-user-form{
+    transform: scale(1);
+    transition: .8s ease-in-out;
+	transform: translateY(-50px);
+}
+#chk:checked ~ #login-form {
+	transform: scale(0.6);	
+    transition: .8s ease-in-out;
+}
+#chk:checked ~ #newuser-title-box {
+
+}
