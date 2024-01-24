@@ -1,0 +1,330 @@
+/*
+    Versionshantering slutprojekt (FE23)
+    Grupp 4
+
+    Styles for showing and editing messages.
+*/
+
+:root {
+    --messageCardBackgroundDefault: lightgreen;
+    --messageFont: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+    --messageTextSize: 0.9rem;
+}
+
+.hide {
+    display: none !important;
+}
+
+.message-card {
+    position: relative;
+    display: grid;
+    width: 300px;
+    min-height: 250px;
+    background-color: var(--messageCardBackgroundDefault);
+    color: black;
+    grid-template-areas:
+        "message-date"    
+        "message-text"
+        "message-author"
+        "message-footer";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 5fr auto;
+    align-items: stretch;
+    justify-content: center;
+    justify-items: center;
+    gap: 0;
+    padding: 0;
+}
+
+.message-date {
+    grid-area: message-date;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    font-size: 0.9em;
+    background-color: rgba(0,0,0,0.75);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0px 0px 12px 12px;
+}
+
+.message-text {
+    grid-area: message-text;
+    padding: 0.5rem 1.5rem;
+    font-size: var(--messageTextSize);
+    font-family: var(--messageFont);
+}
+
+.message-author {
+    grid-area: message-author;
+    font-size: 0.8em;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.75rem 0 0.5rem 0;
+    padding: 0.25rem 0.75rem 0 0.75rem;
+}
+
+.message-author img {
+    max-width: 42px;
+    max-height: 42px;
+    border-radius: 50%;
+}
+
+.message-author span {
+    font-size: 1.1em;
+}
+
+.message-footer {
+    grid-area: message-footer;
+    background-color: rgba(0,0,0,0.5);
+    padding: 0.25rem 0.75rem;
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.message-footer button:hover {
+    color: yellow;
+}
+
+.smallicon {
+    height: 24px;
+    filter: invert(100%);
+    display: inline-block;
+}
+
+.smallicon:hover {
+    filter: invert(88%) sepia(61%) saturate(1040%) hue-rotate(359deg) brightness(107%) contrast(104%);
+}
+
+.message-like-button {
+    display: block;
+    border: 0;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+button.message-like-button span {
+    position: relative;
+    top: -6px;
+    margin-left: 0.15rem;
+}
+
+
+.message-liked {
+    font-weight: 700;
+    color: #ffa200;
+}
+
+/*  Calculator: https://codepen.io/sosuke/pen/Pjoqqp   */
+.message-liked img {
+    filter: invert(69%) sepia(17%) saturate(6994%) hue-rotate(359deg) brightness(104%) contrast(101%);
+}
+
+.message-fulltext-button {
+    display: block;
+    border: 0;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+.message-edit-button {
+    display: none;
+    border: 0;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+.message-edit-button.show {
+    display: block;
+}
+
+#messages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#message-new-wrapper {
+    display: none;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+#message-new-wrapper.show {
+    display: flex;
+}
+
+#message-new-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90px;
+    width: 90px;
+    border: 0px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 3px 3px 10px rgba(0,0,0, 0.3);
+    background-color: orange;
+    transition: box-shadow 250ms ease-out;
+}
+
+#message-new-button:hover {
+    background-color: yellow;
+    box-shadow: 0 0 20px yellow, 0 0 40px orange;
+    transition: box-shadow 250ms ease-in;
+}
+
+
+#messageboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 1rem 0.5rem 3rem 0.5rem;
+}
+
+#messageboard article {
+    flex: 0 1 300px;
+    box-shadow: 3px 3px 10px rgba(0,0,0, 0.3);
+}
+
+
+.message-edit-form {
+    grid-area: message-text;
+    display: none;
+    flex-direction: column; 
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    min-height: 250px;
+    gap: 0.5rem;
+    background-color: var(--messageCardBackgroundDefault);
+    color: black;
+}
+
+.message-edit-form.show {
+    display: flex;
+}
+
+.message-edit-text {
+    flex: 1 1 100%;
+    resize: none;
+    width: 100%;
+    height: 100%;   
+    padding: 0.5rem 1.2rem;
+    background-color: transparent;
+    font-family: var(--messageFont);
+    font-size: var(--messageTextSize);
+    border: 0;
+}
+
+.message-edit-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.message-edit-buttons button {
+    border: 2px solid darkslategrey;
+    border-radius: 0.75rem;
+    background-color: white;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    transition: background-color 350ms ease-out;
+}
+
+.message-edit-buttons button:hover {
+    background-color: yellow;
+    transition: background-color 350ms ease-in;
+}
+
+.message-edit-color {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.message-edit-color select {
+    border-radius: 0.75rem;
+    padding: 0.25rem;
+    margin: 0 0.3rem;
+    min-width: 70%;
+}
+
+.background-lightgreen {
+    background-color: rgb(144,238,144);
+}
+
+.background-lightyellow {
+    background-color: rgb(255,255,224);
+}
+
+.background-lightblue {
+    background-color: rgb(173,216,230);
+}
+
+.background-lightpink {
+    background-color: rgb(255,182,193);
+}
+
+.background-lightgray {
+    background-color: rgb(211,211,211);
+}
+
+.message-fulltext-dialog {
+    max-width: 700px;
+    /* max-height: 50vh; */
+    border: 0;
+    padding: 0;
+    box-shadow: 4px 4px 15px rgba(0,0,0, 0.4);
+}
+
+.message-fulltext-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.message-fulltext-wrapper h3 {
+    color: darkblue;
+    margin: 0 0 0.5rem 0;
+    padding: 0.5rem;
+}
+
+.message-fulltext-close {
+    display: inline-flex;
+    justify-content: center; 
+    align-items: center;
+    margin-left: 1rem;
+    border: 0;
+    border-radius: 50%;
+    background-color: black;
+    color: red;
+    width: 2.2rem;
+    height: 2.2rem;
+    cursor: pointer;
+}
+
+.message-fulltext-close:hover {
+    color: yellow;
+    font-weight: 700;
+}
+
+.message-fulltext-box {
+    width: 100%;
+    max-height: 50vh;
+    padding: 1rem;
+    overflow-y: auto;
+    font-family: var(--messageFont);
+    background-color: white;
+    color: black;
+}

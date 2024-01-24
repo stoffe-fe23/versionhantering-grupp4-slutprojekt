@@ -1,0 +1,94 @@
+/*
+    Versionshantering slutprojekt (FE23)
+    Grupp 4
+
+    Stylesheet for Dark Mode overrides.
+*/
+
+/* Base layout */
+body.darkmode {
+    background-color: rgb(13, 20, 29);
+    background: linear-gradient(to right top, rgb(19, 13, 29), rgb(37, 29, 44));
+    color: white;
+}
+
+
+body.darkmode a, body.darkmode a:visited {
+    color: orange;
+}
+
+body.darkmode a:hover {
+    color: yellow;
+}
+
+
+/* Main navigation menu */
+
+body.darkmode #mainmenu {
+    background-color: black;
+}
+
+body.darkmode #mainmenu a,  body.darkmode #mainmenu a:visited {
+    color: white;
+    text-decoration: none;
+}
+
+body.darkmode #mainmenu a:hover {
+    color: yellow;
+}
+
+body.darkmode #mainmenu .menu-option img {
+    filter: invert(100%);
+}
+
+
+
+/* Background colors of message notes */
+
+body.darkmode .message-card, 
+body.darkmode .background-lightgreen {
+    /* background-color: rgb(144,238,144); */
+    background-color: rgb(94 161 94);
+    color: black;
+}
+
+body.darkmode .background-lightyellow {
+    /* background-color: rgb(255,255,224); */
+    background-color: rgb(153 153 88);
+    color: black;
+}
+
+body.darkmode .background-lightblue {
+    /* background-color: rgb(173,216,230); */
+    background-color: rgb(135 167 177);
+    color: black;
+}
+
+body.darkmode .background-lightpink {
+    /* background-color: rgb(255,182,193); */
+    background-color: rgb(175 135 141);
+    color: black;
+}
+
+body.darkmode .background-lightgray {
+    /* background-color: rgb(211,211,211); */
+    background-color: rgb(159 159 159);
+    color: black;
+}
+
+/* Long message text view popup */
+body.darkmode .message-fulltext-dialog, 
+body.darkmode .message-fulltext-wrapper, 
+body.darkmode .message-fulltext-box {
+    background-color: black;
+    color: white;
+}
+
+body.darkmode .message-fulltext-wrapper h3 {
+    color: orange;
+}
+
+body.darkmode .message-fulltext-close {
+    background-color: darkgrey;
+    color: red;
+}

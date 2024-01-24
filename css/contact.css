@@ -1,0 +1,95 @@
+/*
+    Versionshantering slutprojekt (FE23)
+    Grupp 4
+
+    Stylesheet for the Contact us page layout.
+*/
+h2 {
+    font-family: 'Lexend Exa', sans-serif;
+}
+
+p {
+    font-family: 'Lexend Exa', sans-serif;
+}
+
+#contact .content {
+    display: block;
+    margin: 0 2.5rem;
+    margin: 1px solid orange;
+}
+
+.contactusForm {
+    display: flex;
+    justify-content: center;
+    align-items: inherit;
+    flex-direction: column;
+}
+
+.name-query {
+    width: 80vw;
+    font-size: 1em;
+    border: 2px solid #000000;
+    padding: 5px;
+    border-radius: 0.5rem 0.5rem 0.5rem 0.5rem;
+    outline: none;
+    color: #000000;
+    font-family: 'Lexend Exa', sans-serif;
+}
+
+.contactus-query {
+    display: flex;
+    position: relative;
+    justify-content: left;
+    resize: vertical;
+    width: 80vw;
+    font-size: 1em;
+    border: 2px solid #000000;
+    margin-top: 0.5rem;
+    padding: 5px;
+    border-radius: 0.5rem 0.5rem 0.5rem 0.5rem;
+    outline: none;
+    color: #000000;
+    font-family: 'Lexend Exa', sans-serif;
+}
+
+.submit-button {
+    font-family: 'Lexend Exa', sans-serif;
+    border: 2px solid #000000;
+    text-align: center;
+    width: 30vw;
+    color: #000000;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 10px;
+    margin-top: 0.5rem;
+    float: right;
+    
+}
+
+.submit-button:hover {
+    opacity: 0.75;
+
+}
+
+@media all and (min-width: 550px) {
+
+    .name-query {
+        width: 40%;
+    }
+
+    .contactus-query {
+        width: 100%;
+    }
+
+    .submit-button {
+        display: flex;
+        float: right;
+        width: 18%;
+        justify-content: center;
+    }
+
+    .contactSubmitContainer {
+        text-align: right;
+    }
+}
