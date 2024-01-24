@@ -318,7 +318,7 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
                     console.log("MESSAGE UN-LIKED", messageId);
                 }).catch((error) => {
                     console.error("MESSAGE UN-LIKE ERROR", error);
-                    showErrorMessage(error, true);
+                    showErrorMessage(error, false);
                 });
             }
             else {
@@ -326,7 +326,7 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
                     console.log("MESSAGE LIKED", messageId);
                 }).catch((error) => {
                     console.error("MESSAGE LIKE ERROR", error);
-                    showErrorMessage(error, true);
+                    showErrorMessage(error, false);
                 });
             }
         });
@@ -455,7 +455,7 @@ function newMessageEditorSubmitCallback(event) {
             document.querySelector("#new-message-card").remove();
         }).catch((error) => {
             console.error("Error adding message:", error);
-            showErrorMessage(error, true);
+            showErrorMessage(error, false);
         });
     }
     else if (event.submitter.classList.contains("message-edit-cancel")) {
@@ -484,7 +484,7 @@ function messageEditorSubmitCallback(event) {
             console.log("Message edited", messageId);
         }).catch((error) => {
             console.error("Error editing message:", error);
-            showErrorMessage(error, true);
+            showErrorMessage(error, false);
         });
     }
     else if (event.submitter.classList.contains("message-edit-cancel")) {
@@ -510,7 +510,7 @@ function messageEditorSubmitCallback(event) {
         if (confirm("Are you sure you wish to permanently remove this message?")) {
             deleteChatMessage(messageId).catch((error) => {
                 console.error("Error deleting message:", error);
-                showErrorMessage(error, true);
+                showErrorMessage(error, false);
             });
         }
     }

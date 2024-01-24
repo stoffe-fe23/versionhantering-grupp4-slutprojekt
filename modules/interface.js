@@ -16,12 +16,8 @@ import {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Show an error message to the user. If the autoCloseAfter parameter is set to a number
 // of milliseconds the error message will automatically close after that amount of time.
-function showErrorMessage(errorText, clearOldMessages = false, autoCloseAfter = 15000) {
+function showErrorMessage(errorText, showInPopup = false, autoCloseAfter = 15000) {
     const errorBox = document.querySelector("#errors");
-
-    if (clearOldMessages) {
-        errorBox.innerHTML = '';
-    }
 
     console.log("ShowError", errorText);
     errorBox.classList.add("show");
@@ -29,6 +25,10 @@ function showErrorMessage(errorText, clearOldMessages = false, autoCloseAfter = 
     errorMsg.innerText = errorText;
     errorBox.appendChild(errorMsg);
     errorBox.scrollTo();
+
+    if (showInPopup) {
+        alert(errorText);
+    }
 
     if (autoCloseAfter > 1000) {
         setTimeout((errorMsg, errorBox) => {
