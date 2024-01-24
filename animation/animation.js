@@ -25,6 +25,11 @@ function animateBlocks() {
 // Added extra to be able to toggle on/off the background anim with a user setting
 function playBackgroundAnimation(playAnim) {
     const animationContainer = document.querySelector(".container-anime");
+    // Tobbe: (group 3)
+    const submitSound = new Audio("./audio/pewpewsound.mp3");
+    submitSound.play();
+    // Tobbe end
+
     if (playAnim) {
         backgroundAnimation.play();
         animationContainer.classList.remove("hide");
@@ -50,4 +55,3 @@ async function animateBackground() {
 }
 
 animateBackground();
-

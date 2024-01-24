@@ -13,7 +13,8 @@ body.darkmode {
 }
 
 
-body.darkmode a, body.darkmode a:visited {
+body.darkmode a,
+body.darkmode a:visited {
     color: orange;
 }
 
@@ -28,7 +29,8 @@ body.darkmode #mainmenu {
     background-color: black;
 }
 
-body.darkmode #mainmenu a,  body.darkmode #mainmenu a:visited {
+body.darkmode #mainmenu a,
+body.darkmode #mainmenu a:visited {
     color: white;
     text-decoration: none;
 }
@@ -41,11 +43,15 @@ body.darkmode #mainmenu .menu-option img {
     filter: invert(100%);
 }
 
+body.darkmode #mainmenu-toggle:checked~#user-menu-button span {
+    color: white;
+}
+
 
 
 /* Background colors of message notes */
 
-body.darkmode .message-card, 
+body.darkmode .message-card,
 body.darkmode .background-lightgreen {
     /* background-color: rgb(144,238,144); */
     background-color: rgb(94 161 94);
@@ -77,8 +83,8 @@ body.darkmode .background-lightgray {
 }
 
 /* Long message text view popup */
-body.darkmode .message-fulltext-dialog, 
-body.darkmode .message-fulltext-wrapper, 
+body.darkmode .message-fulltext-dialog,
+body.darkmode .message-fulltext-wrapper,
 body.darkmode .message-fulltext-box {
     background-color: black;
     color: white;
