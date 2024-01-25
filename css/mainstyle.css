@@ -170,7 +170,7 @@ form label {
 /* User Profile, Login and New account box */
 
 #user-dialog-wrapper {
-    display: relative;
+    position: relative;
     min-width: 300px;
     max-height: 90vh;
 }
@@ -184,7 +184,7 @@ form label {
     align-items: center;
     border: 0;
     border-radius: 0 50%;
-    background-color: white;
+    background-color: lightgray;
     color: rgb(27, 43, 63);
     font-weight: 700;
     width: 2.2rem;
