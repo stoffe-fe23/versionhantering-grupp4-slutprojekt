@@ -177,19 +177,20 @@ form label {
 
 #user-login-close {
     position: absolute;
-    top: 6px;
+    top: 8px;
     right: 6px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     border: 0;
     border-radius: 50%;
-    background-color: black;
-    color: red;
+    background-color: transparent;
+    color: rgb(27, 43, 63);
     font-weight: 700;
     width: 2.2rem;
     height: 2.2rem;
     cursor: pointer;
+    z-index: 9;
 }
 
 #logged-in {
