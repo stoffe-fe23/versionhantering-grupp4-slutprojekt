@@ -226,6 +226,7 @@ button.message-like-button span {
     font-family: var(--messageFont);
     font-size: var(--messageTextSize);
     border: 0;
+    outline: 0;
 }
 
 .message-edit-buttons {

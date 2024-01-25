@@ -183,7 +183,14 @@ function updateMessageCard(messageData, messageId) {
         setAuthorInfoFromCache(messageCard, messageData.authorid);
 
         // Thien (group 5) - convert URLs to clickable links
-        messageText.innerHTML = (getIsValidText(messageData.message) ? getTextAndConvertToLink(trimmedText) : "No message");
+        const processedText = (getIsValidText(messageData.message) ? getTextAndConvertToLink(trimmedText) : "No message");
+        if (processedText != trimmedText) {
+            messageText.innerHTML = (getIsValidText(messageData.message) ? processedText.replace(/(\r\n|\r|\n)/g, '<br>') : "No message");
+        }
+        else {
+            messageText.innerText = (getIsValidText(messageData.message) ? processedText : "No message");
+        }
+
         messageFullTextBox.innerText = (getIsValidText(messageData.message) ? messageData.message : "");
         editorText.innerHTML = (getIsValidText(messageData.message) ? messageData.message : "");
         editorColor.value = messageData.color;
@@ -308,7 +315,15 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
         // Thien (group 5) - convert URLs to clickable links
-        messageText.innerHTML = (getIsValidText(messageData.message) ? getTextAndConvertToLink(getTruncatedText(messageData.message, SHORT_MESSAGE_LIMIT)) : "No message");
+        const trimmedText = getTruncatedText(messageData.message, SHORT_MESSAGE_LIMIT);
+        const processedText = (getIsValidText(messageData.message) ? getTextAndConvertToLink(trimmedText) : "No message");
+        if (processedText != trimmedText) {
+            messageText.innerHTML = (getIsValidText(messageData.message) ? processedText.replace(/(\r\n|\r|\n)/g, '<br>') : "No message");
+        }
+        else {
+            messageText.innerText = (getIsValidText(messageData.message) ? processedText : "No message");
+        }
+
         messageEditButton.innerHTML = `<img class="smallicon" src="./images/smallicon-edit.png" alt="Edit message">`;
         messageLikeButton.innerHTML = `<img class="smallicon" src="./images/smallicon-like.png" alt="Like"><span>(${messageData.likes !== undefined ? messageData.likes : 0})</span>`;
         messageEditButton.setAttribute("title", "Edit message");
