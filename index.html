@@ -50,24 +50,24 @@
     <main>
         <div id="errors"></div>
         <div id="status"></div>
-        <section id="messages">
-        <form id="formFilter" method="GET" action="index.html">
-            <label for="messages" id="filterFormText">Show number of messages:</label>
-            <select name="messages" id="filter-messages">
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="15">15</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="40">40</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
-            <button id="filterBtn">Filter</button>
-        </form>
-    
+        <section id="messages">    
             <!-- Box displaying messages -->
             <div id="message-new-wrapper"><button id="message-new-button"><img src="./images/smallicon-add.png" alt="Add new message"><span>Add<br>Message</span></button></div>
+            <form id="formFilter" method="GET" action="index.html">
+                <label for="messages" id="filterFormText">Show number of messages:</label>
+                <select name="messages" id="filter-messages">
+                    <option value="32">32</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <button id="filterBtn">Filter</button>
+            </form>            
             <div id="messageboard"></div>
         </section>    
         <section id="about" class="hide">

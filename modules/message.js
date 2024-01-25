@@ -23,11 +23,19 @@ import {
 
 import { showErrorMessage, clearErrorMessages, setIsBusy } from './interface.js';
 
+// Amanda (group 2)
 const messagesParam = new URLSearchParams(window.location.search).get("messages");
+const SHOW_MAX_MESSAGES = ((messagesParam !== undefined) && (messagesParam !== null) ? messagesParam : 32);
 // const SHOW_MAX_MESSAGES = 32;
 const SHORT_MESSAGE_LIMIT = 200;
 
-const SHOW_MAX_MESSAGES = ((messagesParam !== undefined) && (messagesParam !== null) ? messagesParam : 32);
+
+// Set selected value of filter form, if one is set.
+if ((messagesParam !== undefined) && (messagesParam !== null)) {
+    document.querySelector("#filter-messages").value = messagesParam;
+}
+
+
 
 // Colors (with associated CSS class identifier) available in color pickers
 // Key is the name of a CSS class with a "background-" prefix.
