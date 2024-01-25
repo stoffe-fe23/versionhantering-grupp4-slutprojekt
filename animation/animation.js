@@ -49,6 +49,8 @@ async function animateBackground() {
     }
 
     animateBlocks();
+
+    // stoffe: Default to turned off since this is EXTREMELY GPU-intensive on laptops for some reason. 
     backgroundAnimation.pause();
     document.querySelector(".container-anime").classList.add("hide");
 }

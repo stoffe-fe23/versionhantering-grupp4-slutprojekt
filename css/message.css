@@ -339,7 +339,7 @@ button.message-like-button span {
     padding-left: 1rem;
 }
 
-.message-text a {
+.message-text a.text-link {
     color: darkblue;
 }
 
