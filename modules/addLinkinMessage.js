@@ -1,4 +1,4 @@
-// Thien (group 5) - checks if URL is valid, returns true or false
+// Thien (group 5) - converts any URLs in the text to clickable links
 export function getTextAndConvertToLink(trimmedText) {
     const pattern = /(https?\:\/\/)?(www\.)?[^\s]+\.[^\s]+/g;
     return trimmedText.replace(pattern, (matched) => {
