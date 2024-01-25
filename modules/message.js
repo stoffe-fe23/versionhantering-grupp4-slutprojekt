@@ -23,6 +23,8 @@ import {
 
 import { showErrorMessage, clearErrorMessages, setIsBusy } from './interface.js';
 
+import { getTextAndConvertToLink } from './addLinkinMessage.js';
+
 // Amanda (group 2)
 const messagesParam = new URLSearchParams(window.location.search).get("messages");
 const SHOW_MAX_MESSAGES = ((messagesParam !== undefined) && (messagesParam !== null) ? messagesParam : 32);
@@ -172,7 +174,7 @@ function updateMessageCard(messageData, messageId) {
 
         setAuthorInfoFromCache(messageCard, messageData.authorid);
 
-        messageText.innerText = (getIsValidText(messageData.message) ? trimmedText : "No message");
+        messageText.innerHTML = (getIsValidText(messageData.message) ? getTextAndConvertToLink(trimmedText) : "No message");
         messageFullTextBox.innerText = (getIsValidText(messageData.message) ? messageData.message : "");
         editorText.innerHTML = (getIsValidText(messageData.message) ? messageData.message : "");
         editorColor.value = messageData.color;
@@ -296,7 +298,7 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
         }
 
         messageDate.innerText = ((messageData.date.seconds !== undefined) && (messageData.date.seconds !== null) ? timestampToDateTime(messageData.date.seconds, false) : "Date missing");
-        messageText.innerText = (getIsValidText(messageData.message) ? getTruncatedText(messageData.message, SHORT_MESSAGE_LIMIT) : "No message");
+        messageText.innerHTML = (getIsValidText(messageData.message) ? getTextAndConvertToLink(getTruncatedText(messageData.message, SHORT_MESSAGE_LIMIT)) : "No message");
         messageEditButton.innerHTML = `<img class="smallicon" src="./images/smallicon-edit.png" alt="Edit message">`;
         messageLikeButton.innerHTML = `<img class="smallicon" src="./images/smallicon-like.png" alt="Like"><span>(${messageData.likes !== undefined ? messageData.likes : 0})</span>`;
         messageEditButton.setAttribute("title", "Edit message");
