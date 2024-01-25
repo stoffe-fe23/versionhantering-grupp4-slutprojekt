@@ -43,7 +43,7 @@ body.darkmode #mainmenu .menu-option img {
     filter: invert(100%);
 }
 
-body.darkmode #mainmenu-toggle:checked~#user-menu-button span {
+body.darkmode #mainmenu-toggle:checked ~ #user-menu-button span {
     color: white;
 }
 
@@ -186,14 +186,16 @@ body.darkmode #logoff-button {
 body.darkmode #login-form {
     border-radius: 80% / 10%;
     border: none;
-    background-color: orange;
+    color: orange;
+    background-color: rgb(27, 43, 63);
     position: relative;
-} 
+}
 
 body.darkmode #new-user-form {
     border-radius: 80% / 10%;
     border: none;
-    background-color: orange;
+    color: orange;
+    background-color: rgb(27, 43, 63);
 }
 
 body.darkmode #user-profile-form-wrapper {
@@ -203,34 +205,40 @@ body.darkmode #user-profile-form-wrapper {
 
 body.darkmode #user-account-form-wrapper {
     color: orange;
-    background-color: rgb(27, 43, 63); 
+    background-color: rgb(27, 43, 63);
 }
 
-body.darkmode #user-profile-form-wrapper label, 
+body.darkmode #login-form label,
+body.darkmode #new-user-form label,
+body.darkmode #user-profile-form-wrapper label,
 body.darkmode #user-account-form-wrapper label {
     color: orange;
 }
 
-body.darkmode #user-account-form-wrapper input, 
+body.darkmode #login-form input,
+body.darkmode #new-user-form input,
+body.darkmode #user-account-form-wrapper input,
 body.darkmode #user-profile-form-wrapper input {
-    background-color: rgba(255,255,255,0.2);
+    background-color: rgba(255, 255, 255, 0.2);
     color: white;
     border: 0;
-}
-
-body.darkmode #new-user-form input {
-    background-color: rgb(27, 43, 63);
-    color: white;
-    border: thin;
     border-radius: 0.2rem;
+    padding: 0.2rem;
 }
 
-body.darkmode #login-form input {
+/* body.darkmode #new-user-form input {
     background-color: rgb(27, 43, 63);
     color: white;
     border: thin;
     border-radius: 0.2rem;
 } 
+
+body.darkmode #login-form input {
+    background-color: rgb(27, 43, 63);
+    color: white;
+    border: thin;
+}
+*/
 
 body.darkmode #user-info-wrapper {
     color: orange;
