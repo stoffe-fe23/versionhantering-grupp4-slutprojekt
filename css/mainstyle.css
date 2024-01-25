@@ -5,6 +5,31 @@
     Main stylesheet for the basic page layout.
 */
 
+/*Elvira*/
+#to-the-top-button {
+    position: fixed;
+    right: 1rem;
+    display: none;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    border: none;
+    z-index: 1;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.fa-arrow-up {
+    font-size: 2rem;
+    color: #47576f;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+/* /Elvira */
+
 * {
     box-sizing: border-box;
 }
@@ -27,7 +52,8 @@ body {
     min-height: 100vh;
 }
 
-a, a:visited {
+a,
+a:visited {
     color: orange;
 }
 
@@ -54,11 +80,13 @@ body > footer {
     gap: 1rem;
 }
 
-input, button, textarea {
+input,
+button,
+textarea {
     font-family: var(--contentFont);
 }
 
-#about, 
+#about,
 #contact {
     max-width: 1024px;
     margin: 0 auto;
@@ -86,7 +114,7 @@ main {
     text-align: center;
 }
 
-#status.show, 
+#status.show,
 #errors.show {
     display: block;
 }
@@ -152,7 +180,7 @@ form label {
     top: 8px;
     right: 6px;
     display: inline-flex;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
     border: 0;
     border-radius: 50%;
@@ -254,13 +282,13 @@ form label {
     width: 100%;
 }
 
-#user-account-form label, 
+#user-account-form label,
 #user-profile-form label {
     display: block;
     font-size: 0.8em;
 }
 
-#user-account-form input, 
+#user-account-form input,
 #user-profile-form input {
     width: 100%;
 }
@@ -300,13 +328,14 @@ form label {
     background-color: lightgray;
     padding: 1rem 2rem;
     border-radius: 0px 25px 25px 0px;
-    box-shadow: 5px 5px 10px rgba(0,0,0, 0.25);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
     transition: left 300ms ease-out;
     z-index: 1;
-    
+
 }
 
-#mainmenu a,  #mainmenu a:visited {
+#mainmenu a,
+#mainmenu a:visited {
     color: black;
     text-decoration: none;
 }
@@ -322,7 +351,7 @@ form label {
     gap: 2rem;
     list-style: none;
     margin: 0;
-    margin-top: 110px;
+    margin-top: 125px;
     padding: 0;
 }
 
@@ -437,7 +466,7 @@ form label {
     content: "";
     bottom: 8px;
 }
-  
+
 #mainmenu-button span::after {
     position: absolute;
     content: "";
@@ -450,20 +479,20 @@ form label {
 #mainmenu-button:hover span,
 #mainmenu-button:hover span::before,
 #mainmenu-button:hover span::after {
-  background-color: orange;
+    background-color: orange;
 }
 
 #mainmenu-toggle:checked ~ #mainmenu-button span {
     height: 0px;
     background-color: yellow;
 }
-  
-#mainmenu-toggle:checked~ #mainmenu-button span::before {
+
+#mainmenu-toggle:checked ~ #mainmenu-button span::before {
     transform: rotate(45deg);
     top: -2px;
     background-color: yellow;
 }
-  
+
 #mainmenu-toggle:checked ~ #mainmenu-button span::after {
     transform: rotate(-45deg);
     top: -2px;
@@ -492,7 +521,7 @@ form label {
     left: -100px !important;
 }
 
-label[for="colormode-toggle-dark"], 
+label[for="colormode-toggle-dark"],
 label[for="colormode-toggle-light"] {
     padding: 0.4rem 1rem;
     background-color: black;
@@ -508,7 +537,7 @@ label[for="colormode-toggle-light"] {
     border-radius: 0px 15px 15px 0px;
 }
 
-#colormode-toggle-dark:checked + label[for="colormode-toggle-dark"], 
+#colormode-toggle-dark:checked + label[for="colormode-toggle-dark"],
 #colormode-toggle-light:checked + label[for="colormode-toggle-light"] {
     background-color: orange;
     color: white;
@@ -537,7 +566,7 @@ label[for="colormode-toggle-light"] {
     left: -100px !important;
 }
 
-label[for="animation-toggle-on"], 
+label[for="animation-toggle-on"],
 label[for="animation-toggle-off"] {
     padding: 0.4rem 1rem;
     background-color: black;
@@ -553,7 +582,7 @@ label[for="animation-toggle-off"] {
     border-radius: 0px 15px 15px 0px;
 }
 
-#animation-toggle-on:checked + label[for="animation-toggle-on"], 
+#animation-toggle-on:checked + label[for="animation-toggle-on"],
 #animation-toggle-off:checked + label[for="animation-toggle-off"] {
     background-color: orange;
     color: white;
@@ -573,11 +602,11 @@ label[for="animation-toggle-off"] {
     align-items: center;
     z-index: 10;
 }
-  
+
 #busy.show {
     display: flex;
 }
-  
+
 #busy-spinner {
     grid-area: busy-spinner;
     display: block;
@@ -590,7 +619,7 @@ label[for="animation-toggle-off"] {
     border-color: yellow transparent orange transparent;
     animation: busy-indicator-anim 1.75s linear infinite;
 }
-  
+
 #busy-backdrop {
     background-color: rgba(0, 0, 0, 0.4);
     padding: 0.5rem;
@@ -600,13 +629,14 @@ label[for="animation-toggle-off"] {
 
 @keyframes busy-indicator-anim {
     0% {
-      transform: rotate(0deg);
+        transform: rotate(0deg);
     }
+
     100% {
-      transform: rotate(360deg);
+        transform: rotate(360deg);
     }
 }
-  
+
 
 /* Desktop view overrides */
 
@@ -638,7 +668,7 @@ label[for="animation-toggle-off"] {
         visibility: hidden;
         margin-right: 50px;
     }
-    
+
     #user-menu-button {
         order: 3;
         left: 0px;
@@ -654,12 +684,18 @@ label[for="animation-toggle-off"] {
         border-radius: 0px 0px 25px 25px;
         transition: top 300ms ease-out;
     }
-    
+
     #mainmenu ul {
         flex-direction: row;
         justify-content: space-between;
         gap: 2rem;
         margin: 0;
         padding: 0;
+    }
+
+    /* Elvira */
+    #to-the-top-button {
+        width: 80px;
+        height: 80px;
     }
 }

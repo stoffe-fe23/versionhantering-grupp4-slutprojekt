@@ -46,7 +46,7 @@ let boardInitialized = false;
 let userProfileCache = {};
 
 
-// Start watching the userprofiles and chatmessages databases for initial load and updates
+// Initialize: Start watching the userprofiles and chatmessages databases for initial load and updates
 initializeDatabaseListeners();
 
 
@@ -55,10 +55,11 @@ initializeDatabaseListeners();
 // Build and update author cache and start listening for messages from the DB
 function initializeDatabaseListeners() {
     setIsBusy(true);
-    // First fetch and cache a list of author names and pictures
+    // Fetch and cache a list of potential author names and pictures, and update any changes depending on DB state. 
     authorsSnapshot = buildAuthorProfilesCache((updatedData) => {
         updatedData.docChanges().forEach((change) => {
             if ((change.type === "added") || (change.type === "modified")) {
+                // A user profile is added or updated, update the name/portrait lookup table
                 const profileData = change.doc.data();
                 const userId = profileData.userid;
                 const userName = (getIsValidText(profileData.username) ? profileData.username : "No name");
@@ -71,13 +72,13 @@ function initializeDatabaseListeners() {
                 };
 
                 if (change.type === "modified") {
-                    // Update the author info of messages by this author
+                    // User profile changed, refresh the author info of messages by this author
                     updateMessageCardsAuthor(userId);
                 }
             }
             if (change.type === "removed") {
+                // User removed from the system, remove the deleted user from the profile cache
                 delete userProfileCache[userId];
-                console.log("###### USER PROFILE DELETE", userId);
             }
         });
 
@@ -215,7 +216,7 @@ function updateMessageCardsOwned(authorId, showEditButton) {
 // if authorId is not set to a User-ID. 
 function updateMessageCardsLiked(authorId) {
     if ((authorId == 0) || (authorId == false) || (authorId === null) || (authorId === undefined)) {
-        console.log("Removing liked message markers");
+        // No valid author ID, clear the likes indicators on all displayed messages. 
         const likeButtons = document.querySelectorAll(`.message-card .message-like-button`);
         if ((likeButtons !== undefined) && (likeButtons !== null) && (likeButtons.length > 0)) {
             for (const likeButton of likeButtons) {
@@ -225,8 +226,8 @@ function updateMessageCardsLiked(authorId) {
         }
     }
     else {
+        // Update which displayed messages have been liked by the specified author (userid).
         getLikedMessages(authorId).then((messageIds) => {
-            console.log("Updating liked messages: ", authorId);
             for (const messageId of messageIds) {
                 const messageCard = document.querySelector(`article[messageid="${messageId}"].message-card`);
                 if ((messageCard !== undefined) && (messageCard !== null)) {
@@ -246,15 +247,15 @@ function deleteMessageCard(messageId) {
     const messageCard = document.querySelector(`article[messageid="${messageId}"].message-card`);
 
     if ((messageCard !== undefined) && (messageCard !== null)) {
-        console.log("REMOVING MESSAGE", messageId);
         messageCard.remove();
     }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Build and return a Message HTML/DOM-element
-//  - messageData  - object with message info to show in the element
+// Build and return a Message "postit-note" HTML/DOM-element.
+// Note that this is also used to generate a "blank" editor note when the user is adding a new message. 
+//  - messageData  - object with message info to show in the element, if applicable
 //  - messageId    - the message id (DB Doc-name) of the message
 //  - isNewMessage - if set to true the two previous params are ignored and a blank card
 //                   used to create a new message is displayed instead. 
@@ -313,19 +314,13 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
                 return;
             }
 
-            if (hasLikedMessage) {
-                likeChatMessageUndo(messageId).then(() => {
-                    console.log("MESSAGE UN-LIKED", messageId);
-                }).catch((error) => {
-                    console.error("MESSAGE UN-LIKE ERROR", error);
+            if (event.currentTarget.classList.contains("message-liked")) {
+                likeChatMessageUndo(messageId).catch((error) => {
                     showErrorMessage(error, false);
                 });
             }
             else {
-                likeChatMessage(messageId).then(() => {
-                    console.log("MESSAGE LIKED", messageId);
-                }).catch((error) => {
-                    console.error("MESSAGE LIKE ERROR", error);
+                likeChatMessage(messageId).catch((error) => {
                     showErrorMessage(error, false);
                 });
             }
@@ -481,9 +476,7 @@ function messageEditorSubmitCallback(event) {
 
         editChatMessage(messageId, messageText, messageColor).then(() => {
             formElement.classList.remove("show");
-            console.log("Message edited", messageId);
         }).catch((error) => {
-            console.error("Error editing message:", error);
             showErrorMessage(error, false);
         });
     }
@@ -560,6 +553,7 @@ function createMessageEditor(messageData, messageId) {
 
     // Disallow empty messages
     messageEditText.setAttribute("minlength", 3);
+    messageEditText.setAttribute("maxlength", 5000);
     messageEditText.setAttribute("required", true);
     messageEditCancel.setAttribute("formnovalidate", true);
     messageEditDelete.setAttribute("formnovalidate", true);

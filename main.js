@@ -10,7 +10,6 @@ import {
     userLogoff,
     userIsLoggedIn,
     createNewUser,
-    getCurrentUserName,
     getCurrentUserProfile,
     userUpdateProfile,
     setUserLoginCallback,
@@ -26,18 +25,17 @@ import {
 
 import { showErrorMessage, clearErrorMessages, toggleDarkMode, loadUserProfile, showStatusMessage, setIsBusy } from './modules/interface.js';
 import { createMessageCard, updateMessageCardsOwned, updateMessageCardsLiked } from './modules/message.js';
+// Elvira Ericsson, feel free att ta bort denna kommentar, ville vara tydlig.
+import { scroll, scrollToTopFunction } from './modules/scrollToTop.js';
 
 
-let likedMarkersInit = false;
-
-
-// Configure function to run when a user has logged in
+// Initialize: Configure function to run when a user has logged in
 setUserLoginCallback(userLoggedInCallback);
 
-// Configure function to run when the user has logged off
+// Initialize: Init: Configure function to run when the user has logged off
 setUserLogoffCallback(userLoggedOffCallback);
 
-// Set default darkmode setting depending on visitor's system setting. 
+// Initialize: Set default darkmode setting depending on visitor's system setting. 
 toggleDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
 
@@ -47,6 +45,13 @@ toggleDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
     toggleDarkMode(event.matches);
 });
+
+///////////////////////////////////////////////////////////////////////////////////
+// Scroll to top when user presses button.
+// Elvira Ericsson 
+window.addEventListener('scroll', scroll);
+document.getElementById('to-the-top-button').addEventListener('click', scrollToTopFunction);
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -174,7 +179,7 @@ document.querySelector("#login-form").addEventListener("submit", (event) => {
                 }
             }
             else {
-                showErrorMessage(`Login error: ${error}`);
+                showErrorMessage(`Login error: ${error}`, true);
             }
             console.error("LOGIN ERROR", error);
         });
@@ -208,7 +213,7 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
     if (newPassword == newPasswordConfirm) {
         createNewUser(newEmail, newPassword, newName).then((data) => {
             userSendEmailVerification().then(() => {
-                console.log("Verification mail sent.");
+                showStatusMessage("A verification link has been sent by e-mail to the address you specified. (Check your spam-box too).");
             });
         }).catch((error) => {
             if (error.code !== undefined) {
@@ -223,12 +228,11 @@ document.querySelector("#new-user-form").addEventListener("submit", (event) => {
             else {
                 showErrorMessage(`New user error: ${error}`, true, 10000);
             }
-            console.log("USER CREATE ERROR", error);
         });
         event.currentTarget.reset();
     }
     else {
-        console.log("Passwords do not match!");
+        showErrorMessage("You did not enter the same desired password twice. Try again.", true, 10000);
     }
 
 });
@@ -251,7 +255,7 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
                     profileData.displayName = inputName;
                 }
                 else {
-                    showErrorMessage("Your display name must be at least 3 characters long.", false, 10000);
+                    showErrorMessage("Your display name must be at least 3 characters long.", true, 10000);
                 }
             }
 
@@ -273,7 +277,7 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
                             profileDialog.close();
                         }
                         else {
-                            showErrorMessage("The specified portrait URL does not seem to be an image?", false, 10000);
+                            showErrorMessage("The specified portrait URL does not seem to be an image?", true, 10000);
                         }
                     });
                 }
@@ -287,6 +291,8 @@ document.querySelector("#user-profile-form").addEventListener("submit", (event) 
 });
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Button to hide the Signup form and show the Login form
 document.querySelector("#user-show-signup").addEventListener("click", (event) => {
     const loginForm = document.querySelector("#login-form");
     const newUserForm = document.querySelector("#new-user-form");
@@ -295,6 +301,9 @@ document.querySelector("#user-show-signup").addEventListener("click", (event) =>
     newUserForm.classList.remove("hide");
 });
 
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Button to hide the Login form and show the Signup form 
 document.querySelector("#user-show-login").addEventListener("click", (event) => {
     const loginForm = document.querySelector("#login-form");
     const newUserForm = document.querySelector("#new-user-form");
@@ -329,20 +338,20 @@ document.querySelector("#user-account-form").addEventListener("submit", (event) 
                 userSetEmail(oldPassword, newEmailValue).then(() => {
                     showStatusMessage("Your e-mail address has been changed.", false, 10000);
                 }).catch((error) => {
-                    showErrorMessage(`Error changing e-mail address: ${error.message}`);
+                    showErrorMessage(`Error changing e-mail address: ${error.message}`, true);
                 });
             }
 
             // Change Password
             if ((newPassValue.length > 0) || (newPassConfirmValue.length > 0)) {
                 if (newPassValue !== newPassConfirmValue) {
-                    showErrorMessage("Your new password does not match.");
+                    showErrorMessage("Your new password does not match.", true);
                 }
                 else {
                     userSetPassword(oldPassword, newPassValue).then(() => {
                         showStatusMessage("Your password has been changed", false, 10000);
                     }).catch((error) => {
-                        showErrorMessage(`Error changing password: ${error.message}`);
+                        showErrorMessage(`Error changing password: ${error.message}`, true);
                     });
                 }
             }
@@ -360,11 +369,42 @@ document.querySelector("#user-account-form").addEventListener("submit", (event) 
                 deleteChatMessagesByAuthor(getLastUserId());
                 showStatusMessage("Your account has been removed.", false, 10000);
             }).catch((error) => {
-                showErrorMessage(`Error removing user account: ${error.message}`);
+                showErrorMessage(`Error removing user account: ${error.message}`, true);
             });
-            console.log("TODO", "Delete account button pressed!");
         }
     }
+});
+
+
+// Yasir grupp 1 - popup on form submit
+document.querySelector("#contactform").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const formName = document.querySelector("#contactform #name");
+
+    document.querySelector("#popUp h3").innerText = `${formName.value}, thank you for your message!`;
+    document.querySelector("#popUp").showModal();
+
+    /*
+    const popUp = document.querySelector("#popUp");
+    popUp.style.display = "flex";
+    const backgroundShade = document.querySelector(".backgroundShade");
+    backgroundShade.style.display = "block";
+    */
+});
+
+// Yasir grupp 1 - popup close  button
+const contactClose = document.querySelector("#contactClose").addEventListener("click", (event) => {
+    event.preventDefault();
+
+    document.querySelector("#contactform #message").value = '';
+    document.querySelector("#contactform #name").value = '';
+    document.querySelector("#popUp").close();
+
+    /*
+    let popUp = document.querySelector("#popUp").style.display = "none";
+    const backgroundShade = document.querySelector(".backgroundShade").style.display = "none";
+    */
 });
 
 
@@ -378,11 +418,10 @@ function updateProfileDataFromObject(profileData) {
                 document.querySelector("#logged-in-email").innerHTML = currUser.email;
                 document.querySelector("#user-menu-button span").innerText = currUser.displayName;
                 document.querySelector("#user-menu-button img").src = currUser.picture;
-                console.log("PROFILE UPDATED", currUser, param);
             });
             showStatusMessage("Your user profile has been updated", false, 10000);
         }).catch((error) => {
-            showErrorMessage(`Error saving your profile: ${error.message}`);
+            showErrorMessage(`Error saving your profile: ${error.message}`, true);
         });
     }
 }
@@ -417,12 +456,8 @@ function userLoggedInCallback() {
         document.querySelector("#user-menu-button img").src = currUser.picture;
 
         updateMessageCardsOwned(currUser.uid, true);
+        updateMessageCardsLiked(currUser.uid);
 
-        // Skip this on initial page load since the messages already should be in the correct state. 
-        if (likedMarkersInit) {
-            updateMessageCardsLiked(currUser.uid);
-        }
-        likedMarkersInit = true;
         setIsBusy(false);
     }).catch((error) => {
         setIsBusy(false);
@@ -458,6 +493,4 @@ function userLoggedOffCallback() {
 
     updateMessageCardsOwned(lastUser, false);
     updateMessageCardsLiked(false);
-
-    console.log("ANV. UTLOGG");
 }
