@@ -53,8 +53,8 @@ const messageBackgroundColors = {
 };
 
 // Globals used by listener for changes to the "chatmeddelande" and "userprofiles" DB-collections.
-let messagesSnapshot;
-let authorsSnapshot;
+let messagesSnapshotStop;
+let authorsSnapshotStop;
 let authorCacheInitialized = false;
 let boardInitialized = false;
 let userProfileCache = {};
@@ -69,11 +69,11 @@ initializeDatabaseListeners();
 // Build and keep the author cache updated and start listening for messages from the DB
 // Note that the callback function to buildAuthorProfilesCache() here will be run whevever
 // anything changes in the userprofiles database (a new user is created, a user is removed
-// or a user updates their name or picture).
+// or a user updates their name or picture). Call authorsSnapshotStop() to stop watching for changes. 
 function initializeDatabaseListeners() {
     setIsBusy(true);
     // Fetch and cache a list of potential author names and pictures, and update any changes depending on DB state. 
-    authorsSnapshot = buildAuthorProfilesCache((updatedData) => {
+    authorsSnapshotStop = buildAuthorProfilesCache((updatedData) => {
         updatedData.docChanges().forEach((change) => {
             if ((change.type === "added") || (change.type === "modified")) {
                 // A user profile is added or updated, update the name/portrait lookup table
@@ -105,7 +105,7 @@ function initializeDatabaseListeners() {
             authorCacheInitialized = true;
         }
     });
-    return authorsSnapshot;
+    // return authorsSnapshotStop;
 }
 
 
@@ -113,8 +113,9 @@ function initializeDatabaseListeners() {
 // Fetch and build messageboard and listen for changes in the database.
 // Note that the callback function to getChatMessagesOnUpdate() here will be run whenever anything 
 // changes in the messages database (a new message is added, a message is deleted, a message is edited)
+// Call messagesSnapshotStop() to stop watching for changes. 
 function initializeMessageBoard(displayMax) {
-    messagesSnapshot = getChatMessagesOnUpdate(displayMax, (updatedData) => {
+    messagesSnapshotStop = getChatMessagesOnUpdate(displayMax, (updatedData) => {
         const messageBoard = document.querySelector("#messageboard");
         // Only get what has changed since last update
         updatedData.docChanges().forEach((change) => {

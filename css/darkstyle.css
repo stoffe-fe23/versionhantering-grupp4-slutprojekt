@@ -231,20 +231,6 @@ body.darkmode #user-profile-form-wrapper input {
     padding: 0.2rem;
 }
 
-/* body.darkmode #new-user-form input {
-    background-color: rgb(27, 43, 63);
-    color: white;
-    border: thin;
-    border-radius: 0.2rem;
-} 
-
-body.darkmode #login-form input {
-    background-color: rgb(27, 43, 63);
-    color: white;
-    border: thin;
-}
-*/
-
 body.darkmode #user-info-wrapper {
     color: orange;
 }

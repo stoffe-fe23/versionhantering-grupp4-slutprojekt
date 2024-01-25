@@ -409,6 +409,10 @@ async function getChatMessages(messageLimit = 30) {
 // whenever something has changed on the server. 
 //  N.B. Only call this function once per page load!
 function getChatMessagesOnUpdate(messageLimit = 30, onUpdateCallback = null) {
+    if ((messageLimit === undefined) || (messageLimit === null) || ((messageLimit != -1) && (messageLimit < 1))) {
+        throw new Error("No valid number of messages to show is set.");
+    }
+
     return dbSetCollectionDocumentsListener(db, 'chatmeddelande', ["date", "desc"], messageLimit, onUpdateCallback);
 }
 
