@@ -33,6 +33,7 @@ body.darkmode #filterFormText {
     min-height: 2rem;
     padding: 0.5rem;
     border: 0;
+    outline: 0;
 }
 
 body.darkmode #filter-messages {

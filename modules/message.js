@@ -27,6 +27,8 @@ import { showErrorMessage, clearErrorMessages, setIsBusy } from './interface.js'
 const messagesParam = new URLSearchParams(window.location.search).get("messages");
 const SHOW_MAX_MESSAGES = ((messagesParam !== undefined) && (messagesParam !== null) ? messagesParam : 32);
 // const SHOW_MAX_MESSAGES = 32;
+// End
+
 const SHORT_MESSAGE_LIMIT = 200;
 
 
@@ -55,13 +57,16 @@ let boardInitialized = false;
 let userProfileCache = {};
 
 
-// Initialize: Start watching the userprofiles and chatmessages databases for initial load and updates
+// Initialize: Start watching the userprofiles and chatmessages databases for initial load and continually listen for changes. 
 initializeDatabaseListeners();
 
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Build and update author cache and start listening for messages from the DB
+// Build and keep the author cache updated and start listening for messages from the DB
+// Note that the callback function to buildAuthorProfilesCache() here will be run whevever
+// anything changes in the userprofiles database (a new user is created, a user is removed
+// or a user updates their name or picture).
 function initializeDatabaseListeners() {
     setIsBusy(true);
     // Fetch and cache a list of potential author names and pictures, and update any changes depending on DB state. 
@@ -103,18 +108,20 @@ function initializeDatabaseListeners() {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Fetch and build messageboard and listen for changes in the database.
+// Note that the callback function to getChatMessagesOnUpdate() here will be run whenever anything 
+// changes in the messages database (a new message is added, a message is deleted, a message is edited)
 function initializeMessageBoard(displayMax) {
     messagesSnapshot = getChatMessagesOnUpdate(displayMax, (updatedData) => {
         const messageBoard = document.querySelector("#messageboard");
+        // Only get what has changed since last update
         updatedData.docChanges().forEach((change) => {
             if (change.type === "added") {
-                // Insert new messages first, but not when initially building the board
+                // Insert new messages first, but not when initially building the board (or the initial sort order ends up backwards)
                 if (boardInitialized) {
                     messageBoard.prepend(createMessageCard(change.doc.data(), change.doc.id));
-                    // Ton Group 3 "Start"//
+                    // Ton Group 3 - play sound when a new message appears on the board
                     const clickSound = new Audio('./audio/click-124467.mp3');
                     clickSound.play();
-                    // Ton Group 3 "End"//
                 }
                 else {
                     messageBoard.append(createMessageCard(change.doc.data(), change.doc.id));
@@ -440,12 +447,6 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
 // Event callback for submitting the new Message form
 function newMessageEditorSubmitCallback(event) {
     event.preventDefault();
-
-    // Moved to occur whenever any new message pops up, see initializeMessageBoard().
-    // Ton Group 3 "Start"//
-    // const clickSound = new Audio('./audio/click-124467.mp3');
-    // clickSound.play();
-    // Ton Group 3 "End"//
 
     const formElement = event.currentTarget;
     const parentElement = document.querySelector("#new-message-card");

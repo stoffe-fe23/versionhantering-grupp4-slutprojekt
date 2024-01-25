@@ -331,6 +331,21 @@ button.message-like-button span {
     color: black;
 }
 
+.message-text ol, 
+.message-fulltext-box ol, 
+.message-text ul, 
+.message-fulltext-box ul {
+    padding-left: 1rem;
+}
+
+.message-text a {
+    color: darkblue;
+}
+
+.message-text img {
+    max-width: 100%;
+}
+
 @media all and (min-width: 650px) {
     .message-card {
         width: 300px;

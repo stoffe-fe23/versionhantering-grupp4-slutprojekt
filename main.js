@@ -94,11 +94,9 @@ document.querySelectorAll("#mainmenu a.menu-option").forEach((menuLink) => {
             case "menu-contact": contactSection.classList.remove("hide"); break;
         }
 
-
-        // Johanna Ostling kod
+        // Johanna Östling - play sound when clicking on a menu button
         let mySound = new Audio('./audio/snare-112754.mp3')
         mySound.play()
-        // Johanna end
 
         // Hides the main menu in burger menu mode after picking a menu option. 
         document.querySelector("#mainmenu-toggle").checked = false;
