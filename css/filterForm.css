@@ -1,0 +1,36 @@
+#formFilter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#filterFormText{
+    color: lightgrey;
+}
+
+body.darkmode #filterFormText {
+    color: white;
+}
+
+#filter-messages {
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+    font-family: 'Lexend Exa', sans-serif;
+    cursor: pointer;
+}
+
+#filterBtn {
+    font-family: 'Lexend Exa', sans-serif;
+    border: 1px solid #000000;
+    text-align: center;
+    width: 5vw;
+    color: #000000;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 5px;
+}
+
+#filterBtn:hover {
+    opacity: 0.75;
+}
