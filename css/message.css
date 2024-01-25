@@ -45,6 +45,7 @@
     border-radius: 0px;
     text-align: right;
     height: 100%;
+    width: 100%;
     display: flex;
     align-items: center;
 }
@@ -339,6 +340,7 @@ button.message-like-button span {
     padding-left: 1rem;
 }
 
+.message-text a.text-link:visited, 
 .message-text a.text-link {
     color: darkblue;
 }
@@ -376,6 +378,7 @@ button.message-like-button span {
         border-radius: 0px 0px 12px 12px;
         text-align: center;
         height: auto;
+        width: auto;
     }
 
     .message-footer {
