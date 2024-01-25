@@ -99,13 +99,12 @@ function initializeDatabaseListeners() {
             }
         });
 
-        // After initial author list is first loaded, start to listen for messages
+        // After initial author list is first loaded, fetch the messages and listen for updates
         if (!authorCacheInitialized) {
             initializeMessageBoard(SHOW_MAX_MESSAGES);
             authorCacheInitialized = true;
         }
     });
-    // return authorsSnapshotStop;
 }
 
 
@@ -119,21 +118,25 @@ function initializeMessageBoard(displayMax) {
         const messageBoard = document.querySelector("#messageboard");
         // Only get what has changed since last update
         updatedData.docChanges().forEach((change) => {
+            // This document is new - create a new message card.
             if (change.type === "added") {
-                // Insert new messages first, but not when initially building the board (or the initial sort order ends up backwards)
+                // Insert new messages at the top, but not when initially building the board (or the initial sort order ends up reversed)
                 if (boardInitialized) {
                     messageBoard.prepend(createMessageCard(change.doc.data(), change.doc.id));
                     // Ton Group 3 - play sound when a new message appears on the board
                     const clickSound = new Audio('./audio/click-124467.mp3');
                     clickSound.play();
                 }
+                // When the page first loads all message documents are new. Create the cards in order. 
                 else {
                     messageBoard.append(createMessageCard(change.doc.data(), change.doc.id));
                 }
             }
+            // This document has been changed - update existing message card
             if (change.type === "modified") {
                 updateMessageCard(change.doc.data(), change.doc.id);
             }
+            // This document no longer exists - remove existing message card
             if (change.type === "removed") {
                 deleteMessageCard(change.doc.id);
             }
@@ -147,7 +150,7 @@ function initializeMessageBoard(displayMax) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Update information about an existing message
+// Update information about an existing message - find and edit its message card element.
 function updateMessageCard(messageData, messageId) {
     const messageCard = document.querySelector(`article[messageid="${messageId}"].message-card`);
 
@@ -270,7 +273,7 @@ function updateMessageCardsLiked(authorId) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Remove an existing message from the board
+// Remove an existing message from the board - delete the message card from the DOM. 
 function deleteMessageCard(messageId) {
     const messageCard = document.querySelector(`article[messageid="${messageId}"].message-card`);
 
