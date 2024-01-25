@@ -317,7 +317,7 @@ async function userSetEmail(userPassword, newEmail) {
         const authCredential = EmailAuthProvider.credential(auth.currentUser.email, userPassword);
         return reauthenticateWithCredential(auth.currentUser, authCredential).then(() => {
             return updateEmail(auth.currentUser, newEmail).then(() => {
-                console.log("USER E-MAIL UPDATED");
+                // Send re-verification to the new email address.
                 userSendEmailVerification();
             });
         });
@@ -339,9 +339,7 @@ async function userSendEmailVerification() {
         throw new Error("This account is already verified.");
     }
 
-    return sendEmailVerification(auth.currentUser).then(() => {
-        console.log("USER VERIFICATION EMAIL SENT");
-    });
+    return sendEmailVerification(auth.currentUser);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////

@@ -197,27 +197,25 @@ body.darkmode #new-user-form {
 }
 
 body.darkmode #user-profile-form-wrapper {
-    background-color: orange;
-    color: rgb(27, 43, 63);
+    color: orange;
+    background-color: rgb(27, 43, 63);
 }
 
 body.darkmode #user-account-form-wrapper {
-    background-color: orange;
-    color: rgb(27, 43, 63); 
+    color: orange;
+    background-color: rgb(27, 43, 63); 
 }
 
-body.darkmode #user-account-form-wrapper input {
-    background-color: rgb(27, 43, 63);
-    color: white;
-    border: thin;
-    border-radius: 0.2rem;
+body.darkmode #user-profile-form-wrapper label, 
+body.darkmode #user-account-form-wrapper label {
+    color: orange;
 }
 
+body.darkmode #user-account-form-wrapper input, 
 body.darkmode #user-profile-form-wrapper input {
-    background-color: rgb(27, 43, 63);
+    background-color: rgba(255,255,255,0.2);
     color: white;
-    border: thin;
-    border-radius: 0.2rem;
+    border: 0;
 }
 
 body.darkmode #new-user-form input {
@@ -240,5 +238,5 @@ body.darkmode #user-info-wrapper {
 
 body.darkmode #user-login-close {
     color: blueviolet;
-    margin-top: 10px;
+    margin-top: 0px;
 }

@@ -177,14 +177,14 @@ form label {
 
 #user-login-close {
     position: absolute;
-    top: 8px;
-    right: 6px;
+    top: 14px;
+    right: 0px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     border: 0;
-    border-radius: 50%;
-    background-color: transparent;
+    border-radius: 0 50%;
+    background-color: white;
     color: rgb(27, 43, 63);
     font-weight: 700;
     width: 2.2rem;
@@ -246,10 +246,10 @@ form label {
 }
 
 #user-profile-form-wrapper {
-    background-color: lightgray;
+    background-color: rgba(211,211,211, 0.75);
     padding: 1rem;
     width: 100%;
-    margin: 0.5rem 0;
+    margin: 0 0 0.2rem 0;
 }
 
 #user-profile-form {
@@ -269,11 +269,19 @@ form label {
 }
 
 #user-account-form-wrapper {
-    background-color: lightgray;
-    padding: 1rem;
+    background-color: rgba(211,211,211, 0.75);
+    padding: 1rem 1rem 1.75rem 1rem;
     width: 100%;
-    margin: 0.5rem 0;
+    margin: 0 0 0.5rem 0;
 }
+
+#user-account-form-wrapper input, 
+#user-profile-form-wrapper input {
+    border: 1px solid darkgrey;
+    border-radius: 0.2rem;
+    padding: 0.2rem;
+}
+
 
 #user-account-form {
     display: flex;
