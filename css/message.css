@@ -19,16 +19,14 @@
     position: relative;
     display: grid;
     width: 300px;
-    min-height: 250px;
+    min-height: 150px;
     background-color: var(--messageCardBackgroundDefault);
     color: black;
     grid-template-areas:
-        "message-date"    
-        "message-text"
-        "message-author"
-        "message-footer";
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 5fr auto;
+        "message-text message-text"
+        "message-author message-author"
+        "message-footer message-date";
+    grid-template-columns: 1fr 1fr;
     align-items: stretch;
     justify-content: center;
     justify-items: center;
@@ -40,11 +38,15 @@
     grid-area: message-date;
     font-weight: 700;
     margin-bottom: 0.75rem;
-    font-size: 0.9em;
-    background-color: rgba(0,0,0,0.75);
+    font-size: 0.75em;
+    background-color: rgba(0,0,0,0.5);
     color: white;
     padding: 0.25rem 0.75rem;
-    border-radius: 0px 0px 12px 12px;
+    border-radius: 0px;
+    text-align: right;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .message-text {
@@ -79,7 +81,7 @@
 .message-footer {
     grid-area: message-footer;
     background-color: rgba(0,0,0,0.5);
-    padding: 0.25rem 0.75rem;
+    padding: 0 0.75rem;
     display: flex;
     width: 100%;
     justify-content: flex-start;
@@ -327,4 +329,51 @@ button.message-like-button span {
     font-family: var(--messageFont);
     background-color: white;
     color: black;
+}
+
+@media all and (min-width: 650px) {
+    .message-card {
+        width: 300px;
+        min-height: 250px;
+        grid-template-areas:
+        "message-date"    
+        "message-text"
+        "message-author"
+        "message-footer";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 5fr auto;
+        align-items: stretch;
+        justify-content: center;
+        justify-items: center;
+        gap: 0;
+        padding: 0;
+    }
+
+    .message-date {
+        grid-area: message-date;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        font-size: 0.9em;
+        background-color: rgba(0,0,0,0.75);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0px 0px 12px 12px;
+        text-align: center;
+        height: auto;
+    }
+
+    .message-footer {
+        grid-area: message-footer;
+        background-color: rgba(0,0,0,0.5);
+        padding: 0.25rem 0.75rem;
+        display: flex;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    #message-new-button {
+        position: absolute;
+        top: 1.25rem;
+        left: 1.25rem;
+    }
 }

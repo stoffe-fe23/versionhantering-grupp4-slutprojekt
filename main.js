@@ -394,7 +394,7 @@ document.querySelector("#contactform").addEventListener("submit", (event) => {
 });
 
 // Yasir grupp 1 - popup close  button
-const contactClose = document.querySelector("#contactClose").addEventListener("click", (event) => {
+document.querySelector("#contactClose").addEventListener("click", (event) => {
     event.preventDefault();
 
     document.querySelector("#contactform #message").value = '';
