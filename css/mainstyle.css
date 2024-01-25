@@ -149,7 +149,7 @@ form label {
 
 #user-login-close {
     position: absolute;
-    top: 6px;
+    top: 8px;
     right: 6px;
     display: inline-flex;
     justify-content: center; 
@@ -157,7 +157,7 @@ form label {
     border: 0;
     border-radius: 50%;
     background-color: transparent;
-    color: red;
+    color: rgb(27, 43, 63);
     font-weight: 700;
     width: 2.2rem;
     height: 2.2rem;

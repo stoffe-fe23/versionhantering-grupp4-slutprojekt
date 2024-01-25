@@ -98,3 +98,147 @@ body.darkmode .message-fulltext-close {
     background-color: darkgrey;
     color: red;
 }
+
+body.darkmode #user-login-dialog {
+    background-color: rgb(13, 20, 29);
+}
+
+body.darkmode #change-profile-submit {
+    background-color: rgb(13, 20, 29);
+    color: orange;
+    border: thin;
+    border-color: #2e132e;
+    border-radius: 0.3rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+body.darkmode #change-account-submit {
+    background-color: rgb(13, 20, 29);
+    color: orange;
+    border: thin;
+    border-color: #2e132e;
+    border-radius: 0.3rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+body.darkmode #change-account-remove {
+    background-color: rgb(13, 20, 29);
+    color: orange;
+    border: thin;
+    border-color: #2e132e;
+    border-radius: 0.3rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+body.darkmode #login-button {
+    background-color: rgb(13, 20, 29);
+    color: lightgray;
+    border: thin;
+    border-color: #2e132e;
+    border-radius: 0.3rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+body.darkmode #user-show-signup {
+    background-color: rgb(13, 20, 29);
+    color: lightgray;
+    border: thin;
+    border-color: #2e132e;
+    border-radius: 0.3rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+body.darkmode #new-user-button {
+    background-color: rgb(13, 20, 29);
+    color: lightgray;
+    border: thin;
+    border-color: #2e132e;
+    border-radius: 0.3rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+body.darkmode #user-show-login {
+    background-color: rgb(13, 20, 29);
+    color: lightgray;
+    border: thin;
+    border-color: #2e132e;
+    border-radius: 0.3rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+body.darkmode #logoff-button {
+    background-color: orange;
+    color: rgb(27, 43, 63);
+    border: thin;
+    border-color: lightgray;
+    border-radius: 0.3rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+body.darkmode #login-form {
+    border-radius: 80% / 10%;
+    border: none;
+    background-color: orange;
+    position: relative;
+} 
+
+body.darkmode #new-user-form {
+    border-radius: 80% / 10%;
+    border: none;
+    background-color: orange;
+}
+
+body.darkmode #user-profile-form-wrapper {
+    background-color: orange;
+    color: rgb(27, 43, 63);
+}
+
+body.darkmode #user-account-form-wrapper {
+    background-color: orange;
+    color: rgb(27, 43, 63); 
+}
+
+body.darkmode #user-account-form-wrapper input {
+    background-color: rgb(27, 43, 63);
+    color: white;
+    border: thin;
+    border-radius: 0.2rem;
+}
+
+body.darkmode #user-profile-form-wrapper input {
+    background-color: rgb(27, 43, 63);
+    color: white;
+    border: thin;
+    border-radius: 0.2rem;
+}
+
+body.darkmode #new-user-form input {
+    background-color: rgb(27, 43, 63);
+    color: white;
+    border: thin;
+    border-radius: 0.2rem;
+}
+
+body.darkmode #login-form input {
+    background-color: rgb(27, 43, 63);
+    color: white;
+    border: thin;
+    border-radius: 0.2rem;
+} 
+
+body.darkmode #user-info-wrapper {
+    color: orange;
+}
+
+body.darkmode #user-login-close {
+    color: blueviolet;
+    margin-top: 10px;
+}
