@@ -28,7 +28,7 @@ import { getTextAndConvertToLink } from './addLinkinMessage.js';
 
 // Amanda (group 2)
 const messagesParam = new URLSearchParams(window.location.search).get("messages");
-const SHOW_MAX_MESSAGES = ((messagesParam !== undefined) && (messagesParam !== null) ? messagesParam : 32);
+const SHOW_MAX_MESSAGES = ((messagesParam !== undefined) && (messagesParam !== null) ? messagesParam : 30);
 // const SHOW_MAX_MESSAGES = 32;
 // End
 
@@ -36,8 +36,8 @@ const SHORT_MESSAGE_LIMIT = 200;
 
 
 // Set selected value of filter form, if one is set.
-if ((messagesParam !== undefined) && (messagesParam !== null)) {
-    document.querySelector("#filter-messages").value = messagesParam;
+if ((SHOW_MAX_MESSAGES !== undefined) && (SHOW_MAX_MESSAGES !== null)) {
+    document.querySelector("#filter-messages").value = SHOW_MAX_MESSAGES;
 }
 
 
