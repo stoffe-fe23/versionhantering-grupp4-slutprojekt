@@ -189,7 +189,8 @@ function updateMessageCard(messageData, messageId) {
         // Thien (group 5) - convert URLs to clickable links
         const processedText = (getIsValidText(messageData.message) ? getTextAndConvertToLink(trimmedText) : "No message");
         if (processedText != trimmedText) {
-            messageText.innerHTML = (getIsValidText(messageData.message) ? processedText.replace(/(\r\n|\r|\n)/g, '<br>') : "No message");
+            // messageText.innerHTML = (getIsValidText(messageData.message) ? processedText.replace(/(\r\n|\r|\n)/g, '<br>') : "No message");
+            setMixedTextWithLinks(messageText, processedText);
         }
         else {
             messageText.innerText = (getIsValidText(messageData.message) ? processedText : "No message");
@@ -322,7 +323,8 @@ function createMessageCard(messageData, messageId, isNewMessage = false) {
         const trimmedText = getTruncatedText(messageData.message, SHORT_MESSAGE_LIMIT);
         const processedText = (getIsValidText(messageData.message) ? getTextAndConvertToLink(trimmedText) : "No message");
         if (processedText != trimmedText) {
-            messageText.innerHTML = (getIsValidText(messageData.message) ? processedText.replace(/(\r\n|\r|\n)/g, '<br>') : "No message");
+            // messageText.innerHTML = (getIsValidText(messageData.message) ? processedText.replace(/(\r\n|\r|\n)/g, '<br>') : "No message");
+            setMixedTextWithLinks(messageText, processedText);
         }
         else {
             messageText.innerText = (getIsValidText(messageData.message) ? processedText : "No message");
@@ -732,6 +734,66 @@ function getUserProfileData(userId, dataField) {
         }
     }
     return "";
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Allow links but not other kinds of HTML in the textString string, setting it as
+// the content of the targetElement. 
+function setMixedTextWithLinks(targetElement, textString) {
+    const textFragments = tokenizeTextByLink(textString);
+    targetElement.innerHTML = "";
+
+    for (const fragment of textFragments) {
+        if (fragment.type == "link") {
+            const newLinkElement = document.createElement("a");
+            const tempElement = document.createElement("template");
+            tempElement.innerHTML = fragment.value;
+
+            newLinkElement.innerText = tempElement.content.firstElementChild.innerText;
+            newLinkElement.href = tempElement.content.firstElementChild.href;
+            newLinkElement.className = tempElement.content.firstElementChild.className;
+            if ((tempElement.content.firstElementChild.target !== undefined) && (tempElement.content.firstElementChild.target !== null)) {
+                newLinkElement.target = tempElement.content.firstElementChild.target;
+            }
+
+            targetElement.appendChild(newLinkElement);
+        }
+        else {
+            targetElement.appendChild(document.createTextNode(fragment.value));
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Split up a string into links and everything else segments, returned as an array
+function tokenizeTextByLink(textString) {
+    const openTag = `<a class="text-link" `;
+    const closeTag = `</a>`;
+    const fragments = [];
+
+    let openIdx = 0;
+    let closeIdx = 0;
+    let prevIdx = 0;
+    while (prevIdx < textString.length) {
+        openIdx = textString.indexOf(openTag, closeIdx);
+
+        if (openIdx == -1) {
+            openIdx = textString.length;
+            closeIdx = openIdx;
+            fragments.push({ value: textString.substring(prevIdx, openIdx), type: "text" });
+        }
+        else {
+            closeIdx = textString.indexOf(closeTag, openIdx) + closeTag.length;
+            fragments.push({ value: textString.substring(prevIdx, openIdx), type: "text" });
+            fragments.push({ value: textString.substring(openIdx, closeIdx), type: "link" });
+        }
+
+        prevIdx = closeIdx;
+    }
+
+    return fragments;
 }
 
 
