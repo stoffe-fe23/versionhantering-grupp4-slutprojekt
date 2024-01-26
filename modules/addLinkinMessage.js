@@ -6,6 +6,6 @@ export function getTextAndConvertToLink(trimmedText) {
         if (!withProtocol.startsWith("http")) {
             withProtocol = "http://" + matched;
         }
-        return `<a class="text-link" href="${withProtocol}">${matched}</a>`;
+        return `<a class="text-link" href="${withProtocol}" target="_blank">${matched}</a>`;
     });
 }

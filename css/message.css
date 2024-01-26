@@ -56,6 +56,7 @@
     font-size: var(--messageTextSize);
     font-family: var(--messageFont);
     white-space: pre-wrap;
+    overflow: hidden;
 }
 
 .message-author {
