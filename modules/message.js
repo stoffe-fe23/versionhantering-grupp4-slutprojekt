@@ -757,6 +757,7 @@ function setMixedTextWithLinks(targetElement, textString) {
                 newLinkElement.target = tempElement.content.firstElementChild.target;
             }
 
+            tempElement.remove();
             targetElement.appendChild(newLinkElement);
         }
         else {
