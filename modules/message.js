@@ -144,7 +144,7 @@ function initializeMessageBoard(displayMax) {
                         }
                     }
                     else {
-                        messageBoard.prepend(createMessageCard(change.doc.data(), change.doc.id));
+                        messageBoard.append(createMessageCard(change.doc.data(), change.doc.id));
                     }
                 }
                 // When the page first loads all message documents are new. Create the cards in order. 
