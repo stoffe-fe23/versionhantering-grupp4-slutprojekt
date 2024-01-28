@@ -6,7 +6,7 @@ export function getTextAndConvertToLink(trimmedText) {
         if (!withProtocol.startsWith("http")) {
             withProtocol = "http://" + matched;
         }
-        console.log("PREG MATCH IS ", matched);
+        // Workaround:  prevent "..."" from being considered a link, since a period is not a whitespace character. 
         if (matched.endsWith("...")) {
             return matched;
         }
