@@ -122,10 +122,30 @@ function initializeMessageBoard(displayMax) {
             if (change.type === "added") {
                 // Insert new messages at the top, but not when initially building the board (or the initial sort order ends up reversed)
                 if (boardInitialized) {
-                    messageBoard.prepend(createMessageCard(change.doc.data(), change.doc.id));
-                    // Ton Group 3 - play sound when a new message appears on the board
-                    const clickSound = new Audio('./audio/click-124467.mp3');
-                    clickSound.play();
+                    // Only prepend actual messages, not the New Message editor box, which should stay first until closed. 
+                    const firstMessage = document.querySelector("#messageboard article.message-card:not(#new-message-card)");
+                    if ((firstMessage !== undefined) && (firstMessage !== null)) {
+                        // Compare dates to check if this is an actual new message, or just an old one being shown because of the message display limit
+                        // and existing messages being deleted. 
+                        const messageData = change.doc.data();
+                        const newMessageDate = new Date(timestampToDateTime(messageData.date.seconds, false));
+                        const prevMessageDate = new Date(firstMessage.querySelector(".message-date").innerText);
+                        if (newMessageDate > prevMessageDate) {
+                            // It is a new message
+                            messageBoard.insertBefore(createMessageCard(messageData, change.doc.id), firstMessage);
+
+                            // Ton Group 3 - play sound when a new message appears on the board
+                            const clickSound = new Audio('./audio/click-124467.mp3');
+                            clickSound.play();
+                        }
+                        else {
+                            // It is an old one but now being covered by the query
+                            messageBoard.append(createMessageCard(messageData, change.doc.id));
+                        }
+                    }
+                    else {
+                        messageBoard.prepend(createMessageCard(change.doc.data(), change.doc.id));
+                    }
                 }
                 // When the page first loads all message documents are new. Create the cards in order. 
                 else {
